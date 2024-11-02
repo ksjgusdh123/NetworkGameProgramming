@@ -17,7 +17,7 @@ public:
 	void SetActive(bool enable)				{ m_active = enable; }
 
 	template <typename T>
-	bool SetTypeID()
+	void SetTypeID()
 	{
 		m_typeName = typeid(T).name();
 		m_typeID = typeid(T).hash_code();

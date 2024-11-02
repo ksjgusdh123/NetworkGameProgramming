@@ -19,10 +19,17 @@
 #include <memory>
 #include <chrono>
 #include <functional>
+#include <format>
 #include <array>
+#include <filesystem>
 
 #include "Macro.h"
 #include "Flag.h";
+
+#pragma comment(lib, "msimg32.lib")
+
+#define ROOT_PATH		"RootPath"
+#define TEXTURE_PATH	"TexturePath"
 
 #define	ELAPSED_TIME	CEngine::GetInst()->GetElapsedTime()
 
@@ -34,7 +41,11 @@ struct Resolution
 
 struct Vector2
 {
-	float x, y;	
+	float x = 0.f, y = 0.f;	
+
+	Vector2() { x = 0.f; y = 0.f; }
+	Vector2(float _x, float _y) { x = _x; y = _y; }
+	Vector2(const Vector2& v) { x = v.x; y = v.y; }
 
 	Vector2 operator+ (const Vector2& v) const { return Vector2(x + v.x, y + v.y); }
 	Vector2 operator- (const Vector2& v) const { return Vector2(x - v.x, y - v.y); }

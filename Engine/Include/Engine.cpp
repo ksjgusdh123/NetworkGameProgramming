@@ -2,6 +2,8 @@
 #include "Scene/SceneManager.h"
 #include "Timer.h"
 #include "Input.h"
+#include "Resource/ResourceManager.h"
+#include "PathManager.h"
 
 DEFINITION_SINGLE(CEngine)
 bool CEngine::m_loop = true;
@@ -16,6 +18,9 @@ CEngine::~CEngine()
 {
     CSceneManager::DestroyInst();
     CInput::DestroyInst();
+    CResourceManager::DestroyInst();
+    CPathManager::DestroyInst();
+
     ReleaseDC(m_hWnd, m_hDC);
 }
 
@@ -33,6 +38,12 @@ bool CEngine::Init(HINSTANCE hInst, int windowWidth, int windowHeight)
         return false;
 
     if (!CSceneManager::GetInst()->Init())
+        return false;
+
+    if (!CPathManager::GetInst()->Init())
+        return false;
+
+    if (!CResourceManager::GetInst()->Init())
         return false;
 
     m_hDC = GetDC(m_hWnd);

@@ -7,7 +7,8 @@ class CEngine
 public:
 	Resolution GetResolution() const { return m_resolution; }
 	float GetElapsedTime() { return m_elapsedTime; }
-
+	HDC GetWindowDC() const { return m_hDC; }
+	HINSTANCE GetWindowInstance() const { return m_hInst; }
 public:
 	bool Init(HINSTANCE hInst, int windowWidth, int windowHeight);
 	int Run();

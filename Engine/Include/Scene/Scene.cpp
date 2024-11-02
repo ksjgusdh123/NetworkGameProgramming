@@ -1,9 +1,11 @@
 #include "Scene.h"
 #include "../GameObject.h"
 #include "Camera.h"
+#include "SceneResource.h"
 
 bool CScene::Init()
 {
+    m_resource = std::make_shared<CSceneResource>();
     m_camera = std::make_shared<CCamera>();
 
     return true;

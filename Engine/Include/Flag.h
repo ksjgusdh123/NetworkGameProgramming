@@ -19,3 +19,9 @@ enum class ECamera_Type
 	Default,
 	Nontarget
 };
+
+enum class ETexture_Type
+{
+	Sprite,
+	Frame
+};

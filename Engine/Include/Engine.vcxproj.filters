@@ -34,6 +34,18 @@
     <Filter Include="02. Scene\01. Camera">
       <UniqueIdentifier>{0bef06f8-6ab4-428e-8a88-643a4f23a971}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Resource">
+      <UniqueIdentifier>{fa030ed0-2b12-4ea8-8b31-0e8a7ed2649f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Resource\01. Texture">
+      <UniqueIdentifier>{1d32d61d-c2fa-4445-b6a2-95bbb17285b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Scene\02. Resource">
+      <UniqueIdentifier>{b28800f4-1a3e-4556-bffa-f39b1b673e63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Manager\04. Path">
+      <UniqueIdentifier>{a0ae1d60-8236-4e17-a544-3c321a6604f3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EngineInfo.h">
@@ -78,6 +90,21 @@
     <ClInclude Include="Flag.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Texture\Texture.h">
+      <Filter>04. Resource\01. Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Texture\TextureManager.h">
+      <Filter>04. Resource\01. Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\ResourceManager.h">
+      <Filter>04. Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="PathManager.h">
+      <Filter>01. Manager\04. Path</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\SceneResource.h">
+      <Filter>02. Scene\02. Resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc">
@@ -119,6 +146,21 @@
     </ClCompile>
     <ClCompile Include="Scene\Camera.cpp">
       <Filter>02. Scene\01. Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Texture\Texture.cpp">
+      <Filter>04. Resource\01. Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Texture\TextureManager.cpp">
+      <Filter>04. Resource\01. Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\ResourceManager.cpp">
+      <Filter>04. Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="PathManager.cpp">
+      <Filter>01. Manager\04. Path</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\SceneResource.cpp">
+      <Filter>02. Scene\02. Resource</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

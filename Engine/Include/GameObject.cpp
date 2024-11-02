@@ -2,6 +2,27 @@
 #include "Scene/Scene.h"
 #include "Scene/Camera.h"
 #include "Scene/SceneManager.h"
+#include "Scene/SceneResource.h"
+#include "Resource/Texture/Texture.h"
+
+void CGameObject::SetTexture(const std::string& name, const std::wstring& fileName, const std::string& pathName)
+{
+    m_scene->GetSceneResource()->LoadTexture(name, fileName, pathName);
+
+    m_texture = m_scene->GetSceneResource()->FindTexture(name);
+
+    SetSize((float)m_texture->GetWidth(), (float)m_texture->GetHeight());
+}
+
+bool CGameObject::SetColorKey(unsigned char r, unsigned char g, unsigned char b, int idx)
+{
+    if (!m_texture)
+        return false;
+
+    m_texture->SetColorKey(r, g, b, idx);
+
+    return true;
+}
 
 bool CGameObject::Init()
 {
@@ -18,32 +39,59 @@ void CGameObject::PostUpdate(float elapsedTime)
 
 void CGameObject::Render(HDC hDC, float elapsedTime)
 {
-    Vector2 TextOffset = { -10.f, -10.f };
+	Vector2	pos;
+	Vector2	cameraPos;
+	Vector2	resolution;
 
-    RECT rc{};
-    Vector2 size = m_size * m_pivot;
-    Vector2 pos;
-    if (m_scene)
-        pos = m_pos - m_scene->GetCamera()->GetPos();
-    else
-        pos = m_pos - CSceneManager::GetInst()->GetScene()->GetCamera()->GetPos();
+	if (m_scene)
+	{
+		cameraPos = m_scene->GetCamera()->GetPos();
+		resolution = m_scene->GetCamera()->GetResolution();
+		pos = m_pos - m_scene->GetCamera()->GetPos();
+	}
 
-    rc.left = (int)pos.x - (int)size.x;
-    rc.top = (int)pos.y - (int)size.y;
-    rc.right = (int)pos.x + (int)size.x;
-    rc.bottom = (int)pos.y + (int)size.y;
+	if (m_texture)
+	{
+		// 카메라 바깥 오브젝트 컬링
+		Vector2	renderLT = pos - m_pivot * m_size;
+		Vector2	cullPos = m_pos - m_pivot * m_size;
 
-    switch (m_renderType)
-    {
-    case ERender_Type::Elipse:
-        Ellipse(hDC, rc.left, rc.top, rc.right, rc.bottom);
-        break;
-    case ERender_Type::Rectangle:
-        Rectangle(hDC, rc.left, rc.top, rc.right, rc.bottom);
-        break;
-    }
+		if (cullPos.x > cameraPos.x + resolution.x)
+			return;
 
-    TextOutA(hDC, (int)pos.x + (int)TextOffset.x,
-        (int)pos.y + (int)TextOffset.y,
-        m_name.c_str(), (int)m_name.length());
+		else if (cullPos.x + m_size.x < cameraPos.x)
+			return;
+
+		else if (cullPos.y > cameraPos.y + resolution.y)
+			return;
+
+		else if (cullPos.y + m_size.y < cameraPos.y)
+			return;
+
+		if (m_texture->GetEnableColorKey())
+		{
+			if (m_texture->GetTextureType() == ETexture_Type::Sprite)
+			{
+				TransparentBlt(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y,
+					m_texture->GetDC(), 0, 0, (int)m_size.x, (int)m_size.y, m_texture->GetColorKey());
+			}
+
+			else
+			{
+			}
+		}
+
+		else
+		{
+			if (m_texture->GetTextureType() == ETexture_Type::Sprite)
+			{
+				BitBlt(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y,
+					m_texture->GetDC(), 0, 0, SRCCOPY);
+			}
+
+			else
+			{
+			}
+		}
+	}
 }

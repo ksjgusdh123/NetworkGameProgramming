@@ -146,12 +146,17 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Macro.h" />
+    <ClInclude Include="PathManager.h" />
     <ClInclude Include="Ref.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Resource\ResourceManager.h" />
+    <ClInclude Include="Resource\Texture\Texture.h" />
+    <ClInclude Include="Resource\Texture\TextureManager.h" />
     <ClInclude Include="Scene\Camera.h" />
     <ClInclude Include="Scene\DefaultScene.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\SceneManager.h" />
+    <ClInclude Include="Scene\SceneResource.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
@@ -159,11 +164,16 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="PathManager.cpp" />
     <ClCompile Include="Ref.cpp" />
+    <ClCompile Include="Resource\ResourceManager.cpp" />
+    <ClCompile Include="Resource\Texture\Texture.cpp" />
+    <ClCompile Include="Resource\Texture\TextureManager.cpp" />
     <ClCompile Include="Scene\Camera.cpp" />
     <ClCompile Include="Scene\DefaultScene.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
+    <ClCompile Include="Scene\SceneResource.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -17,14 +17,14 @@ bool CMainScene::Init()
 
 
     player = CreateObject<CPlayer>("wns");
-    player->SetSize(200.f, 100.f);
     player->SetPos(100.f, 100.f);
     SetPlayer(player);
     GetCamera()->SetTarget(player);
 
     monster = CreateObject<CGameObject>("gus");
-    monster->SetSize(100.f, 100.f);
-    monster->SetPos(100.f, 100.f);
+    monster->SetTexture("Player", TEXT("Player/Bazzi_Lobby.bmp"));
+    monster->SetSize(50.f, 60.f);
+    monster->SetPos(100.f, 200.f);
 
     return true;
 }
