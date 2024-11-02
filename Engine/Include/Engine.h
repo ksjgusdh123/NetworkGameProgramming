@@ -22,6 +22,7 @@ private:
 	bool Create();
 
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+	static void HandleInput(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 private:
 	HINSTANCE	m_hInst = 0;

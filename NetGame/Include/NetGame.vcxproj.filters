@@ -19,6 +19,9 @@
     <Filter Include="02. Scene">
       <UniqueIdentifier>{91207252-a12c-4ee7-8be1-f1206a04c17d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject">
+      <UniqueIdentifier>{6e14a4b7-0941-468a-85f5-5b4f8fd60b3b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -36,6 +39,9 @@
     <ClInclude Include="Scene\MainScene.h">
       <Filter>02. Scene</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject\Player.h">
+      <Filter>03. GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClientManager.cpp">
@@ -46,6 +52,9 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Player.cpp">
+      <Filter>03. GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

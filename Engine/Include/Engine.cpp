@@ -1,6 +1,7 @@
 ﻿#include "Engine.h"
 #include "Scene/SceneManager.h"
 #include "Timer.h"
+#include "Input.h"
 
 DEFINITION_SINGLE(CEngine)
 bool CEngine::m_loop = true;
@@ -14,7 +15,7 @@ CEngine::CEngine()
 CEngine::~CEngine()
 {
     CSceneManager::DestroyInst();
-
+    CInput::DestroyInst();
     ReleaseDC(m_hWnd, m_hDC);
 }
 
@@ -27,6 +28,9 @@ bool CEngine::Init(HINSTANCE hInst, int windowWidth, int windowHeight)
 
     Register();
     Create();
+
+    if (!CInput::GetInst()->Init())
+        return false;
 
     if (!CSceneManager::GetInst()->Init())
         return false;
@@ -69,6 +73,7 @@ void CEngine::Logic()
 
     m_elapsedTime = m_timer->GetElapsedTime();
 
+    CInput::GetInst()->Update();
 
     // Scene이 교체될 경우 처음부터 다시 동작시킨다
     if (Update(m_elapsedTime))
@@ -156,3 +161,4 @@ LRESULT CEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
     return 0;
 }
+

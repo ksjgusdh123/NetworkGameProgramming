@@ -11,12 +11,8 @@ class CMainScene :
 {
 public:
 	virtual bool Init() override;
-	virtual void Update(float elapsedTime) override;
-	virtual void PostUpdate(float elapsedTime) override;
-	virtual void Render(HDC hDC, float elapsedTime) override;
-
 private:
-	GameObject* player;
-	GameObject* monster;
+	class CPlayer* player;
+	class CGameObject* monster;
 };
 

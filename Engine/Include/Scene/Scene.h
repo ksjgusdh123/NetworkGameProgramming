@@ -1,24 +1,13 @@
 #pragma once
-
 #include "../EngineInfo.h"
-
-// temp
-struct GameObject
-{
-	std::wstring name;
-	float sizeX;
-	float sizeY;
-	float posX;
-	float posY;
-
-	bool Init()
-	{
-		return true;
-	}
-};
 
 class CScene
 {
+public:
+	class CGameObject* GetPlayer() const { return m_player; }
+
+	void SetPlayer(class CGameObject* player) { m_player = player; }
+
 public:
 	virtual bool Init();
 	virtual void Update(float elapsedTime);
@@ -27,19 +16,21 @@ public:
 
 public:
 	template <typename T>
-	T* CreateObject(std::wstring_view name)
+	T* CreateObject(const std::string& name)
 	{
 		std::shared_ptr<T> obj = std::make_shared<T>();
 		if (!obj->Init())
 			return nullptr;
 
-		obj->name = name.data();
+		obj->SetName(name);
+		obj->SetScene(this);
 		m_objects.push_back(obj);
 
 		return obj.get();
 	}
 
 private:
-	std::list<std::shared_ptr<GameObject>> m_objects;
+	std::list<std::shared_ptr<class CGameObject>> m_objects;
+	class CGameObject* m_player;
 };
 

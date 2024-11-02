@@ -146,12 +146,14 @@
   <ItemGroup>
     <ClInclude Include="ClientInfo.h" />
     <ClInclude Include="ClientManager.h" />
+    <ClInclude Include="GameObject\Player.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene\MainScene.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClientManager.cpp" />
+    <ClCompile Include="GameObject\Player.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Scene\MainScene.cpp" />
   </ItemGroup>

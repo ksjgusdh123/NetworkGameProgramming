@@ -22,6 +22,15 @@
     <Filter Include="02. Scene">
       <UniqueIdentifier>{72a8b500-3ff8-4ae1-8783-ddc80f104384}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Manager\02. Input">
+      <UniqueIdentifier>{928bf5c4-f92a-4880-a1f4-424012c9eec0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject">
+      <UniqueIdentifier>{f14125be-314c-47f9-91de-aecc510c3ada}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Manager\03. Ref">
+      <UniqueIdentifier>{b0d1cbae-be65-4cc8-b25a-f4ec7e15cf8c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EngineInfo.h">
@@ -50,6 +59,15 @@
     </ClInclude>
     <ClInclude Include="Scene\SceneManager.h">
       <Filter>02. Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>01. Manager\02. Input</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>03. GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Ref.h">
+      <Filter>01. Manager\03. Ref</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -80,6 +98,15 @@
     </ClCompile>
     <ClCompile Include="Scene\SceneManager.cpp">
       <Filter>02. Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>01. Manager\02. Input</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>03. GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Ref.cpp">
+      <Filter>01. Manager\03. Ref</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

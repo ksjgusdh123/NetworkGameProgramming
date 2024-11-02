@@ -9,7 +9,6 @@ public:
 	bool Update(float elapsedTime);
 	bool PostUpdate(float elapsedTime);
 	void Render(HDC hDC, float elapsedTime);
-
 public:
 	template <typename T>
 	bool CreateScene()

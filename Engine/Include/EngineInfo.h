@@ -29,3 +29,8 @@ struct Resolution
 	int	width = 0;
 	int	height = 0;
 };
+
+struct Vector2
+{
+	float x, y;	
+};
