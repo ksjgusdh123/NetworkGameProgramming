@@ -5,6 +5,9 @@
 class CSceneManager
 {
 public:
+	class CScene* GetScene() const { return m_scene.get(); }
+
+public:
 	bool Init();
 	bool Update(float elapsedTime);
 	bool PostUpdate(float elapsedTime);

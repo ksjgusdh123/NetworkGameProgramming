@@ -1,71 +1,86 @@
 #include "Scene.h"
 #include "../GameObject.h"
+#include "Camera.h"
 
 bool CScene::Init()
 {
+    m_camera = std::make_shared<CCamera>();
+
     return true;
 }
 
 void CScene::Update(float elapsedTime)
 {
-    auto iter = m_objects.begin();
-    auto iterEnd = m_objects.end();
-    for (; iter != iterEnd;)
+    for (auto& objects : m_objects)
     {
-        if (!(*iter)->GetActive())
+        auto iter = objects.begin();
+        auto iterEnd = objects.end();
+        for (; iter != iterEnd;)
         {
-            iter = m_objects.erase(iter);
-            iterEnd = m_objects.end();
-            continue;
-        }
-        else if ((*iter)->GetEnable())
-        {
-            (*iter)->Update(elapsedTime);
-        }
+            if (!(*iter)->GetActive())
+            {
+                iter = objects.erase(iter);
+                iterEnd = objects.end();
+                continue;
+            }
+            else if ((*iter)->GetEnable())
+            {
+                (*iter)->Update(elapsedTime);
+            }
 
-        ++iter;
+            ++iter;
+        }
     }
+
+    m_camera->Update(elapsedTime);
 }
 
 void CScene::PostUpdate(float elapsedTime)
 {
-    auto iter = m_objects.begin();
-    auto iterEnd = m_objects.end();
-    for (; iter != iterEnd;)
+    for (auto& objects : m_objects)
     {
-        if (!(*iter)->GetActive())
+        auto iter = objects.begin();
+        auto iterEnd = objects.end();
+        for (; iter != iterEnd;)
         {
-            iter = m_objects.erase(iter);
-            iterEnd = m_objects.end();
-            continue;
-        }
-        else if ((*iter)->GetEnable())
-        {
-            (*iter)->PostUpdate(elapsedTime);
-        }
+            if (!(*iter)->GetActive())
+            {
+                iter = objects.erase(iter);
+                iterEnd = objects.end();
+                continue;
+            }
+            else if ((*iter)->GetEnable())
+            {
+                (*iter)->PostUpdate(elapsedTime);
+            }
 
-        ++iter;
+            ++iter;
+        }
     }
 }
 
 void CScene::Render(HDC hDC, float elapsedTime)
 {
-    auto iter = m_objects.begin();
-    auto iterEnd = m_objects.end();
-    for (; iter != iterEnd;)
+    for (auto& objects : m_objects)
     {
-        if (!(*iter)->GetActive())
+        auto iter = objects.begin();
+        auto iterEnd = objects.end();
+        for (; iter != iterEnd;)
         {
-            iter = m_objects.erase(iter);
-            iterEnd = m_objects.end();
-            continue;
-        }
-        else if ((*iter)->GetEnable())
-        {
-            (*iter)->Render(hDC, elapsedTime);
-        }
+            if (!(*iter)->GetActive())
+            {
+                iter = objects.erase(iter);
+                iterEnd = objects.end();
+                continue;
+            }
+            else if ((*iter)->GetEnable())
+            {
+                (*iter)->Render(hDC, elapsedTime);
+            }
 
-        ++iter;
+            ++iter;
+        }
     }
 }
+
 

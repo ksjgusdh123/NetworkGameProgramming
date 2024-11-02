@@ -19,8 +19,10 @@
 #include <memory>
 #include <chrono>
 #include <functional>
+#include <array>
 
 #include "Macro.h"
+#include "Flag.h";
 
 #define	ELAPSED_TIME	CEngine::GetInst()->GetElapsedTime()
 
@@ -33,4 +35,8 @@ struct Resolution
 struct Vector2
 {
 	float x, y;	
+
+	Vector2 operator+ (const Vector2& v) const { return Vector2(x + v.x, y + v.y); }
+	Vector2 operator- (const Vector2& v) const { return Vector2(x - v.x, y - v.y); }
+	Vector2 operator* (const Vector2& v) const { return Vector2(x * v.x, y * v.y); }
 };

@@ -5,6 +5,7 @@
 class CEngine
 {
 public:
+	Resolution GetResolution() const { return m_resolution; }
 	float GetElapsedTime() { return m_elapsedTime; }
 
 public:

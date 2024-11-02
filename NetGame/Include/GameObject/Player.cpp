@@ -6,7 +6,7 @@ bool CPlayer::Init()
 {
 	CGameObject::Init();
 
-	//m_renderType = ERender_Type::Rectangle;
+	m_renderType = ERender_Type::Rectangle;
 	m_velocity = Vector2(100.f, 100.f);
 
 	CInput::GetInst()->AddBindFunction<CPlayer>("MoveUp", EInput_Type::PUSH, this, &CPlayer::PlayerMoveUp, m_scene);

@@ -31,6 +31,9 @@
     <Filter Include="01. Manager\03. Ref">
       <UniqueIdentifier>{b0d1cbae-be65-4cc8-b25a-f4ec7e15cf8c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Scene\01. Camera">
+      <UniqueIdentifier>{0bef06f8-6ab4-428e-8a88-643a4f23a971}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EngineInfo.h">
@@ -68,6 +71,12 @@
     </ClInclude>
     <ClInclude Include="Ref.h">
       <Filter>01. Manager\03. Ref</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Camera.h">
+      <Filter>02. Scene\01. Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Flag.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -107,6 +116,9 @@
     </ClCompile>
     <ClCompile Include="Ref.cpp">
       <Filter>01. Manager\03. Ref</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Camera.cpp">
+      <Filter>02. Scene\01. Camera</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

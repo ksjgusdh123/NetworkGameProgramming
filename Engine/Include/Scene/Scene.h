@@ -4,6 +4,7 @@
 class CScene
 {
 public:
+	class CCamera* GetCamera() const { return m_camera.get(); }
 	class CGameObject* GetPlayer() const { return m_player; }
 
 	void SetPlayer(class CGameObject* player) { m_player = player; }
@@ -24,13 +25,14 @@ public:
 
 		obj->SetName(name);
 		obj->SetScene(this);
-		m_objects.push_back(obj);
+		m_objects[(int)obj->GetObjectType()].push_back(obj);
 
 		return obj.get();
 	}
 
 private:
-	std::list<std::shared_ptr<class CGameObject>> m_objects;
+	std::shared_ptr<class CCamera> m_camera;
+	std::array<std::list<std::shared_ptr<class CGameObject>>, 4> m_objects;
 	class CGameObject* m_player;
 };
 

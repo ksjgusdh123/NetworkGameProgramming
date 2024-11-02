@@ -14,5 +14,6 @@ public:
 private:
 	class CPlayer* player;
 	class CGameObject* monster;
+	Vector2				m_cameraVelocity;
 };
 

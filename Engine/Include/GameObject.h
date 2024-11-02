@@ -7,6 +7,7 @@ class CGameObject :
 	public CRef
 {
 public:
+	EObject_Type GetObjectType() const { return m_objectType; }
 	class CScene* GetScene() const { return m_scene; }
 	std::string GetName() const { return m_name; }
 	Vector2 GetSize() const { return m_size; }
@@ -14,6 +15,7 @@ public:
 	Vector2 GetVelocity() const { return m_velocity; }
 	float GetAngle() const { return m_angle; }
 
+	void SetObjectType(EObject_Type type) { m_objectType = type; }
 	void SetScene(class CScene* scene) { m_scene = scene; }
 	void SetName(const std::string& name) { m_name = name; }
 	void SetSize(const Vector2& size) { m_size = size; }
@@ -34,11 +36,13 @@ public:
 	virtual void Render(HDC hDC, float elapsedTime);
 
 protected:
-	//ERender_Type	m_renderType = ERender_Type::Elipse;
-	class CScene* m_scene;
+	EObject_Type   m_objectType = EObject_Type::Monster;
+	ERender_Type	m_renderType = ERender_Type::Elipse;
+	class CScene*	m_scene;
 	std::string		m_name;
 	Vector2			m_size;
 	Vector2			m_pos;
+	Vector2			m_pivot = { 0.5f, 0.5f };
 	Vector2			m_velocity;
 	float			m_angle = 0.f;
 };
