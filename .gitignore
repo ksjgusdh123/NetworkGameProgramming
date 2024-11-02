@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+
+# File
+*.user
+
+# Directory
+.vs/
+BinObj/
+BinObjDebug/
+
+
