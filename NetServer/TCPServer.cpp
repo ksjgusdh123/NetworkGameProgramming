@@ -1,6 +1,6 @@
 #pragma once
 #include "TCPServer.h"
-#include "ErorrCheck.h"
+#include "ErrDisplay.h"
 
 DWORD WINAPI RecvThread(LPVOID arg) { cout << "RecvThread()\n"; return 0; };
 DWORD WINAPI SendThread(LPVOID arg) { cout << "SendThread()\n"; return 0; };

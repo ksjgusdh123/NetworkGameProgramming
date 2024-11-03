@@ -132,7 +132,7 @@
     <ClCompile Include="TCPServer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ErorrCheck.h" />
+    <ClInclude Include="ErrDisplay.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="Protocol.h" />
     <ClInclude Include="TCPServer.h" />
