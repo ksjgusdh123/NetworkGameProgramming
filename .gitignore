@@ -39,4 +39,5 @@
 BinObj/
 BinObjDebug/
 
+**/x64/*
 

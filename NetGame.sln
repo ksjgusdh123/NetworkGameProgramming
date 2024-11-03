@@ -10,6 +10,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NetGame", "NetGame\Include\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine\Include\Engine.vcxproj", "{844B0AD2-A5F3-478F-A595-51D7CC6939DC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NetServer", "NetServer\NetServer.vcxproj", "{929465D4-7933-433B-B245-89D64A34E8C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -34,6 +36,14 @@ Global
 		{844B0AD2-A5F3-478F-A595-51D7CC6939DC}.Release|x64.Build.0 = Release|x64
 		{844B0AD2-A5F3-478F-A595-51D7CC6939DC}.Release|x86.ActiveCfg = Release|Win32
 		{844B0AD2-A5F3-478F-A595-51D7CC6939DC}.Release|x86.Build.0 = Release|Win32
+		{929465D4-7933-433B-B245-89D64A34E8C8}.Debug|x64.ActiveCfg = Debug|x64
+		{929465D4-7933-433B-B245-89D64A34E8C8}.Debug|x64.Build.0 = Debug|x64
+		{929465D4-7933-433B-B245-89D64A34E8C8}.Debug|x86.ActiveCfg = Debug|Win32
+		{929465D4-7933-433B-B245-89D64A34E8C8}.Debug|x86.Build.0 = Debug|Win32
+		{929465D4-7933-433B-B245-89D64A34E8C8}.Release|x64.ActiveCfg = Release|x64
+		{929465D4-7933-433B-B245-89D64A34E8C8}.Release|x64.Build.0 = Release|x64
+		{929465D4-7933-433B-B245-89D64A34E8C8}.Release|x86.ActiveCfg = Release|Win32
+		{929465D4-7933-433B-B245-89D64A34E8C8}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
