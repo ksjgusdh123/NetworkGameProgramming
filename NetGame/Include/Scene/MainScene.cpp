@@ -22,7 +22,9 @@ bool CMainScene::Init()
     GetCamera()->SetTarget(player);
 
     monster = CreateObject<CGameObject>("gus");
-    monster->SetTexture("Player", TEXT("Player/Bazzi_Lobby.bmp"));
+    monster->CreateTexture(1);
+    monster->SetTexture("Plyer", TEXT("Player/Bazzi_Lobby.bmp"), EObject_Dir::Right);
+	monster->SetColorKey(255, 0, 255);
     monster->SetSize(50.f, 60.f);
     monster->SetPos(100.f, 200.f);
 

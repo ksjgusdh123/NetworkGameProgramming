@@ -23,5 +23,23 @@ enum class ECamera_Type
 enum class ETexture_Type
 {
 	Sprite,
+	CIMAGE,
 	Frame
+};
+
+enum class EObject_Dir
+{
+	Right,
+	Left,
+	Max
+};
+
+enum class EObject_State
+{
+	Basic,
+	Basic_L,
+	Walk,
+	Run,
+	Attack,
+	Max
 };
