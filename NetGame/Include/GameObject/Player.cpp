@@ -7,10 +7,10 @@ bool CPlayer::Init()
 {
 	CGameObject::Init();
 
-	SetPivot(0.5f, 0.f);
-	SetSize(50.f, 60.f);
-	SetVelocity(100.f, 100.f);
-	SetTexture("Player", TEXT("Player/Bazzi_Lobby.bmp"));
+	SetPivot(0.5f, 0.5f);
+	SetVelocity(150.f, 300.f);
+	SetTexture("Player", TEXT("Player/boss.png"), ETexture_Type::CIMAGE);
+	SetSize(150.f, 300.f);
 	SetColorKey(255, 0, 255);
 
 	CInput::GetInst()->AddBindFunction<CPlayer>("MoveUp", EInput_Type::PUSH, this, &CPlayer::PlayerMoveUp, m_scene);
@@ -55,7 +55,7 @@ void CPlayer::PlayerMoveLeft()
 }
 
 void CPlayer::PlayerMoveRight()
-{
+{	
 	m_pos.x += m_velocity.x * 2 * ELAPSED_TIME;
 	SetPos(m_pos);
 }

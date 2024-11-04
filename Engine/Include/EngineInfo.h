@@ -22,6 +22,7 @@
 #include <format>
 #include <array>
 #include <filesystem>
+#include <atlimage.h>
 
 #include "Macro.h"
 #include "Flag.h";

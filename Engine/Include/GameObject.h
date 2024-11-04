@@ -32,7 +32,7 @@ public:
 	void AddPos(const Vector2& pos) { m_pos.x += pos.x; m_pos.y += pos.y; }
 	void AddAngle(float angle) { m_angle += angle; }
 
-	void SetTexture(const std::string& name, const std::wstring& fileName, const std::string& pathName = TEXTURE_PATH);
+	void SetTexture(const std::string& name, const std::wstring& fileName, ETexture_Type type = ETexture_Type::Sprite, const std::string& pathName = TEXTURE_PATH);
 	bool SetColorKey(unsigned char r, unsigned char g, unsigned char b, int idx = 0);
 
 public:
@@ -52,5 +52,7 @@ protected:
 	Vector2			m_velocity;
 	float			m_angle = 0.f;
 	class CTexture* m_texture = nullptr;
+
+	float m_time = 0;
 };
 

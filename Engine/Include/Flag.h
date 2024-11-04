@@ -23,5 +23,6 @@ enum class ECamera_Type
 enum class ETexture_Type
 {
 	Sprite,
+	CIMAGE,
 	Frame
 };

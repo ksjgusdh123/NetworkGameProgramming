@@ -30,8 +30,15 @@ bool CTexture::LoadTextureFullPath(const TCHAR* fullPath)
 	HBITMAP	hBmp = (HBITMAP)LoadImage(CEngine::GetInst()->GetWindowInstance(),
 		fullPath, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 
+	std::shared_ptr<ImageInfo> info = std::make_shared<ImageInfo>();
 	if (!hBmp)
-		return false;
+	{
+		info->cImage.Load(fullPath);
+		info->hMemDC = hDC;
+		m_vecImageInfo.push_back(info);
+		return true;
+		//return false;
+	}
 
 	// 읽어온 비트맵을 메모리 DC에 지정한다.
 	// 기존에 DC가 가지고 있던 도구를 반환한다.
@@ -40,7 +47,6 @@ bool CTexture::LoadTextureFullPath(const TCHAR* fullPath)
 	BITMAP	bmpInfo;
 	GetObject(hBmp, sizeof(BITMAP), &bmpInfo);
 
-	std::shared_ptr<ImageInfo> info = std::make_shared<ImageInfo>();
 	info->hMemDC = hDC;
 	info->hBmp = hBmp;
 	info->hPrevBmp = hPrevBmp;

@@ -4,12 +4,13 @@
 #include "Scene/SceneManager.h"
 #include "Scene/SceneResource.h"
 #include "Resource/Texture/Texture.h"
-
-void CGameObject::SetTexture(const std::string& name, const std::wstring& fileName, const std::string& pathName)
+#include "Engine.h"
+void CGameObject::SetTexture(const std::string& name, const std::wstring& fileName, ETexture_Type type, const std::string& pathName)
 {
     m_scene->GetSceneResource()->LoadTexture(name, fileName, pathName);
 
     m_texture = m_scene->GetSceneResource()->FindTexture(name);
+	m_texture->SetTextureType(type);
 
     SetSize((float)m_texture->GetWidth(), (float)m_texture->GetHeight());
 }
@@ -36,6 +37,12 @@ void CGameObject::Update(float elapsedTime)
 void CGameObject::PostUpdate(float elapsedTime)
 {
 }
+
+
+RECT Boss_Basic[2] = {
+	{352, 616, 155, 156},
+	{525, 614, 155, 158}
+};
 
 void CGameObject::Render(HDC hDC, float elapsedTime)
 {
@@ -75,9 +82,11 @@ void CGameObject::Render(HDC hDC, float elapsedTime)
 				TransparentBlt(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y,
 					m_texture->GetDC(), 0, 0, (int)m_size.x, (int)m_size.y, m_texture->GetColorKey());
 			}
-
 			else
 			{
+				m_time += elapsedTime;
+				int idx = (((int)m_time) % 2);
+				m_texture->GetCImage().Draw(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y, Boss_Basic[idx].left, Boss_Basic[idx].top, Boss_Basic[idx].right, Boss_Basic[idx].bottom);
 			}
 		}
 
@@ -91,6 +100,7 @@ void CGameObject::Render(HDC hDC, float elapsedTime)
 
 			else
 			{
+				m_texture->GetCImage().Draw(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y, 100, 100, 100, 100);
 			}
 		}
 	}
