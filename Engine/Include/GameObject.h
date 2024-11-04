@@ -32,7 +32,8 @@ public:
 	void AddPos(const Vector2& pos) { m_pos.x += pos.x; m_pos.y += pos.y; }
 	void AddAngle(float angle) { m_angle += angle; }
 
-	void SetTexture(const std::string& name, const std::wstring& fileName, ETexture_Type type = ETexture_Type::Sprite, const std::string& pathName = TEXTURE_PATH);
+	void SetTexture(const std::string& name, const std::wstring& fileName, EObject_Dir dir, ETexture_Type type = ETexture_Type::Sprite, const std::string& pathName = TEXTURE_PATH);
+	void SetAnimation(RECT* rects, int num, EObject_State state = EObject_State::Basic, ETexture_Type type = ETexture_Type::CIMAGE);
 	bool SetColorKey(unsigned char r, unsigned char g, unsigned char b, int idx = 0);
 
 public:
@@ -41,6 +42,7 @@ public:
 	virtual void PostUpdate(float elapsedTime);
 	virtual void Render(HDC hDC, float elapsedTime);
 
+	void CreateTexture(int num);
 protected:
 	EObject_Type   m_objectType = EObject_Type::Monster;
 	ERender_Type	m_renderType = ERender_Type::Elipse;
@@ -51,8 +53,11 @@ protected:
 	Vector2			m_pivot = { 0.5f, 0.5f };
 	Vector2			m_velocity;
 	float			m_angle = 0.f;
-	class CTexture* m_texture = nullptr;
+	class CTexture** m_texture = nullptr;
+	EObject_Dir m_objectDir = EObject_Dir::Right;
 
-	float m_time = 0;
+	float m_time = 0;	
+	EObject_State m_objectState = EObject_State::Basic;
+	std::array<std::vector<RECT>, (int)EObject_State::Max> m_animationBox;
 };
 

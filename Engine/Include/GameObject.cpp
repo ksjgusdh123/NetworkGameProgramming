@@ -5,14 +5,22 @@
 #include "Scene/SceneResource.h"
 #include "Resource/Texture/Texture.h"
 #include "Engine.h"
-void CGameObject::SetTexture(const std::string& name, const std::wstring& fileName, ETexture_Type type, const std::string& pathName)
+void CGameObject::SetTexture(const std::string& name, const std::wstring& fileName, EObject_Dir dir, ETexture_Type type, const std::string& pathName)
 {
     m_scene->GetSceneResource()->LoadTexture(name, fileName, pathName);
 
-    m_texture = m_scene->GetSceneResource()->FindTexture(name);
-	m_texture->SetTextureType(type);
+    m_texture[(int)dir] = m_scene->GetSceneResource()->FindTexture(name);
+	m_texture[(int)dir]->SetTextureType(type);
 
-    SetSize((float)m_texture->GetWidth(), (float)m_texture->GetHeight());
+    //SetSize((float)m_texture->GetWidth(), (float)m_texture->GetHeight());
+}
+
+void CGameObject::SetAnimation(RECT* rects, int num, EObject_State state, ETexture_Type type)
+{
+	for (int i = 0; i < num; ++i)
+	{
+		m_animationBox[(int)state].push_back(rects[i]);
+	}
 }
 
 bool CGameObject::SetColorKey(unsigned char r, unsigned char g, unsigned char b, int idx)
@@ -20,7 +28,7 @@ bool CGameObject::SetColorKey(unsigned char r, unsigned char g, unsigned char b,
     if (!m_texture)
         return false;
 
-    m_texture->SetColorKey(r, g, b, idx);
+    m_texture[(int)m_objectDir]->SetColorKey(r, g, b, idx);
 
     return true;
 }
@@ -37,12 +45,6 @@ void CGameObject::Update(float elapsedTime)
 void CGameObject::PostUpdate(float elapsedTime)
 {
 }
-
-
-RECT Boss_Basic[2] = {
-	{352, 616, 155, 156},
-	{525, 614, 155, 158}
-};
 
 void CGameObject::Render(HDC hDC, float elapsedTime)
 {
@@ -75,33 +77,35 @@ void CGameObject::Render(HDC hDC, float elapsedTime)
 		else if (cullPos.y + m_size.y < cameraPos.y)
 			return;
 
-		if (m_texture->GetEnableColorKey())
+		
+
+		if (m_texture[(int)m_objectDir]->GetTextureType() == ETexture_Type::Sprite)
 		{
-			if (m_texture->GetTextureType() == ETexture_Type::Sprite)
+			if (m_texture[(int)m_objectDir]->GetEnableColorKey())
 			{
 				TransparentBlt(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y,
-					m_texture->GetDC(), 0, 0, (int)m_size.x, (int)m_size.y, m_texture->GetColorKey());
+					m_texture[(int)m_objectDir]->GetDC(), 0, 0, (int)m_size.x, (int)m_size.y, m_texture[(int)m_objectDir]->GetColorKey());
 			}
 			else
-			{
-				m_time += elapsedTime;
-				int idx = (((int)m_time) % 2);
-				m_texture->GetCImage().Draw(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y, Boss_Basic[idx].left, Boss_Basic[idx].top, Boss_Basic[idx].right, Boss_Basic[idx].bottom);
-			}
-		}
-
-		else
-		{
-			if (m_texture->GetTextureType() == ETexture_Type::Sprite)
 			{
 				BitBlt(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y,
-					m_texture->GetDC(), 0, 0, SRCCOPY);
-			}
-
-			else
-			{
-				m_texture->GetCImage().Draw(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y, 100, 100, 100, 100);
+					m_texture[(int)m_objectDir]->GetDC(), 0, 0, SRCCOPY);
 			}
 		}
+		else if (m_texture[(int)m_objectDir]->GetTextureType() == ETexture_Type::CIMAGE)
+		{
+			m_time += elapsedTime;
+			int idx = (((int)(m_time * m_animationBox[(int)m_objectState].size())) % m_animationBox[(int)m_objectState].size());
+			m_texture[(int)m_objectDir]->GetCImage().Draw(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y, m_animationBox[(int)m_objectState][idx].left, m_animationBox[(int)m_objectState][idx].top, m_animationBox[(int)m_objectState][idx].right, m_animationBox[(int)m_objectState][idx].bottom);
+		}
+	}
+}
+
+void CGameObject::CreateTexture(int num)
+{
+	m_texture = new CTexture * [num];
+	for (int i = 0; i < num; ++i)
+	{
+		m_texture[i] = new CTexture();
 	}
 }
