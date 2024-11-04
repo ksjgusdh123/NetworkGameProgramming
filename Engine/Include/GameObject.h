@@ -7,6 +7,10 @@ class CGameObject :
 	public CRef
 {
 public:
+	CGameObject() {}
+	virtual ~CGameObject();
+
+public:
 	EObject_Type GetObjectType() const { return m_objectType; }
 	class CScene* GetScene() const { return m_scene; }
 	std::string GetName() const { return m_name; }

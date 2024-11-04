@@ -7,6 +7,10 @@ CTexture::CTexture()
 	SetTypeID<CTexture>();
 }
 
+CTexture::~CTexture()
+{
+}
+
 bool CTexture::LoadTexture(const std::wstring& fileName, const std::string& pathName)
 {
 	std::filesystem::path path = CPathManager::GetInst()->FindPath(pathName);
@@ -34,7 +38,6 @@ bool CTexture::LoadTextureFullPath(const TCHAR* fullPath)
 	if (!hBmp)
 	{
 		info->cImage.Load(fullPath);
-		info->hMemDC = hDC;
 		m_vecImageInfo.push_back(info);
 		return true;
 		//return false;

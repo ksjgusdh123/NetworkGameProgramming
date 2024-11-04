@@ -22,6 +22,9 @@
     <Filter Include="03. GameObject">
       <UniqueIdentifier>{6e14a4b7-0941-468a-85f5-5b4f8fd60b3b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Animation">
+      <UniqueIdentifier>{9891b09e-a4aa-4adf-becb-b5cac8a5d9ad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -41,6 +44,18 @@
     </ClInclude>
     <ClInclude Include="GameObject\Player.h">
       <Filter>03. GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerAnimation.h">
+      <Filter>04. Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="BossAnimation.h">
+      <Filter>04. Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="MonsterAnimation.h">
+      <Filter>04. Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectAnimation.h">
+      <Filter>04. Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

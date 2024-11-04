@@ -3,58 +3,21 @@
 #include "Input.h"
 #include <Scene/Scene.h>
 #include "Resource/Texture/Texture.h"
+#include "..\PlayerAnimation.h"
+
 bool CPlayer::Init()
 {
 	CGameObject::Init();
-	RECT Boss_Growl_L[16] = {
-		{8, 619, 155, 153},
-		{352, 616, 155, 156},
-		{698, 590, 156, 182},
-		{874, 591, 157, 181},
-		{874, 591, 157, 181},
-		{874, 591, 157, 181},
-		{874, 591, 157, 181},
-		{874, 591, 157, 181},
-		{1050, 592, 158, 180},
-		{1050, 592, 158, 180},
-		{1050, 592, 158, 180},
-		{1050, 592, 158, 180},
-		{1050, 592, 158, 180},
-		{1050, 592, 158, 180},
-		{1050, 592, 158, 180},
-		{1050, 592, 158, 180},
-	};
-
-	RECT Boss_Growl[16] = {
-	{2955, 619, 155, 153},
-	{2611, 616, 155, 156},
-	{2264, 590, 156, 182},
-	{2087, 591, 157, 181},
-	{2087, 591, 157, 181},
-	{2087, 591, 157, 181},
-	{2087, 591, 157, 181},
-	{2087, 591, 157, 181},
-	{1910, 592, 158, 180},
-	{1910, 592, 158, 180},
-	{1910, 592, 158, 180},
-	{1910, 592, 158, 180},
-	{1910, 592, 158, 180},
-	{1910, 592, 158, 180},
-	{1910, 592, 158, 180},
-	{1910, 592, 158, 180},
-	};
-
-
 
 	SetPivot(0.5f, 0.5f);
 	SetVelocity(150.f, 300.f);
 	CreateTexture(2);
-	SetTexture("Player_L", TEXT("Player/boss.png"), EObject_Dir::Left, ETexture_Type::CIMAGE);
-	SetTexture("Player", TEXT("Player/boss_L.png"), EObject_Dir::Right, ETexture_Type::CIMAGE);
-	SetAnimation(Boss_Growl, 16, EObject_State::Basic);
-	SetAnimation(Boss_Growl_L, 16, EObject_State::Basic_L);
+	SetTexture("Player_L", TEXT("Player/player_L.png"), EObject_Dir::Left, ETexture_Type::CIMAGE);
+	SetTexture("Player", TEXT("Player/player.png"), EObject_Dir::Right, ETexture_Type::CIMAGE);
+	SetAnimation(Basic, 8, EObject_State::Basic_L);
+	SetAnimation(Basic_L, 8, EObject_State::Basic);
 	SetSize(150.f, 300.f);
-	SetColorKey(255, 0, 255);
+	//SetColorKey(255, 0, 255);
 
 	CInput::GetInst()->AddBindFunction<CPlayer>("MoveUp", EInput_Type::PUSH, this, &CPlayer::PlayerMoveUp, m_scene);
 	CInput::GetInst()->AddBindFunction<CPlayer>("MoveDown", EInput_Type::PUSH, this, &CPlayer::PlayerMoveDown, m_scene);

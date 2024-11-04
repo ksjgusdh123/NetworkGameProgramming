@@ -17,8 +17,8 @@ CEngine::CEngine()
 CEngine::~CEngine()
 {
     CSceneManager::DestroyInst();
-    CInput::DestroyInst();
     CResourceManager::DestroyInst();
+    CInput::DestroyInst();
     CPathManager::DestroyInst();
 
     ReleaseDC(m_hWnd, m_hDC);

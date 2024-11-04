@@ -5,6 +5,9 @@
 class CRef
 {
 public:
+	CRef();
+	virtual ~CRef() = 0	;
+public:
 	int GetRefCount() const					{ return m_refCount; }
 	std::string GetName() const				{ return m_name; }
 	std::string GetTypeName() const			{ return m_typeName; }

@@ -144,6 +144,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BossAnimation.h" />
+    <ClInclude Include="MonsterAnimation.h" />
+    <ClInclude Include="ObjectAnimation.h" />
+    <ClInclude Include="PlayerAnimation.h" />
     <ClInclude Include="ClientInfo.h" />
     <ClInclude Include="ClientManager.h" />
     <ClInclude Include="GameObject\Player.h" />

@@ -15,27 +15,32 @@ struct ImageInfo
 	TCHAR		fullPath[MAX_PATH]	= {};
 	std::string	pathName;
 
-	~ImageInfo() 
+	~ImageInfo()
 	{
-		SelectObject(hMemDC, hPrevBmp);
-		DeleteObject(hBmp);
-		DeleteDC(hMemDC);
+		if (hMemDC)
+		{
+			SelectObject(hMemDC, hPrevBmp);
+			DeleteDC(hMemDC);
+		}
+		if (hBmp)
+		{
+			DeleteObject(hBmp);
+		}
 	}
 };
 
-class CTexture :
-	public CRef
+class CTexture : public CRef
 {
 public:
 	CTexture();
-
+	virtual ~CTexture();
 public:
 	int GetWidth(int idx = 0) const					{ return (int)m_vecImageInfo[idx]->bmpInfo.bmWidth; }
 	int GetHeight(int idx = 0) const				{ return (int)m_vecImageInfo[idx]->bmpInfo.bmHeight; }
 	ETexture_Type GetTextureType() const			{ return m_type; }
 	HDC GetDC(int idx = 0) const					{ return m_vecImageInfo[idx]->hMemDC; }
 	bool GetEnableColorKey(int idx = 0) const		{ return m_vecImageInfo[idx]->enableColorKey; }
-	COLORREF GetColorKey(int idx = 0) const { return m_vecImageInfo[idx]->colorKey; }
+	COLORREF GetColorKey(int idx = 0) const			{ return m_vecImageInfo[idx]->colorKey; }
 	CImage& GetCImage(int idx = 0) const			{ return m_vecImageInfo[idx]->cImage; }
 
 	void SetTextureType(ETexture_Type type) { m_type = type; }
@@ -51,7 +56,7 @@ public:
 	bool LoadTextureFullPath(const TCHAR* fullPath);
 
 private:
-	ETexture_Type	m_type = ETexture_Type::Sprite;
+	ETexture_Type							m_type = ETexture_Type::Sprite;
 	std::vector<std::shared_ptr<ImageInfo>>	m_vecImageInfo;
 };
 

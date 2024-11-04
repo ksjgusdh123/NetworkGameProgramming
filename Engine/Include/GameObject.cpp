@@ -5,13 +5,23 @@
 #include "Scene/SceneResource.h"
 #include "Resource/Texture/Texture.h"
 #include "Engine.h"
+
+CGameObject::~CGameObject()
+{
+	if (m_texture)
+	{
+		delete[] m_texture;
+		m_texture = nullptr;
+	}
+}
+
 void CGameObject::SetTexture(const std::string& name, const std::wstring& fileName, EObject_Dir dir, ETexture_Type type, const std::string& pathName)
 {
     m_scene->GetSceneResource()->LoadTexture(name, fileName, pathName);
 
     m_texture[(int)dir] = m_scene->GetSceneResource()->FindTexture(name);
 	m_texture[(int)dir]->SetTextureType(type);
-
+	m_texture[(int)dir]->AddRef();
     //SetSize((float)m_texture->GetWidth(), (float)m_texture->GetHeight());
 }
 
@@ -101,11 +111,8 @@ void CGameObject::Render(HDC hDC, float elapsedTime)
 	}
 }
 
+// 양방향으로 텍스쳐 필요하면 2개, 아니면 1개
 void CGameObject::CreateTexture(int num)
 {
 	m_texture = new CTexture * [num];
-	for (int i = 0; i < num; ++i)
-	{
-		m_texture[i] = new CTexture();
-	}
 }
