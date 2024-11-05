@@ -146,6 +146,7 @@
   <ItemGroup>
     <ClInclude Include="BossAnimation.h" />
     <ClInclude Include="GameObject\Ghost.h" />
+    <ClInclude Include="GameObject\Riche.h" />
     <ClInclude Include="MonsterAnimation.h" />
     <ClInclude Include="ObjectAnimation.h" />
     <ClInclude Include="PlayerAnimation.h" />
@@ -160,6 +161,7 @@
     <ClCompile Include="ClientManager.cpp" />
     <ClCompile Include="GameObject\Ghost.cpp" />
     <ClCompile Include="GameObject\Player.cpp" />
+    <ClCompile Include="GameObject\Riche.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Scene\MainScene.cpp" />
   </ItemGroup>

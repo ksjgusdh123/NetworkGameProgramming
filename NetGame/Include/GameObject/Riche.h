@@ -1,0 +1,21 @@
+#pragma once
+#include "GameObject.h"
+#include "Flag.h"
+
+class CRiche : public CGameObject
+{
+public:
+	CRiche() {}
+	virtual ~CRiche() {}
+
+public:
+	virtual bool Init() override;
+	virtual void Update(float elapsedTime) override;
+	virtual void PostUpdate(float elapsedTime) override;
+	virtual void Render(HDC hDC, float elapsedTime) override;
+
+
+	int m_hp;
+	bool m_bIsAlive;
+};
+

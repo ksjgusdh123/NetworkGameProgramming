@@ -60,6 +60,9 @@
     <ClInclude Include="GameObject\Ghost.h">
       <Filter>03. GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject\Riche.h">
+      <Filter>03. GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClientManager.cpp">
@@ -75,6 +78,9 @@
       <Filter>03. GameObject</Filter>
     </ClCompile>
     <ClCompile Include="GameObject\Ghost.cpp">
+      <Filter>03. GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Riche.cpp">
       <Filter>03. GameObject</Filter>
     </ClCompile>
   </ItemGroup>

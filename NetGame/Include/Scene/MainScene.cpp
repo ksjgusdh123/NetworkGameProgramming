@@ -30,7 +30,8 @@ bool CMainScene::Init()
 
     ghost = CreateObject<CGhost>("fdkaj");
 
-
+    riche = CreateObject<CRiche>("riche");
+    riche->SetPos(300.f, 100.f);
     return true;
 }
 
