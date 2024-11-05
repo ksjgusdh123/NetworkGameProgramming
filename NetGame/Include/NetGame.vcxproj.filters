@@ -57,6 +57,9 @@
     <ClInclude Include="ObjectAnimation.h">
       <Filter>04. Animation</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject\Ghost.h">
+      <Filter>03. GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClientManager.cpp">
@@ -69,6 +72,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="GameObject\Player.cpp">
+      <Filter>03. GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Ghost.cpp">
       <Filter>03. GameObject</Filter>
     </ClCompile>
   </ItemGroup>

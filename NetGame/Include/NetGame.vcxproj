@@ -145,6 +145,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BossAnimation.h" />
+    <ClInclude Include="GameObject\Ghost.h" />
     <ClInclude Include="MonsterAnimation.h" />
     <ClInclude Include="ObjectAnimation.h" />
     <ClInclude Include="PlayerAnimation.h" />
@@ -157,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClientManager.cpp" />
+    <ClCompile Include="GameObject\Ghost.cpp" />
     <ClCompile Include="GameObject\Player.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Scene\MainScene.cpp" />

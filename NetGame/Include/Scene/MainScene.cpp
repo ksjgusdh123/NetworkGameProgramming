@@ -28,6 +28,10 @@ bool CMainScene::Init()
     monster->SetSize(50.f, 60.f);
     monster->SetPos(100.f, 200.f);
 
+    ghost = CreateObject<CGhost>("fdkaj");
+    ghost->SetPos(200.f, 100.f);
+
+
     return true;
 }
 

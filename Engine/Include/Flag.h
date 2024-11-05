@@ -39,6 +39,7 @@ enum class EObject_State
 	Basic,
 	Basic_L,
 	Walk,
+	Walk_L,
 	Run,
 	Attack,
 	Max
