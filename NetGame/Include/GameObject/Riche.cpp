@@ -19,8 +19,8 @@ bool CRiche::Init()
 	SetColorKey(180, 213, 255);
 	
 	m_hp = 100;
-	m_objectDir = EObject_Dir::Left;
-	m_objectState = EObject_State::Basic_L;
+	m_objectDir = EObject_Dir::Right;
+	m_objectState = EObject_State::Basic;
 	m_bIsAlive = true;
 
 	return true;
