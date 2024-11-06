@@ -78,6 +78,7 @@
     <ClInclude Include="NetClient\TCPClient.h">
       <Filter>05. NetClient</Filter>
     </ClInclude>
+
     <ClInclude Include="GameObject\Player.h">
       <Filter>03. GameObject\01. Player</Filter>
     </ClInclude>
@@ -89,6 +90,10 @@
     </ClInclude>
     <ClInclude Include="GameObject\Arrow.h">
       <Filter>헤더 파일</Filter>
+
+    <ClInclude Include="GameObject\Tile.h">
+      <Filter>03. GameObject</Filter>
+
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -113,6 +118,7 @@
     <ClCompile Include="NetClient\TCPClient.cpp">
       <Filter>05. NetClient</Filter>
     </ClCompile>
+
     <ClCompile Include="GameObject\Player.cpp">
       <Filter>03. GameObject\01. Player</Filter>
     </ClCompile>
@@ -124,6 +130,10 @@
     </ClCompile>
     <ClCompile Include="GameObject\Arrow.cpp">
       <Filter>소스 파일</Filter>
+
+    <ClCompile Include="GameObject\Tile.cpp">
+      <Filter>03. GameObject</Filter>
+
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
