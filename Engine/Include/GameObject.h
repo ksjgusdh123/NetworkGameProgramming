@@ -67,6 +67,9 @@ protected:
 
 	float m_time = 0;	
 	EObject_State m_objectState = EObject_State::Basic;
+	EObject_State m_prevObjectState = EObject_State::Basic;
 	std::array<std::vector<RECT>, (int)EObject_State::Max> m_animationBox;
+	int m_idx = 0;
+	
 };
 
