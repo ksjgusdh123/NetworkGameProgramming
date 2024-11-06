@@ -10,22 +10,10 @@
     <ClCompile Include="GameObject\Ghost.cpp">
       <Filter>03. GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject\Player.cpp">
-      <Filter>03. GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="GameObject\Riche.cpp">
       <Filter>03. GameObject</Filter>
     </ClCompile>
     <ClCompile Include="GameObject\RicheAttack.cpp">
-      <Filter>03. GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject\Swordman.cpp">
-      <Filter>03. GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject\Archer.cpp">
-      <Filter>03. GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject\Arrow.cpp">
       <Filter>03. GameObject</Filter>
     </ClCompile>
     <ClCompile Include="NetClient\TCPClient.cpp">
@@ -35,6 +23,18 @@
       <Filter>03. GameObject</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Archer.cpp">
+      <Filter>03. GameObject\01. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Player.cpp">
+      <Filter>03. GameObject\01. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Swordman.cpp">
+      <Filter>03. GameObject\01. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Arrow.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -48,22 +48,10 @@
     <ClInclude Include="GameObject\Ghost.h">
       <Filter>03. GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject\Player.h">
-      <Filter>03. GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="GameObject\Riche.h">
       <Filter>03. GameObject</Filter>
     </ClInclude>
     <ClInclude Include="GameObject\RicheAttack.h">
-      <Filter>03. GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject\Swordman.h">
-      <Filter>03. GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject\Archer.h">
-      <Filter>03. GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject\Arrow.h">
       <Filter>03. GameObject</Filter>
     </ClInclude>
     <ClInclude Include="BossAnimation.h">
@@ -99,6 +87,18 @@
     <ClInclude Include="targetver.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject\Archer.h">
+      <Filter>03. GameObject\01. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Player.h">
+      <Filter>03. GameObject\01. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Swordman.h">
+      <Filter>03. GameObject\01. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Arrow.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="NetGame.ico">
@@ -132,6 +132,9 @@
     </Filter>
     <Filter Include="헤더 파일">
       <UniqueIdentifier>{3568f494-ab5f-4182-9592-71bbef0d4d02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\01. Player">
+      <UniqueIdentifier>{0f747a5e-7f8e-4075-9f32-38b03e4637d9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
