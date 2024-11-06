@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Scene/Scene.h"
+#include "Flag.h"
 #include "../GameObject/Ghost.h"
 #include "../GameObject/Riche.h"
 #include "../GameObject/RicheAttack.h"
