@@ -33,6 +33,8 @@ public:
 	void SetVelocity(const Vector2& velocity) { m_velocity = velocity; }
 	void SetVelocity(float x, float y) { m_velocity = Vector2(x, y); }
 	void SetAngle(float angle) { m_angle = angle; }
+	void SetDir(EObject_Dir dir) { m_objectDir = dir; }
+	void SetState(EObject_State state) { m_objectState = state; }
 
 	void AddPos(const Vector2& pos) { m_pos.x += pos.x; m_pos.y += pos.y; }
 	void AddAngle(float angle) { m_angle += angle; }
@@ -61,6 +63,7 @@ protected:
 	class CTexture** m_texture = nullptr;
 	int m_textureNum = 0;
 	EObject_Dir m_objectDir = EObject_Dir::Right;
+
 
 	float m_time = 0;	
 	EObject_State m_objectState = EObject_State::Basic;

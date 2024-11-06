@@ -28,6 +28,9 @@
     <Filter Include="05. NetClient">
       <UniqueIdentifier>{15ec0803-d245-4211-ac93-57f250aa7a31}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\01. Player">
+      <UniqueIdentifier>{aed70556-c7a2-4e05-ae22-15df3f61cb3a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -44,9 +47,6 @@
     </ClInclude>
     <ClInclude Include="Scene\MainScene.h">
       <Filter>02. Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject\Player.h">
-      <Filter>03. GameObject</Filter>
     </ClInclude>
     <ClInclude Include="PlayerAnimation.h">
       <Filter>04. Animation</Filter>
@@ -78,8 +78,21 @@
     <ClInclude Include="NetClient\TCPClient.h">
       <Filter>05. NetClient</Filter>
     </ClInclude>
+
     <ClInclude Include="GameObject\Tile.h">
       <Filter>03. GameObject</Filter>
+    <ClInclude Include="GameObject\Player.h">
+      <Filter>03. GameObject\01. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Archer.h">
+      <Filter>03. GameObject\01. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Swordman.h">
+      <Filter>03. GameObject\01. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Arrow.h">
+      <Filter>헤더 파일</Filter>
+
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -91,9 +104,6 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject\Player.cpp">
-      <Filter>03. GameObject</Filter>
     </ClCompile>
     <ClCompile Include="GameObject\Ghost.cpp">
       <Filter>03. GameObject</Filter>
@@ -107,8 +117,21 @@
     <ClCompile Include="NetClient\TCPClient.cpp">
       <Filter>05. NetClient</Filter>
     </ClCompile>
+
     <ClCompile Include="GameObject\Tile.cpp">
       <Filter>03. GameObject</Filter>
+    <ClCompile Include="GameObject\Player.cpp">
+      <Filter>03. GameObject\01. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Swordman.cpp">
+      <Filter>03. GameObject\01. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Archer.cpp">
+      <Filter>03. GameObject\01. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Arrow.cpp">
+      <Filter>소스 파일</Filter>
+
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
