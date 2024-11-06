@@ -4,8 +4,9 @@ int main()
 {
     TCPServer GameServer;
 
-    if (GameServer.Init())
+    if (GameServer.Init()) 
         GameServer.Run();
+    
 
     return 0;
 }

@@ -28,6 +28,34 @@ bool CMainScene::Init()
     monster->SetSize(50.f, 60.f);
     monster->SetPos(100.f, 200.f);
 
+
+    ghost = CreateObject<CGhost>("fdkaj");
+
+    riche = CreateObject<CRiche>("riche");
+    riche->SetPos(300.f, 100.f);
+
     return true;
+}
+
+void CMainScene::Update(float elapsedTime)
+{
+    CScene::Update(elapsedTime);
+
+    if (IsPlayerInRicheAttackArea()){
+        riche->Attack(player->GetPos());
+    }
+}
+
+bool CMainScene::IsPlayerInRicheAttackArea()
+{
+    EObject_State riche_state = riche->GetState();
+    if (riche_state == EObject_State::Attack_L || riche_state == EObject_State::Attack) return false;
+
+    float dx = player->GetPos().x - riche->GetPos().x;
+    float dy = player->GetPos().y - riche->GetPos().y;
+    float distance = sqrt(dx * dx + dy * dy);
+    if (distance < 400) return true;
+
+    return false;
 }
 

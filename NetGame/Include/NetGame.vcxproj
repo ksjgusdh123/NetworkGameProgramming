@@ -145,7 +145,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BossAnimation.h" />
+    <ClInclude Include="GameObject\Ghost.h" />
+    <ClInclude Include="GameObject\Riche.h" />
+    <ClInclude Include="GameObject\RicheAttack.h" />
     <ClInclude Include="MonsterAnimation.h" />
+    <ClInclude Include="NetClient\Define.h" />
+    <ClInclude Include="NetClient\ErrDisplay.h" />
+    <ClInclude Include="NetClient\TCPClient.h" />
     <ClInclude Include="ObjectAnimation.h" />
     <ClInclude Include="PlayerAnimation.h" />
     <ClInclude Include="ClientInfo.h" />
@@ -157,8 +163,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClientManager.cpp" />
+    <ClCompile Include="GameObject\Ghost.cpp" />
     <ClCompile Include="GameObject\Player.cpp" />
+    <ClCompile Include="GameObject\Riche.cpp" />
+    <ClCompile Include="GameObject\RicheAttack.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NetClient\TCPClient.cpp" />
     <ClCompile Include="Scene\MainScene.cpp" />
   </ItemGroup>
   <ItemGroup>
