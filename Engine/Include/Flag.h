@@ -43,5 +43,9 @@ enum class EObject_State
 	Run,
 	Attack,
 	Attack_L,
+	Jump,
+	Jump_L,
+	Jump_Down,
+	Jump_Down_L,
 	Max
 };
