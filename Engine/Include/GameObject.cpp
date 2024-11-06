@@ -110,9 +110,12 @@ void CGameObject::Render(HDC hDC, float elapsedTime)
 		}
 		else if (m_texture[(int)m_objectDir]->GetTextureType() == ETexture_Type::CIMAGE)
 		{
+			
 			m_time += elapsedTime;
 			m_idx = (((int)(m_time * m_animationBox[(int)m_objectState].size())) % m_animationBox[(int)m_objectState].size());
-			m_texture[(int)m_objectDir]->GetCImage().Draw(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y, m_animationBox[(int)m_objectState][m_idx].left, m_animationBox[(int)m_objectState][m_idx].top, m_animationBox[(int)m_objectState][m_idx].right, m_animationBox[(int)m_objectState][m_idx].bottom);
+			Vector2 size{ (float)m_animationBox[(int)m_objectState][m_idx].right, (float)m_animationBox[(int)m_objectState][m_idx].bottom };
+			renderLT = pos - m_pivot * size;
+			m_texture[(int)m_objectDir]->GetCImage().Draw(hDC, (int)renderLT.x, (int)renderLT.y, m_animationBox[(int)m_objectState][m_idx].right, m_animationBox[(int)m_objectState][m_idx].bottom, m_animationBox[(int)m_objectState][m_idx].left, m_animationBox[(int)m_objectState][m_idx].top, m_animationBox[(int)m_objectState][m_idx].right, m_animationBox[(int)m_objectState][m_idx].bottom);
 		}
 	}
 }
