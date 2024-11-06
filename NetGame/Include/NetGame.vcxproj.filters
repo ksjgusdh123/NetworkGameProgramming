@@ -25,6 +25,9 @@
     <Filter Include="04. Animation">
       <UniqueIdentifier>{9891b09e-a4aa-4adf-becb-b5cac8a5d9ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. NetClient">
+      <UniqueIdentifier>{15ec0803-d245-4211-ac93-57f250aa7a31}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -63,6 +66,18 @@
     <ClInclude Include="GameObject\Riche.h">
       <Filter>03. GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject\RicheAttack.h">
+      <Filter>03. GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="NetClient\Define.h">
+      <Filter>05. NetClient</Filter>
+    </ClInclude>
+    <ClInclude Include="NetClient\ErrDisplay.h">
+      <Filter>05. NetClient</Filter>
+    </ClInclude>
+    <ClInclude Include="NetClient\TCPClient.h">
+      <Filter>05. NetClient</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClientManager.cpp">
@@ -82,6 +97,12 @@
     </ClCompile>
     <ClCompile Include="GameObject\Riche.cpp">
       <Filter>03. GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\RicheAttack.cpp">
+      <Filter>03. GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="NetClient\TCPClient.cpp">
+      <Filter>05. NetClient</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

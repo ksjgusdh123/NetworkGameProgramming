@@ -1,4 +1,5 @@
 #include "Riche.h"
+#include "RicheAttack.h"
 #include "Engine.h"
 #include <Scene/Scene.h>
 #include "Resource/Texture/Texture.h"
@@ -10,11 +11,15 @@ bool CRiche::Init()
 
 	SetPivot(0.5f, 0.5f);
 	SetVelocity(50.f, 0.f);
-	CreateTexture(2);
+	CreateTexture(4);
 	SetTexture("Riche_L", TEXT("Monster/Riche_L.png"), EObject_Dir::Left, ETexture_Type::CIMAGE);
 	SetTexture("Riche_R", TEXT("Monster/Riche_R.png"), EObject_Dir::Right, ETexture_Type::CIMAGE);
-	SetAnimation(Riche_L, 6, EObject_State::Basic_L, ETexture_Type::Sprite);
-	SetAnimation(Riche_R, 6, EObject_State::Basic, ETexture_Type::Sprite);
+	SetTexture("Riche_Attack_L", TEXT("Monster/Riche_L.png"), EObject_Dir::Left, ETexture_Type::CIMAGE);
+	SetTexture("Riche_Attack_R", TEXT("Monster/Riche_R.png"), EObject_Dir::Right, ETexture_Type::CIMAGE);
+	SetAnimation(Riche_L, 6, EObject_State::Basic_L);
+	SetAnimation(Riche_R, 6, EObject_State::Basic);
+	SetAnimation(Riche_Attack_L, 18, EObject_State::Attack_L);
+	SetAnimation(Riche_Attack_R, 18, EObject_State::Attack);
 	SetSize(107.f, 139.f);
 	SetColorKey(180, 213, 255);
 	
@@ -22,13 +27,29 @@ bool CRiche::Init()
 	m_objectDir = EObject_Dir::Right;
 	m_objectState = EObject_State::Basic;
 	m_bIsAlive = true;
-
+	m_timer = 0.f;
 	return true;
 }
 
 void CRiche::Update(float elapsedTime)
 {
 	CGameObject::Update(elapsedTime);
+
+	if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L) {
+		m_timer += elapsedTime;
+
+		if (m_timer >= 1.f) {
+			if (m_objectState == EObject_State::Attack)
+				m_objectState = EObject_State::Basic;
+			if (m_objectState == EObject_State::Attack_L)
+				m_objectState = EObject_State::Basic_L;
+
+			CRicheAttack* ra = m_scene->CreateObject<CRicheAttack>("riche_attack");
+			ra->SetPos(m_pos);
+			ra->SetTarget(m_target);
+		}
+	}
+
 }
 
 void CRiche::PostUpdate(float elapsedTime)
@@ -41,3 +62,17 @@ void CRiche::Render(HDC hDC, float elapsedTime)
 	CGameObject::Render(hDC, elapsedTime);
 }
 
+
+void CRiche::Attack(Vector2 target)
+{
+	if (target.x >= m_pos.x) {
+		m_objectState = EObject_State::Attack;
+		m_objectDir = EObject_Dir::Right;
+	}
+	else{
+		m_objectState = EObject_State::Attack_L;
+		m_objectDir = EObject_Dir::Left;
+	}
+	m_target = target;
+	m_timer = 0.f;
+}

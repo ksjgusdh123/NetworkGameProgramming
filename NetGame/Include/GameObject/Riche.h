@@ -14,8 +14,11 @@ public:
 	virtual void PostUpdate(float elapsedTime) override;
 	virtual void Render(HDC hDC, float elapsedTime) override;
 
+	void Attack(Vector2 target);
 
 	int m_hp;
 	bool m_bIsAlive;
+	Vector2 m_target;
+	float m_timer;
 };
 

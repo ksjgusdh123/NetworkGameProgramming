@@ -19,6 +19,7 @@ public:
 	Vector2 GetPivot() const { return m_pivot; }
 	Vector2 GetVelocity() const { return m_velocity; }
 	float GetAngle() const { return m_angle; }
+	EObject_State GetState() const { return m_objectState; }
 
 	void SetObjectType(EObject_Type type) { m_objectType = type; }
 	void SetScene(class CScene* scene) { m_scene = scene; }
@@ -58,6 +59,7 @@ protected:
 	Vector2			m_velocity;
 	float			m_angle = 0.f;
 	class CTexture** m_texture = nullptr;
+	int m_textureNum = 0;
 	EObject_Dir m_objectDir = EObject_Dir::Right;
 
 	float m_time = 0;	

@@ -24,6 +24,7 @@ bool TCPServer::Init()
 	retval = listen(listen_sock, SOMAXCONN);
 	if (retval == SOCKET_ERROR) err_quit("listen()");
 
+	return true;
 }
 
 void TCPServer::Connect()
