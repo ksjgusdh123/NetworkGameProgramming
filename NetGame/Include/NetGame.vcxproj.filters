@@ -78,6 +78,9 @@
     <ClInclude Include="NetClient\TCPClient.h">
       <Filter>05. NetClient</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject\Tile.h">
+      <Filter>03. GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClientManager.cpp">
@@ -103,6 +106,9 @@
     </ClCompile>
     <ClCompile Include="NetClient\TCPClient.cpp">
       <Filter>05. NetClient</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Tile.cpp">
+      <Filter>03. GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
