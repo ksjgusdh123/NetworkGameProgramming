@@ -81,7 +81,13 @@
     <ClInclude Include="GameObject\Player.h">
       <Filter>03. GameObject\01. Player</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject\Archer.h">
+      <Filter>03. GameObject\01. Player</Filter>
+    </ClInclude>
     <ClInclude Include="GameObject\Swordman.h">
+      <Filter>03. GameObject\01. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Arrow.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -111,6 +117,12 @@
       <Filter>03. GameObject\01. Player</Filter>
     </ClCompile>
     <ClCompile Include="GameObject\Swordman.cpp">
+      <Filter>03. GameObject\01. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Archer.cpp">
+      <Filter>03. GameObject\01. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Arrow.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "..\GameObject\Player.h"
 #include "..\GameObject\Swordman.h"
+#include "..\GameObject\Archer.h"
 #include <Engine.h>
 #include <Scene/Camera.h>
 
@@ -17,7 +18,7 @@ bool CMainScene::Init()
     m_cameraVelocity = Vector2(100.f, 100.f);
 
 
-    player = CreateObject<CSwordman>("wns");
+    player = CreateObject<CArcher>("wns");
     player->SetPos(100.f, 100.f);
     SetPlayer(player);
     GetCamera()->SetTarget(player);

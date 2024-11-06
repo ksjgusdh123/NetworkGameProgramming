@@ -104,7 +104,7 @@ void CGameObject::Render(HDC hDC, float elapsedTime)
 		}
 		else if (m_texture[(int)m_objectDir]->GetTextureType() == ETexture_Type::CIMAGE)
 		{
-			m_time += elapsedTime;
+			m_time += elapsedTime;	
 			int idx = (((int)(m_time * m_animationBox[(int)m_objectState].size())) % m_animationBox[(int)m_objectState].size());
 			m_texture[(int)m_objectDir]->GetCImage().Draw(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y, m_animationBox[(int)m_objectState][idx].left, m_animationBox[(int)m_objectState][idx].top, m_animationBox[(int)m_objectState][idx].right, m_animationBox[(int)m_objectState][idx].bottom);
 		}

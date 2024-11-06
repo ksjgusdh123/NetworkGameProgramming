@@ -18,10 +18,10 @@ protected:
 	void PlayerLeftIdle();
 	void PlayerMoveRight();
 	void PlayerRightIdle();
-	void PlayerAttack();
+	virtual void PlayerAttack();
 	void PlayerJump();
 
-	void CheckFrame(float elapsedTime);
+	virtual void CheckFrame(float elapsedTime);
 	void JumpDown();
 	void CalculateJump(float elapsedTime);
 protected:
@@ -34,5 +34,8 @@ protected:
 	bool m_bJump = false;
 	bool m_bDoubleJump = false;
 	int m_multipleNum = 1;
+
+	Vector2 m_attackSize;
+	Vector2 m_attackPivot;
 };
 

@@ -128,8 +128,8 @@ void CPlayer::PlayerAttack()
 		m_objectState == EObject_State::Jump_L || m_objectState == EObject_State::Jump_Down || m_objectState == EObject_State::Jump_Down_L)
 		return;
 
-	SetSize(m_size.x * 2, m_size.y * 1.5);
-	SetPivot(Vector2(0.5, 0.7f));
+	SetSize(m_size.x * m_attackSize.x, m_size.y * m_attackSize.y);
+	SetPivot(m_attackPivot);
 	if (m_objectDir == EObject_Dir::Right)
 	{
 		m_objectState = EObject_State::Attack;
@@ -152,6 +152,10 @@ void CPlayer::PlayerJump()
 	if ((m_objectState == EObject_State::Jump_Down || m_objectState == EObject_State::Jump_Down_L) && !m_bDoubleJump)
 	{
 		m_bDoubleJump = true;
+	}
+	else if (m_objectState == EObject_State::Jump_Down || m_objectState == EObject_State::Jump_Down_L)
+	{
+		return;	
 	}
 	else
 		m_prevHeight = m_pos.y;
@@ -184,7 +188,7 @@ void CPlayer::CheckFrame(float elapsedTime)
 		{
 			m_objectState = EObject_State::Basic_L;
 		}
-		SetSize(m_size.x / 2, m_size.y / 1.5);
+		SetSize(m_size.x / m_attackSize.x, m_size.y / m_attackSize.y);
 		SetPivot(Vector2(0.5, 0.5f));
 		m_bFrameCheck = false;
 	}

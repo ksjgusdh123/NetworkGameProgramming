@@ -1,12 +1,12 @@
-#include "EngineInfo.h"
 #include "Swordman.h"
-#include "Input.h"
-#include "Resource/Texture/Texture.h"
 #include "..\PlayerAnimation.h"
 
 bool CSwordman::Init()
 {
 	CPlayer::Init();
+
+	m_attackPivot = Vector2(0.5f, 0.7f);
+	m_attackSize = Vector2(2.f, 1.5f);
 
 	SetAnimation(SWORD_BASIC, 8, EObject_State::Basic);
 	SetAnimation(SWORD_BASIC_L, 8, EObject_State::Basic_L);
