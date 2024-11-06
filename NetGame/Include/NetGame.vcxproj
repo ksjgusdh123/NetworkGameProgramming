@@ -150,6 +150,8 @@
     <ClInclude Include="GameObject\Ghost.h" />
     <ClInclude Include="GameObject\Riche.h" />
     <ClInclude Include="GameObject\RicheAttack.h" />
+
+    <ClInclude Include="GameObject\Tile.h" />
     <ClInclude Include="GameObject\Swordman.h" />
     <ClInclude Include="MonsterAnimation.h" />
     <ClInclude Include="NetClient\Define.h" />
@@ -172,7 +174,11 @@
     <ClCompile Include="GameObject\Player.cpp" />
     <ClCompile Include="GameObject\Riche.cpp" />
     <ClCompile Include="GameObject\RicheAttack.cpp" />
+
+    <ClCompile Include="GameObject\Tile.cpp" />
+
     <ClCompile Include="GameObject\Swordman.cpp" />
+
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NetClient\TCPClient.cpp" />
     <ClCompile Include="Scene\MainScene.cpp" />

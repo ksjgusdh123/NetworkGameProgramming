@@ -10,6 +10,14 @@ bool CMainScene::Init()
 {
     CScene::Init();
 
+    CGameObject* back = CreateObject<CGameObject>("Background");
+    back->CreateTexture(1);
+    back->SetTexture("Background", TEXT("Map/BG.bmp"), EObject_Dir::Right);
+    back->SetSize(2000.f, 1000.f);
+
+    CTile* tile = CreateObject<CTile>("tile");
+    tile->SetPos(100.f, 150.f);
+    
     Vector2 resolution = { (float)CEngine::GetInst()->GetResolution().width,
     (float)CEngine::GetInst()->GetResolution().height };
     GetCamera()->SetResolution(resolution);
