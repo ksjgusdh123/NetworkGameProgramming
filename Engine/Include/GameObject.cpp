@@ -58,6 +58,12 @@ void CGameObject::PostUpdate(float elapsedTime)
 
 void CGameObject::Render(HDC hDC, float elapsedTime)
 {
+	if (m_prevObjectState != m_objectState) {
+		m_idx = 0;
+		m_time = 0;
+	}
+	m_prevObjectState = m_objectState;
+
 	Vector2	pos;
 	Vector2	cameraPos;
 	Vector2	resolution;
@@ -105,8 +111,8 @@ void CGameObject::Render(HDC hDC, float elapsedTime)
 		else if (m_texture[(int)m_objectDir]->GetTextureType() == ETexture_Type::CIMAGE)
 		{
 			m_time += elapsedTime;
-			int idx = (((int)(m_time * m_animationBox[(int)m_objectState].size())) % m_animationBox[(int)m_objectState].size());
-			m_texture[(int)m_objectDir]->GetCImage().Draw(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y, m_animationBox[(int)m_objectState][idx].left, m_animationBox[(int)m_objectState][idx].top, m_animationBox[(int)m_objectState][idx].right, m_animationBox[(int)m_objectState][idx].bottom);
+			m_idx = (((int)(m_time * m_animationBox[(int)m_objectState].size())) % m_animationBox[(int)m_objectState].size());
+			m_texture[(int)m_objectDir]->GetCImage().Draw(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y, m_animationBox[(int)m_objectState][m_idx].left, m_animationBox[(int)m_objectState][m_idx].top, m_animationBox[(int)m_objectState][m_idx].right, m_animationBox[(int)m_objectState][m_idx].bottom);
 		}
 	}
 }
