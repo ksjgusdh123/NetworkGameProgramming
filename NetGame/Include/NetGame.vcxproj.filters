@@ -1,55 +1,70 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="소스 파일">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="헤더 파일">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="리소스 파일">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="01. Manager">
-      <UniqueIdentifier>{5fad2e3d-bd7e-499d-877a-82f169886053}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Scene">
-      <UniqueIdentifier>{91207252-a12c-4ee7-8be1-f1206a04c17d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject">
-      <UniqueIdentifier>{6e14a4b7-0941-468a-85f5-5b4f8fd60b3b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Animation">
-      <UniqueIdentifier>{9891b09e-a4aa-4adf-becb-b5cac8a5d9ad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. NetClient">
-      <UniqueIdentifier>{15ec0803-d245-4211-ac93-57f250aa7a31}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\01. Player">
-      <UniqueIdentifier>{aed70556-c7a2-4e05-ae22-15df3f61cb3a}</UniqueIdentifier>
-    </Filter>
+    <ClCompile Include="ClientManager.cpp">
+      <Filter>01. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\MainScene.cpp">
+      <Filter>02. Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Ghost.cpp">
+      <Filter>03. GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Player.cpp">
+      <Filter>03. GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Riche.cpp">
+      <Filter>03. GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\RicheAttack.cpp">
+      <Filter>03. GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Swordman.cpp">
+      <Filter>03. GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Archer.cpp">
+      <Filter>03. GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Arrow.cpp">
+      <Filter>03. GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="NetClient\TCPClient.cpp">
+      <Filter>05. NetClient</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Tile.cpp">
+      <Filter>03. GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="targetver.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="ClientInfo.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="Scene\MainScene.h">
+      <Filter>02. Scene</Filter>
     </ClInclude>
     <ClInclude Include="ClientManager.h">
       <Filter>01. Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Scene\MainScene.h">
-      <Filter>02. Scene</Filter>
+    <ClInclude Include="GameObject\Ghost.h">
+      <Filter>03. GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerAnimation.h">
-      <Filter>04. Animation</Filter>
+    <ClInclude Include="GameObject\Player.h">
+      <Filter>03. GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Riche.h">
+      <Filter>03. GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\RicheAttack.h">
+      <Filter>03. GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Swordman.h">
+      <Filter>03. GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Archer.h">
+      <Filter>03. GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Arrow.h">
+      <Filter>03. GameObject</Filter>
     </ClInclude>
     <ClInclude Include="BossAnimation.h">
       <Filter>04. Animation</Filter>
@@ -60,14 +75,11 @@
     <ClInclude Include="ObjectAnimation.h">
       <Filter>04. Animation</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject\Ghost.h">
-      <Filter>03. GameObject</Filter>
+    <ClInclude Include="PlayerAnimation.h">
+      <Filter>04. Animation</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject\Riche.h">
-      <Filter>03. GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject\RicheAttack.h">
-      <Filter>03. GameObject</Filter>
+    <ClInclude Include="NetClient\TCPClient.h">
+      <Filter>05. NetClient</Filter>
     </ClInclude>
     <ClInclude Include="NetClient\Define.h">
       <Filter>05. NetClient</Filter>
@@ -75,76 +87,56 @@
     <ClInclude Include="NetClient\ErrDisplay.h">
       <Filter>05. NetClient</Filter>
     </ClInclude>
-    <ClInclude Include="NetClient\TCPClient.h">
-      <Filter>05. NetClient</Filter>
-    </ClInclude>
-
     <ClInclude Include="GameObject\Tile.h">
       <Filter>03. GameObject</Filter>
-    <ClInclude Include="GameObject\Player.h">
-      <Filter>03. GameObject\01. Player</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject\Archer.h">
-      <Filter>03. GameObject\01. Player</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject\Swordman.h">
-      <Filter>03. GameObject\01. Player</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject\Arrow.h">
+    <ClInclude Include="ClientInfo.h">
       <Filter>헤더 파일</Filter>
-
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ClientManager.cpp">
-      <Filter>01. Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\MainScene.cpp">
-      <Filter>02. Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject\Ghost.cpp">
-      <Filter>03. GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject\Riche.cpp">
-      <Filter>03. GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject\RicheAttack.cpp">
-      <Filter>03. GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="NetClient\TCPClient.cpp">
-      <Filter>05. NetClient</Filter>
-    </ClCompile>
-
-    <ClCompile Include="GameObject\Tile.cpp">
-      <Filter>03. GameObject</Filter>
-    <ClCompile Include="GameObject\Player.cpp">
-      <Filter>03. GameObject\01. Player</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject\Swordman.cpp">
-      <Filter>03. GameObject\01. Player</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject\Archer.cpp">
-      <Filter>03. GameObject\01. Player</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject\Arrow.cpp">
-      <Filter>소스 파일</Filter>
-
-    </ClCompile>
+    <Image Include="NetGame.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="small.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="01. Manager">
+      <UniqueIdentifier>{f7e94621-20b7-44b5-8978-e55f5b4b4e2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Scene">
+      <UniqueIdentifier>{7fadfe9f-dfa3-4899-a169-c4cf035926dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject">
+      <UniqueIdentifier>{5820a1a6-6fa6-4577-8a84-2921cd102573}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Animation">
+      <UniqueIdentifier>{d100f05b-e214-4714-b9ac-fdeba73a6728}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. NetClient">
+      <UniqueIdentifier>{300e9937-6161-4ada-97a2-3853d32449a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{c9c66d14-a5ce-41f5-b909-2f05b0dcbb72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{3bca1018-afa9-4452-a272-575d0341867a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{3568f494-ab5f-4182-9592-71bbef0d4d02}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NetGame.rc">
       <Filter>리소스 파일</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="small.ico">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="NetGame.ico">
-      <Filter>리소스 파일</Filter>
-    </Image>
   </ItemGroup>
 </Project>
