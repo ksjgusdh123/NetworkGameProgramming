@@ -14,15 +14,14 @@ bool CPlayer::Init()
 	CreateTexture(2);
 	SetTexture("Player_L", TEXT("Player/player_L.png"), EObject_Dir::Left, ETexture_Type::CIMAGE);
 	SetTexture("Player", TEXT("Player/player.png"), EObject_Dir::Right, ETexture_Type::CIMAGE);
-	SetAnimation(Basic, 8, EObject_State::Basic_L);
-	SetAnimation(Basic_L, 8, EObject_State::Basic);
-	SetSize(150.f, 300.f);
-	//SetColorKey(255, 0, 255);
+	SetSize(50.f, 60.f);
 
-	CInput::GetInst()->AddBindFunction<CPlayer>("MoveUp", EInput_Type::PUSH, this, &CPlayer::PlayerMoveUp, m_scene);
-	CInput::GetInst()->AddBindFunction<CPlayer>("MoveDown", EInput_Type::PUSH, this, &CPlayer::PlayerMoveDown, m_scene);
+	CInput::GetInst()->AddBindFunction<CPlayer>("Attack", EInput_Type::PUSH, this, &CPlayer::PlayerAttack, m_scene);
+	CInput::GetInst()->AddBindFunction<CPlayer>("Jump", EInput_Type::PUSH, this, &CPlayer::PlayerJump, m_scene);
 	CInput::GetInst()->AddBindFunction<CPlayer>("MoveLeft", EInput_Type::PUSH, this, &CPlayer::PlayerMoveLeft, m_scene);
+	CInput::GetInst()->AddBindFunction<CPlayer>("MoveLeft", EInput_Type::UP, this, &CPlayer::PlayerLeftIdle, m_scene);
 	CInput::GetInst()->AddBindFunction<CPlayer>("MoveRight", EInput_Type::PUSH, this, &CPlayer::PlayerMoveRight, m_scene);
+	CInput::GetInst()->AddBindFunction<CPlayer>("MoveRight", EInput_Type::UP, this, &CPlayer::PlayerRightIdle, m_scene);
 
 	return true;
 }
@@ -30,6 +29,14 @@ bool CPlayer::Init()
 void CPlayer::Update(float elapsedTime)
 {
 	CGameObject::Update(elapsedTime);
+	if (m_bFrameCheck)
+	{
+		CheckFrame(elapsedTime);
+	}
+	if (m_bJump)
+	{
+		CalculateJump(elapsedTime);
+	}
 }
 
 void CPlayer::PostUpdate(float elapsedTime)
@@ -42,30 +49,184 @@ void CPlayer::Render(HDC hDC, float elapsedTime)
 	CGameObject::Render(hDC, elapsedTime);
 }
 
-void CPlayer::PlayerMoveUp()
-{
-	m_pos.y -= m_velocity.y * 2 * ELAPSED_TIME;
-	SetPos(m_pos);
-}
-
-void CPlayer::PlayerMoveDown()
-{
-	m_pos.y += m_velocity.y * 2 * ELAPSED_TIME;
-	SetPos(m_pos);
-}
-
 void CPlayer::PlayerMoveLeft()
 {
+
+	switch (m_objectState)
+	{
+	case EObject_State::Basic:
+	case EObject_State::Basic_L:
+	case EObject_State::Walk:
+	case EObject_State::Walk_L:
+		m_objectState = EObject_State::Walk_L;
+		break;
+	case EObject_State::Jump:
+		m_objectState = EObject_State::Jump_L;
+		break;
+	case EObject_State::Jump_Down:
+		m_objectState = EObject_State::Jump_Down_L;
+		break;
+	case EObject_State::Attack:
+	case EObject_State::Attack_L:
+		return;
+	}
+
 	m_objectDir = EObject_Dir::Left;
-	m_objectState = EObject_State::Basic_L;
 	m_pos.x -= m_velocity.x * 2 * ELAPSED_TIME;
 	SetPos(m_pos);
 }
 
+void CPlayer::PlayerLeftIdle()
+{
+	if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L || m_objectState == EObject_State::Jump ||
+		m_objectState == EObject_State::Jump_L || m_objectState == EObject_State::Jump_Down_L || m_objectState == EObject_State::Jump_Down)
+		return;
+
+	m_objectState = EObject_State::Basic_L;
+	m_time = 0;
+}
+
 void CPlayer::PlayerMoveRight()
 {	
+	switch (m_objectState)
+	{
+	case EObject_State::Basic:
+	case EObject_State::Basic_L:
+	case EObject_State::Walk:
+	case EObject_State::Walk_L:
+		m_objectState = EObject_State::Walk;
+		break;
+	case EObject_State::Jump_L:
+		m_objectState = EObject_State::Jump;
+		break;
+	case EObject_State::Jump_Down_L:
+		m_objectState = EObject_State::Jump_Down;
+		break;
+	case EObject_State::Attack:
+	case EObject_State::Attack_L:
+		return;
+	}
+
 	m_objectDir = EObject_Dir::Right;
-	m_objectState = EObject_State::Basic;
 	m_pos.x += m_velocity.x * 2 * ELAPSED_TIME;
 	SetPos(m_pos);
+}
+
+void CPlayer::PlayerRightIdle()
+{
+	if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L || m_objectState == EObject_State::Jump ||
+		m_objectState == EObject_State::Jump_L || m_objectState == EObject_State::Jump_Down || m_objectState == EObject_State::Jump_Down_L)
+		return;
+
+	m_objectState = EObject_State::Basic;
+	m_time = 0;
+}
+
+void CPlayer::PlayerAttack()
+{
+	if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L || m_objectState == EObject_State::Jump ||
+		m_objectState == EObject_State::Jump_L || m_objectState == EObject_State::Jump_Down || m_objectState == EObject_State::Jump_Down_L)
+		return;
+
+	SetSize(m_size.x * 2, m_size.y * 1.5);
+	SetPivot(Vector2(0.5, 0.7f));
+	if (m_objectDir == EObject_Dir::Right)
+	{
+		m_objectState = EObject_State::Attack;
+	}
+	else
+	{
+		m_objectState = EObject_State::Attack_L;
+	}
+	m_frame = 1;
+	m_nowFrame = 0;
+	m_bFrameCheck = true;
+	m_time = 0;
+}
+
+void CPlayer::PlayerJump()
+{
+	if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L || m_objectState == EObject_State::Jump || m_objectState == EObject_State::Jump_L)
+		return;
+
+	if ((m_objectState == EObject_State::Jump_Down || m_objectState == EObject_State::Jump_Down_L) && !m_bDoubleJump)
+	{
+		m_bDoubleJump = true;
+	}
+	else
+		m_prevHeight = m_pos.y;
+
+	m_multipleNum = 1;
+	m_jumpTime = 0;
+	m_bJump = true;
+
+	if (m_objectDir == EObject_Dir::Right)
+	{
+		m_objectState = EObject_State::Jump;
+	}
+	else
+	{
+		m_objectState = EObject_State::Jump_L;
+	}
+	m_time = 0;
+}
+
+void CPlayer::CheckFrame(float elapsedTime)
+{
+	m_nowFrame += elapsedTime;
+	if (m_nowFrame >= m_frame)
+	{
+		if (m_objectDir == EObject_Dir::Right)
+		{
+			m_objectState = EObject_State::Basic;
+		}
+		else
+		{
+			m_objectState = EObject_State::Basic_L;
+		}
+		SetSize(m_size.x / 2, m_size.y / 1.5);
+		SetPivot(Vector2(0.5, 0.5f));
+		m_bFrameCheck = false;
+	}
+}
+
+void CPlayer::JumpDown()
+{
+	if (m_objectDir == EObject_Dir::Right)
+	{
+		m_objectState = EObject_State::Jump_Down;
+	}
+	else
+	{
+		m_objectState = EObject_State::Jump_Down_L;
+	}
+	m_jumpTime = 0;
+	m_multipleNum = -1;
+}
+
+void CPlayer::CalculateJump(float elapsedTime)
+{
+	// 임시적 수치와 종료 조건
+
+	m_jumpTime += elapsedTime;
+	m_pos.y -= elapsedTime * 100 * m_multipleNum;
+	if (m_jumpTime >= 1)
+	{
+		JumpDown();
+	}
+
+	if (m_pos.y >= m_prevHeight)
+	{
+		m_pos.y = m_prevHeight;
+		m_bJump = false;
+		if (m_objectDir == EObject_Dir::Right)
+		{
+			m_objectState = EObject_State::Basic;
+		}
+		else
+		{
+			m_objectState = EObject_State::Basic_L;
+		}
+		m_bDoubleJump = false;
+	}
 }

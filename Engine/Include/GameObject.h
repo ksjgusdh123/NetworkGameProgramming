@@ -62,6 +62,7 @@ protected:
 	int m_textureNum = 0;
 	EObject_Dir m_objectDir = EObject_Dir::Right;
 
+
 	float m_time = 0;	
 	EObject_State m_objectState = EObject_State::Basic;
 	std::array<std::vector<RECT>, (int)EObject_State::Max> m_animationBox;

@@ -13,11 +13,26 @@ public:
 	virtual void PostUpdate(float elapsedTime) override;
 	virtual void Render(HDC hDC, float elapsedTime) override;
 
-private:
-	void PlayerMoveUp();
-	void PlayerMoveDown();
+protected:	
 	void PlayerMoveLeft();
+	void PlayerLeftIdle();
 	void PlayerMoveRight();
+	void PlayerRightIdle();
+	void PlayerAttack();
+	void PlayerJump();
 
+	void CheckFrame(float elapsedTime);
+	void JumpDown();
+	void CalculateJump(float elapsedTime);
+protected:
+	int m_frame = 0;
+	float m_nowFrame = 0;
+	bool m_bFrameCheck = false;
+
+	float m_prevHeight = 0;
+	float m_jumpTime = 0;
+	bool m_bJump = false;
+	bool m_bDoubleJump = false;
+	int m_multipleNum = 1;
 };
 
