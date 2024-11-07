@@ -33,11 +33,13 @@ public:
 	void SetVelocity(const Vector2& velocity) { m_velocity = velocity; }
 	void SetVelocity(float x, float y) { m_velocity = Vector2(x, y); }
 	void SetAngle(float angle) { m_angle = angle; }
+	void SetDir(EObject_Dir dir) { m_objectDir = dir; }
+	void SetState(EObject_State state) { m_objectState = state; }
 
 	void AddPos(const Vector2& pos) { m_pos.x += pos.x; m_pos.y += pos.y; }
 	void AddAngle(float angle) { m_angle += angle; }
 
-	void SetTexture(const std::string& name, const std::wstring& fileName, EObject_Dir dir, ETexture_Type type = ETexture_Type::Sprite, const std::string& pathName = TEXTURE_PATH);
+	virtual void SetTexture(const std::string& name, const std::wstring& fileName, EObject_Dir dir, ETexture_Type type = ETexture_Type::Sprite, const std::string& pathName = TEXTURE_PATH);
 	void SetAnimation(RECT* rects, int num, EObject_State state = EObject_State::Basic, ETexture_Type type = ETexture_Type::CIMAGE);
 	bool SetColorKey(unsigned char r, unsigned char g, unsigned char b, int idx = 0);
 
@@ -62,8 +64,12 @@ protected:
 	int m_textureNum = 0;
 	EObject_Dir m_objectDir = EObject_Dir::Right;
 
+
 	float m_time = 0;	
 	EObject_State m_objectState = EObject_State::Basic;
+	EObject_State m_prevObjectState = EObject_State::Basic;
 	std::array<std::vector<RECT>, (int)EObject_State::Max> m_animationBox;
+	int m_idx = 0;
+	
 };
 

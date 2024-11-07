@@ -1,6 +1,8 @@
 #include "MainScene.h"
 #include "GameObject.h"
 #include "..\GameObject\Player.h"
+#include "..\GameObject\Swordman.h"
+#include "..\GameObject\Archer.h"
 #include <Engine.h>
 #include <Scene/Camera.h>
 
@@ -8,6 +10,14 @@ bool CMainScene::Init()
 {
     CScene::Init();
 
+    CGameObject* back = CreateObject<CGameObject>("Background");
+    back->CreateTexture(1);
+    back->SetTexture("Background", TEXT("Map/BG.bmp"), EObject_Dir::Right);
+    back->SetSize(2000.f, 1000.f);
+
+    CTile* tile = CreateObject<CTile>("tile");
+    tile->SetPos(100.f, 150.f);
+    
     Vector2 resolution = { (float)CEngine::GetInst()->GetResolution().width,
     (float)CEngine::GetInst()->GetResolution().height };
     GetCamera()->SetResolution(resolution);
@@ -16,7 +26,7 @@ bool CMainScene::Init()
     m_cameraVelocity = Vector2(100.f, 100.f);
 
 
-    player = CreateObject<CPlayer>("wns");
+    player = CreateObject<CArcher>("wns");
     player->SetPos(100.f, 100.f);
     SetPlayer(player);
     GetCamera()->SetTarget(player);

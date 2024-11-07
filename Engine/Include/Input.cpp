@@ -14,10 +14,10 @@ CInput::~CInput()
 bool CInput::Init()
 {
 	//AddBindKey("SceneChange", '1');
-	//SetKeyCtrl("SceneChange");
+	//SetKeyCtrl("Attack");
 
-	AddBindKey("MoveUp", VK_UP);
-	AddBindKey("MoveDown", VK_DOWN);
+	AddBindKey("Jump", VK_SPACE);
+	AddBindKey("Attack", 'A');
 	AddBindKey("MoveLeft", VK_LEFT);
 	AddBindKey("MoveRight", VK_RIGHT);
 
