@@ -11,7 +11,7 @@ bool CArrow::Init()
 	SetTexture("Player_L", TEXT("Player/player_L.png"), EObject_Dir::Left, ETexture_Type::CIMAGE);
 	SetAnimation(Arrow, 1, EObject_State::Basic);
 	SetAnimation(Arrow_L, 1, EObject_State::Basic_L);
-	SetSize(40, 10);
+	SetSize(40, 10);	
 	m_timer = 0;
 	SetEnable(false);
 	return true;

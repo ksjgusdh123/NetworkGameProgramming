@@ -3,6 +3,11 @@
 #include "..\GameObject\Player.h"
 #include "..\GameObject\Swordman.h"
 #include "..\GameObject\Archer.h"
+#include "..\GameObject\Star.h"
+#include "..\GameObject\Trap.h"
+#include "..\GameObject\Heart.h"
+#include "..\GameObject\Portal.h"
+#include <Collision.h>
 #include <Engine.h>
 #include <Scene/Camera.h>
 
@@ -17,6 +22,18 @@ bool CMainScene::Init()
 
     CTile* tile = CreateObject<CTile>("tile");
     tile->SetPos(100.f, 150.f);
+
+    CStar* star = CreateObject<CStar>("star");
+    star->SetPos(400.f, 100.f);
+
+    CHeart* heart = CreateObject<CHeart>("heart");
+    heart->SetPos(200.f, 350.f);
+
+    CTrap* trap = CreateObject<CTrap>("trap");
+    trap->SetPos(300.f, 350.f);
+
+    CPortal* portal = CreateObject<CPortal>("portal");
+    portal->SetPos(400.f, 350.f);
     
     Vector2 resolution = { (float)CEngine::GetInst()->GetResolution().width,
     (float)CEngine::GetInst()->GetResolution().height };
@@ -53,6 +70,15 @@ void CMainScene::Update(float elapsedTime)
 
     if (IsPlayerInRicheAttackArea()){
         riche->Attack(player->GetPos());
+    }
+
+    for (auto& object : m_objects[2])
+    {
+        if (player->GetCollision()->CheckCollision(object->GetCollision()))
+        {
+            object->Destroy();
+            break;
+        }
     }
 }
 

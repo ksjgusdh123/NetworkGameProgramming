@@ -148,11 +148,14 @@
     <ClInclude Include="GameObject\Archer.h" />
     <ClInclude Include="GameObject\Arrow.h" />
     <ClInclude Include="GameObject\Ghost.h" />
+    <ClInclude Include="GameObject\Heart.h" />
+    <ClInclude Include="GameObject\Portal.h" />
     <ClInclude Include="GameObject\Riche.h" />
     <ClInclude Include="GameObject\RicheAttack.h" />
-
+    <ClInclude Include="GameObject\Star.h" />
     <ClInclude Include="GameObject\Tile.h" />
     <ClInclude Include="GameObject\Swordman.h" />
+    <ClInclude Include="GameObject\Trap.h" />
     <ClInclude Include="MonsterAnimation.h" />
     <ClInclude Include="NetClient\Define.h" />
     <ClInclude Include="NetClient\ErrDisplay.h" />
@@ -171,14 +174,15 @@
     <ClCompile Include="GameObject\Archer.cpp" />
     <ClCompile Include="GameObject\Arrow.cpp" />
     <ClCompile Include="GameObject\Ghost.cpp" />
+    <ClCompile Include="GameObject\Heart.cpp" />
     <ClCompile Include="GameObject\Player.cpp" />
+    <ClCompile Include="GameObject\Portal.cpp" />
     <ClCompile Include="GameObject\Riche.cpp" />
     <ClCompile Include="GameObject\RicheAttack.cpp" />
-
+    <ClCompile Include="GameObject\Star.cpp" />
     <ClCompile Include="GameObject\Tile.cpp" />
-
     <ClCompile Include="GameObject\Swordman.cpp" />
-
+    <ClCompile Include="GameObject\Trap.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NetClient\TCPClient.cpp" />
     <ClCompile Include="Scene\MainScene.cpp" />

@@ -20,6 +20,7 @@ public:
 	Vector2 GetVelocity() const { return m_velocity; }
 	float GetAngle() const { return m_angle; }
 	EObject_State GetState() const { return m_objectState; }
+	class CCollision* GetCollision() const { return m_collisionBox.get(); }
 
 	void SetObjectType(EObject_Type type) { m_objectType = type; }
 	void SetScene(class CScene* scene) { m_scene = scene; }
@@ -70,6 +71,7 @@ protected:
 	EObject_State m_prevObjectState = EObject_State::Basic;
 	std::array<std::vector<RECT>, (int)EObject_State::Max> m_animationBox;
 	int m_idx = 0;
-	
+
+	std::shared_ptr<class CCollision> m_collisionBox;
 };
 
