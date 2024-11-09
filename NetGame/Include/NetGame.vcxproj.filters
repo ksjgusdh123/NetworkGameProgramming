@@ -34,8 +34,20 @@
     <ClCompile Include="GameObject\Swordman.cpp">
       <Filter>03. GameObject\01. Player</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject\Star.cpp">
+      <Filter>03. GameObject\02. Item</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Trap.cpp">
+      <Filter>03. GameObject\02. Item</Filter>
+    </ClCompile>
     <ClCompile Include="GameObject\Arrow.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>03. GameObject\01. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Heart.cpp">
+      <Filter>03. GameObject\02. Item</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Portal.cpp">
+      <Filter>03. GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -96,8 +108,20 @@
     <ClInclude Include="GameObject\Swordman.h">
       <Filter>03. GameObject\01. Player</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject\Star.h">
+      <Filter>03. GameObject\02. Item</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Trap.h">
+      <Filter>03. GameObject\02. Item</Filter>
+    </ClInclude>
     <ClInclude Include="GameObject\Arrow.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>03. GameObject\01. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Heart.h">
+      <Filter>03. GameObject\02. Item</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Portal.h">
+      <Filter>03. GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -135,6 +159,9 @@
     </Filter>
     <Filter Include="03. GameObject\01. Player">
       <UniqueIdentifier>{0f747a5e-7f8e-4075-9f32-38b03e4637d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\02. Item">
+      <UniqueIdentifier>{6a846601-f181-49de-ba36-52e1b57c3f20}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
