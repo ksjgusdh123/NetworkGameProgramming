@@ -5,6 +5,7 @@ bool CStar::Init()
 	CGameObject::Init();
 
 	SetPivot(0.5f, 0.5f);
+	SetObjectType(EObject_Type::Item);
 	CreateTexture(1);
 	SetTexture("star", TEXT("Object/star.bmp"), EObject_Dir::Right, ETexture_Type::Sprite);
 	SetSize(60.f, 57.f);

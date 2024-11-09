@@ -5,6 +5,7 @@
 #include "Scene/SceneResource.h"
 #include "Resource/Texture/Texture.h"
 #include "Engine.h"
+#include "Collision.h"
 
 CGameObject::~CGameObject()
 {
@@ -45,11 +46,15 @@ bool CGameObject::SetColorKey(unsigned char r, unsigned char g, unsigned char b,
 
 bool CGameObject::Init()
 {
+	m_collisionBox = std::make_shared<CCollision>();
 	return true;
 }
 
 void CGameObject::Update(float elapsedTime)
 {
+#ifdef DEBUG
+	m_collisionBox->UpdateCollision(m_pos, m_size);
+#endif
 }
 
 void CGameObject::PostUpdate(float elapsedTime)
@@ -58,6 +63,10 @@ void CGameObject::PostUpdate(float elapsedTime)
 
 void CGameObject::Render(HDC hDC, float elapsedTime)
 {
+#ifdef DEBUG
+	m_collisionBox->Render(hDC, elapsedTime);
+#endif
+
 	if (m_prevObjectState != m_objectState) {
 		m_idx = 0;
 		m_time = 0;

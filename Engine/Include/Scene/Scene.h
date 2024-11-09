@@ -31,7 +31,7 @@ public:
 		return obj.get();
 	}
 
-private:
+protected:
 	std::shared_ptr<class CSceneResource> m_resource;
 	std::shared_ptr<class CCamera> m_camera;
 	std::array<std::list<std::shared_ptr<class CGameObject>>, 4> m_objects;

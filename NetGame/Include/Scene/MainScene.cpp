@@ -7,6 +7,7 @@
 #include "..\GameObject\Trap.h"
 #include "..\GameObject\Heart.h"
 #include "..\GameObject\Portal.h"
+#include <Collision.h>
 #include <Engine.h>
 #include <Scene/Camera.h>
 
@@ -23,7 +24,7 @@ bool CMainScene::Init()
     tile->SetPos(100.f, 150.f);
 
     CStar* star = CreateObject<CStar>("star");
-    star->SetPos(100.f, 350.f);
+    star->SetPos(400.f, 100.f);
 
     CHeart* heart = CreateObject<CHeart>("heart");
     heart->SetPos(200.f, 350.f);
@@ -69,6 +70,15 @@ void CMainScene::Update(float elapsedTime)
 
     if (IsPlayerInRicheAttackArea()){
         riche->Attack(player->GetPos());
+    }
+
+    for (auto& object : m_objects[2])
+    {
+        if (player->GetCollision()->CheckCollision(object->GetCollision()))
+        {
+            object->Destroy();
+            break;
+        }
     }
 }
 

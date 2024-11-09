@@ -4,7 +4,6 @@
 #include <Scene/Scene.h>
 #include "Resource/Texture/Texture.h"
 #include "..\PlayerAnimation.h"
-
 bool CPlayer::Init()
 {
 	CGameObject::Init();

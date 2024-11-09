@@ -40,6 +40,8 @@ struct Resolution
 	int	height = 0;
 };
 
+
+
 struct Vector2
 {
 	float x = 0.f, y = 0.f;	
@@ -51,4 +53,10 @@ struct Vector2
 	Vector2 operator+ (const Vector2& v) const { return Vector2(x + v.x, y + v.y); }
 	Vector2 operator- (const Vector2& v) const { return Vector2(x - v.x, y - v.y); }
 	Vector2 operator* (const Vector2& v) const { return Vector2(x * v.x, y * v.y); }
+};
+
+struct BoxInfo
+{
+	Vector2	LT;
+	Vector2	RB;
 };
