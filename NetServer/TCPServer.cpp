@@ -1,9 +1,7 @@
 #pragma once
 #include "TCPServer.h"
 #include "ErrDisplay.h"
-
-DWORD WINAPI RecvThread(LPVOID arg) { cout << "RecvThread()\n"; return 0; };
-DWORD WINAPI SendThread(LPVOID arg) { cout << "SendThread()\n"; return 0; };
+#include "NetworkMgr.h"
 
 bool TCPServer::Init()
 {
@@ -31,28 +29,16 @@ void TCPServer::Connect()
 {
 	cout << "Connect()\n";
 
-	SOCKET client_sock;
-	struct sockaddr_in clientaddr;
-	int addrlen;
-
 	static int client_num{};
 	while (client_num != 2)
 	{
 		cout << "Waiting...\n";
-		addrlen = sizeof(clientaddr);
-		client_sock = accept(listen_sock, (struct sockaddr*)&clientaddr, &addrlen);
+		SOCKET client_sock = accept(listen_sock, NULL, NULL);
 		if (client_sock == INVALID_SOCKET) { err_display("accept()"); continue; }
 
 		++client_num;
 
-		hRecvThread = CreateThread(NULL, 0, RecvThread, (LPVOID)client_sock, 0, NULL);
-		if (hRecvThread == NULL) { closesocket(client_sock); }
-		else { CloseHandle(hRecvThread); }
-
-		hRecvThread = CreateThread(NULL, 0, RecvThread, (LPVOID)client_sock, 0, NULL);
-		if (hRecvThread == NULL) { closesocket(client_sock); }
-		else { CloseHandle(hRecvThread); }
-		cout << "Accept!\n";
+		NetworkMgr::GetInst().CreateThread(client_sock);
 	}
 }
 

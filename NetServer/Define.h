@@ -13,6 +13,8 @@
 #pragma comment(lib, "ws2_32") // ws2_32.lib ¸µÅ©
 
 #include <iostream>
+#include "Protocol.h"
+
 using namespace std;
 
 #define SERVERPORT 9000
