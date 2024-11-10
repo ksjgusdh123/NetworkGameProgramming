@@ -1,7 +1,7 @@
 #pragma once
 #include "TCPServer.h"
 #include "ErrDisplay.h"
-#include "NetworkMgr.h"
+#include "ThreadMgr.h"
 
 bool TCPServer::Init()
 {
