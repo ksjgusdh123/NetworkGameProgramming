@@ -1,41 +1,24 @@
 #pragma once
 #include "Define.h"
 
-class NetworkMgr
+class ThreadMgr
 {
 	HANDLE hRecvThread;
-	HANDLE hSendThread;
+	HANDLE hWorkerThread;
 private:
-	NetworkMgr() = default;
-	NetworkMgr(const NetworkMgr&) = delete;
-	NetworkMgr& operator=(const NetworkMgr&) = delete;
+	ThreadMgr() = default;
+	ThreadMgr(const ThreadMgr&) = delete;
+	ThreadMgr& operator=(const ThreadMgr&) = delete;
 	
 public:
-	static NetworkMgr& GetInst()
+	static ThreadMgr& GetInst()
 	{
-		static NetworkMgr inst;
+		static ThreadMgr inst;
 		return inst;
 	}
 public:
-	DWORD WINAPI RecvThread(LPVOID arg)
-	{
-		cout << "RecvThread()\n"; return 0;
-	};
-	DWORD WINAPI SendThread(LPVOID arg)
-	{
-		cout << "SendThread()\n"; return 0;
-	};
-	void CreateThread(SOCKET& client_sock)
-	{
-		hRecvThread = ::CreateThread(NULL, 0, [](LPVOID arg) -> DWORD {
-			return NetworkMgr::GetInst().RecvThread(arg);}, (LPVOID)client_sock, 0, NULL);
-		if (hRecvThread == NULL) { closesocket(client_sock); }
-		else { CloseHandle(hRecvThread); }
-
-		hRecvThread = ::CreateThread(NULL, 0, [](LPVOID arg) -> DWORD {
-			return NetworkMgr::GetInst().SendThread(arg);}, (LPVOID)client_sock, 0, NULL);
-		if (hRecvThread == NULL) { closesocket(client_sock); }
-		else { CloseHandle(hRecvThread); }
-		cout << "Accept!\n";
-	}
+	DWORD WINAPI RecvThread(LPVOID arg);
+	DWORD WINAPI WorkerThread(LPVOID arg);
+	void CreateWorkerThread();
+	void CreateRecvThread(SOCKET& client_sock);
 };

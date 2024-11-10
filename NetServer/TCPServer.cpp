@@ -29,6 +29,8 @@ void TCPServer::Connect()
 {
 	cout << "Connect()\n";
 
+	ThreadMgr::GetInst().CreateWorkerThread();
+
 	static int client_num{};
 	while (client_num != 2)
 	{
@@ -38,7 +40,7 @@ void TCPServer::Connect()
 
 		++client_num;
 
-		NetworkMgr::GetInst().CreateThread(client_sock);
+		ThreadMgr::GetInst().CreateRecvThread(client_sock);
 	}
 }
 
