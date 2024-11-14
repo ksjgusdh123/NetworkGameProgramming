@@ -35,7 +35,7 @@ bool CTile::Init()
 	for (int i = 0 ; i < 16; ++i){
 	SetColorKey(255.f, 255.f, 255.f, i);
 	}
-	SetSize(128.f, 128.f);
+	SetSize(90.f, 90.f);
 	
 	m_objectDir = EObject_Dir::Right;
 	return true;
@@ -98,7 +98,7 @@ void CTile::Render(HDC hDC, float elapsedTime)
 			if (m_texture[(int)m_objectNum - 1]->GetEnableColorKey())
 			{
 				TransparentBlt(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y,
-					m_texture[(int)m_objectNum - 1]->GetDC(), 0, 0, (int)m_size.x, (int)m_size.y, m_texture[(int)m_objectNum - 1]->GetColorKey());
+					m_texture[(int)m_objectNum - 1]->GetDC(), 0, 0, 128, 128, m_texture[(int)m_objectNum - 1]->GetColorKey());
 			}
 			else
 			{
