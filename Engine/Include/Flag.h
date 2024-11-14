@@ -50,3 +50,10 @@ enum class EObject_State
 	Jump_Down_L,
 	Max
 };
+
+enum class EPlayer_Job
+{
+	Sword,
+	Archer,
+	Max
+};
