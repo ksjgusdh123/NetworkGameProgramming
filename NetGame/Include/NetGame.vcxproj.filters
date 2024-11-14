@@ -81,12 +81,6 @@
     <ClInclude Include="NetClient\TCPClient.h">
       <Filter>05. NetClient</Filter>
     </ClInclude>
-    <ClInclude Include="NetClient\Define.h">
-      <Filter>05. NetClient</Filter>
-    </ClInclude>
-    <ClInclude Include="NetClient\ErrDisplay.h">
-      <Filter>05. NetClient</Filter>
-    </ClInclude>
     <ClInclude Include="GameObject\Tile.h">
       <Filter>03. GameObject</Filter>
     </ClInclude>
@@ -122,6 +116,15 @@
     </ClInclude>
     <ClInclude Include="GameObject\Portal.h">
       <Filter>03. GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\NetServer\Define.h">
+      <Filter>05. NetClient</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\NetServer\ErrDisplay.h">
+      <Filter>05. NetClient</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\NetServer\Protocol.h">
+      <Filter>05. NetClient</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

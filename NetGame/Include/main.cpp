@@ -6,9 +6,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     _In_ LPWSTR    lpCmdLine,
     _In_ int       nCmdShow)
 {
-    //TCPClient GameClient;
-    //if (GameClient.Init())
-    //    GameClient.Connect();
+    TCPClient GameClient;
+    if (GameClient.Init())
+        GameClient.Connect();
 
     CClientManager mgr;
     if (!mgr.Init(hInstance))
@@ -16,6 +16,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     int ret = mgr.Run();
 
-    //GameClient.Cleanup();
+    GameClient.Cleanup();
     return ret;
 }

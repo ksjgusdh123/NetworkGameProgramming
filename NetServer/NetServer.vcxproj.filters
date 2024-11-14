@@ -21,33 +21,21 @@
     <ClCompile Include="ServerMain.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ThreadMgr.cpp">
-      <Filter>소스 파일\Network</Filter>
-    </ClCompile>
     <ClCompile Include="TCPServer.cpp">
       <Filter>소스 파일\Network</Filter>
     </ClCompile>
-    <ClCompile Include="NetworkMgr.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ErrDisplay.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Protocol.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Define.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ThreadMgr.h">
-      <Filter>소스 파일\Network</Filter>
-    </ClInclude>
     <ClInclude Include="TCPServer.h">
       <Filter>소스 파일\Network</Filter>
     </ClInclude>
-    <ClInclude Include="NetworkMgr.h">
+    <ClInclude Include="ErrDisplay.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

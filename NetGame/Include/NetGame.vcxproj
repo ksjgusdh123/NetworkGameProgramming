@@ -116,7 +116,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)/Engine/Include/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/Engine/Include/;$(SolutionDir)/NetServer/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -133,7 +133,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)/Engine/Include/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/NetServer/;$(SolutionDir)/Engine/Include/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -144,6 +144,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\NetServer\Define.h" />
+    <ClInclude Include="..\..\NetServer\ErrDisplay.h" />
+    <ClInclude Include="..\..\NetServer\Protocol.h" />
     <ClInclude Include="BossAnimation.h" />
     <ClInclude Include="GameObject\Archer.h" />
     <ClInclude Include="GameObject\Arrow.h" />
@@ -157,8 +160,6 @@
     <ClInclude Include="GameObject\Swordman.h" />
     <ClInclude Include="GameObject\Trap.h" />
     <ClInclude Include="MonsterAnimation.h" />
-    <ClInclude Include="NetClient\Define.h" />
-    <ClInclude Include="NetClient\ErrDisplay.h" />
     <ClInclude Include="NetClient\TCPClient.h" />
     <ClInclude Include="ObjectAnimation.h" />
     <ClInclude Include="PlayerAnimation.h" />

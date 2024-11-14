@@ -1,3 +1,4 @@
+#pragma once
 #include "Define.h"
 
 // 소켓 함수 오류 출력 후 종료

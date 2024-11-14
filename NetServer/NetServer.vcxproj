@@ -128,16 +128,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="NetworkMgr.cpp" />
-    <ClCompile Include="ThreadMgr.cpp" />
     <ClCompile Include="ServerMain.cpp" />
     <ClCompile Include="TCPServer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ErrDisplay.h" />
     <ClInclude Include="Define.h" />
-    <ClInclude Include="NetworkMgr.h" />
-    <ClInclude Include="ThreadMgr.h" />
+    <ClInclude Include="ErrDisplay.h" />
     <ClInclude Include="Protocol.h" />
     <ClInclude Include="TCPServer.h" />
   </ItemGroup>

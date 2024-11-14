@@ -6,13 +6,14 @@
 
 class TCPClient {
 public:
-    TCPClient() : sock(INVALID_SOCKET) {};
-    ~TCPClient() { Cleanup(); }
+	TCPClient() : sock(INVALID_SOCKET) {};
+	~TCPClient() { Cleanup(); }
 
-    bool Init();
-    void Connect();
-    void Cleanup();
+	bool Init();
+	void Connect();
+	void Cleanup();
 
 private:
-    SOCKET sock;
+	SOCKET sock;
+	HANDLE hRecvThread;
 };
