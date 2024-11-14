@@ -8,7 +8,9 @@ public:
 	Resolution GetResolution() const { return m_resolution; }
 	float GetElapsedTime() { return m_elapsedTime; }
 	HDC GetWindowDC() const { return m_hDC; }
+	HWND GetWindowHandle() const { return m_hWnd; }
 	HINSTANCE GetWindowInstance() const { return m_hInst; }
+
 public:
 	bool Init(HINSTANCE hInst, int windowWidth, int windowHeight);
 	int Run();
@@ -18,6 +20,7 @@ public:
 	bool Update(float elapsedTime);
 	bool PostUpdate(float elapsedTime);
 	void Render(float elapsedTime);
+
 
 private:
 	void Register();	// 창 클래스 등록
@@ -29,6 +32,7 @@ private:
 private:
 	HINSTANCE	m_hInst = 0;
 	HWND		m_hWnd = 0;
+
 	HDC			m_hDC = 0;
 	HDC			m_hBackDC = 0;
 	HBITMAP		m_hBackBmp = 0;

@@ -49,6 +49,9 @@
     <ClCompile Include="GameObject\Portal.cpp">
       <Filter>03. GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\LoginScene.cpp">
+      <Filter>02. Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene\MainScene.h">
@@ -122,6 +125,9 @@
     </ClInclude>
     <ClInclude Include="GameObject\Portal.h">
       <Filter>03. GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\LoginScene.h">
+      <Filter>02. Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
