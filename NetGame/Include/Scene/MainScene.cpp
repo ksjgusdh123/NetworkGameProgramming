@@ -22,6 +22,11 @@ bool CMainScene::Init()
 
     CTile* tile = CreateObject<CTile>("tile");
     tile->SetPos(100.f, 150.f);
+    tile->SetTileNum(1);
+
+    tile = CreateObject<CTile>("tile2");
+    tile->SetPos(350.f, 150.f);
+    tile->SetTileNum(16);
 
     CStar* star = CreateObject<CStar>("star");
     star->SetPos(400.f, 100.f);
