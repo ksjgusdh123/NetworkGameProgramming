@@ -16,8 +16,6 @@ bool CInput::Init()
 	//AddBindKey("SceneChange", '1');
 	//SetKeyCtrl("Attack");
 
-	AddBindKey("IDCheck", VK_RETURN);
-
 	AddBindKey("Jump", VK_SPACE);
 	AddBindKey("Attack", 'A');
 	AddBindKey("MoveLeft", VK_LEFT);

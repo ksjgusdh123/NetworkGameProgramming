@@ -16,8 +16,10 @@ public:
 
 private:
 	//std::string m_name[2];
-	HWND		m_hButton[3]{};
-	EPlayer_Job m_job[2];
-	bool		m_bReady[2];
+	HWND			m_hButton[3]{};
+	EPlayer_Job		m_job[2];
+	bool			m_bReady[2];
+	CGameObject*	m_object[2];
+	class CLobbyPlayer* m_player[2];
 };
 
