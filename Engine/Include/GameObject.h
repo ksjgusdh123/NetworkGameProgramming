@@ -42,7 +42,7 @@ public:
 
 	virtual void SetTexture(const std::string& name, const std::wstring& fileName, EObject_Dir dir, ETexture_Type type = ETexture_Type::Sprite, const std::string& pathName = TEXTURE_PATH);
 	void SetAnimation(RECT* rects, int num, EObject_State state = EObject_State::Basic, ETexture_Type type = ETexture_Type::CIMAGE);
-	bool SetColorKey(unsigned char r, unsigned char g, unsigned char b, int idx = 0);
+	virtual bool SetColorKey(unsigned char r, unsigned char g, unsigned char b, int idx = 0);
 
 public:
 	virtual bool Init();

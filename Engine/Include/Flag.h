@@ -50,3 +50,24 @@ enum class EObject_State
 	Jump_Down_L,
 	Max
 };
+
+enum class ETile_Num
+{
+	Tile_1,
+	Tile_2,
+	Tile_3,
+	Tile_4,
+	Tile_5,
+	Tile_6,
+	Tile_7,
+	Tile_8,
+	Tile_9,
+	Tile_10,
+	Tile_11,
+	Tile_12,
+	Tile_13,
+	Tile_14,
+	Tile_15,
+	Tile_16,
+	max
+};
