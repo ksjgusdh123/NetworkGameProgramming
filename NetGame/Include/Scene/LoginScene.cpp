@@ -15,7 +15,7 @@ bool CLoginScene::Init()
 
 	CGameObject* back = CreateObject<CGameObject>("eawoi");
 	back->CreateTexture(1);
-	back->SetTexture("LoginBackground", TEXT("Map/Login.bmp"), EObject_Dir::Right);
+	back->SetTexture("LoginBackground", TEXT("Map/LoginBackground.bmp"), EObject_Dir::Right);
 	back->SetSize(960.f, 650.f);
 	back->SetPivot(0.f, 0.f);
 
@@ -24,8 +24,8 @@ bool CLoginScene::Init()
 	HWND hwnd = CEngine::GetInst()->GetWindowHandle();
 	HINSTANCE hInst = CEngine::GetInst()->GetWindowInstance();
 
-	m_hEdit = CreateWindow(TEXT("edit"), TEXT(""), WS_CHILD | WS_VISIBLE | WS_BORDER, 520, 250, 180, 25, hwnd, (HMENU)IDC_EDIT, hInst, NULL);
-	m_hButton = CreateWindow(L"button", L"확인", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 720, 250, 100, 25, hwnd, (HMENU)IDC_BUTTON, hInst, NULL);
+	m_hEdit = CreateWindow(TEXT("edit"), TEXT(""), WS_CHILD | WS_VISIBLE | WS_BORDER, 380, 500, 180, 25, hwnd, (HMENU)IDC_EDIT, hInst, NULL);
+	m_hButton = CreateWindow(L"button", L"확인", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 600, 500, 100, 25, hwnd, (HMENU)IDC_BUTTON, hInst, NULL);
 
 	// 에디트 컨트롤에 최대 10자만 입력할 수 있도록 설정
 	SendMessage(m_hEdit, EM_SETLIMITTEXT, 10, 0);

@@ -16,7 +16,7 @@ bool CLobbyScene::Init()
 
 	CGameObject* back = CreateObject<CGameObject>("eawoi");
 	back->CreateTexture(1);
-	back->SetTexture("LoginBackground", TEXT("Map/Login.bmp"), EObject_Dir::Right);
+	back->SetTexture("LobbyBackground", TEXT("Map/RoomBackground.bmp"), EObject_Dir::Right);
 	back->SetSize(960.f, 650.f);
 	back->SetPivot(0.f, 0.f);
 

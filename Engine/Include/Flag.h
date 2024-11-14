@@ -70,6 +70,8 @@ enum class ETile_Num
 	Tile_15,
 	Tile_16,
 	max
+};
+
 enum class EPlayer_Job
 {
 	Sword,

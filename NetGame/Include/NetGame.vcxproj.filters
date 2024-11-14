@@ -131,7 +131,8 @@
     </ClInclude>
     <ClInclude Include="..\..\NetServer\Protocol.h">
       <Filter>05. NetClient</Filter>
-    <ClInclude Include="Scene\LoginScene.h">
+	</ClInclude>
+	<ClInclude Include="Scene\LoginScene.h">
       <Filter>02. Scene</Filter>
     </ClInclude>
     <ClInclude Include="Scene\LobbyScene.h">
