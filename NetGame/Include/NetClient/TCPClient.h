@@ -12,7 +12,7 @@ public:
 	bool Init();
 	void Connect();
 	void Cleanup();
-
+	void SendPacket(int len, const char* data);
 private:
 	SOCKET sock;
 	HANDLE hRecvThread;

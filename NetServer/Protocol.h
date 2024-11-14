@@ -10,9 +10,14 @@ enum PacketType
 class Packet
 {
 public:
-	//PacketType type;
-	int length;
-	std::vector<char> data;
+	int len;
+	char data[BUFSIZ];
+	Packet() {};
+	Packet(int len_, const char* data_): len(len_)
+	{
+		memcpy(data, data_ , len_);
+		data[len + 1] = '\0';
+	}
 };
 
 

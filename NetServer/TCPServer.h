@@ -1,5 +1,6 @@
 #pragma once
 #include "Define.h"
+#include <queue>
 
 class TCPServer
 {

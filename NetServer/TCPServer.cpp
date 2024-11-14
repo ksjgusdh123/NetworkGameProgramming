@@ -1,25 +1,22 @@
 #include "TCPServer.h"
 #include "ErrDisplay.h"
 
+queue<Packet> recv_queue;
+
 DWORD WINAPI RecvThread(LPVOID arg)
 {
 	cout << "RecvThead!\n";
 	SOCKET client_sock = (SOCKET)arg;
-	struct sockaddr_in clientaddr;
-	char addr[INET_ADDRSTRLEN];
-	int addrlen = sizeof(clientaddr);
-	getpeername(client_sock, (struct sockaddr*)&clientaddr, &addrlen);
-	inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
-	char buf[BUFSIZ];
 
 	while (true)
 	{
-		int retval = recv(client_sock, buf, BUFSIZ, 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("recv()");
-			return -1;
-		}
-		cout << buf << endl;
+		int packet_size;
+		char recv_buf[BUFSIZ];
+		recv(client_sock, (char*)&packet_size, sizeof(int), MSG_WAITALL);
+		recv(client_sock, recv_buf, packet_size, MSG_WAITALL);
+		Packet p(packet_size, recv_buf);
+		cout << p.data << endl;
+		recv_queue.push(p);
 	}
 	return 0;
 }
@@ -49,21 +46,22 @@ bool TCPServer::Init()
 void TCPServer::Connect()
 {
 	cout << "Connect()\n";
-
-	SOCKET client_sock;
-	struct sockaddr_in clientaddr;
-	int addrlen;
-	char buf[BUFSIZ];
-	addrlen = sizeof(clientaddr);
-	client_sock = accept(listen_sock, (struct sockaddr*)&clientaddr, &addrlen);
-	if (client_sock == INVALID_SOCKET) {
-		err_display("accept()");
-		return;
+	while(1)
+	{
+		SOCKET client_sock;
+		struct sockaddr_in clientaddr;
+		int addrlen;
+		char buf[BUFSIZ];
+		addrlen = sizeof(clientaddr);
+		client_sock = accept(listen_sock, (struct sockaddr*)&clientaddr, &addrlen);
+		if (client_sock == INVALID_SOCKET) {
+			err_display("accept()");
+			return;
+		}
+		hThread = CreateThread(NULL, 0, RecvThread, (LPVOID)client_sock, 0, NULL);
+		if (hThread == NULL) { cout << "err\n"; closesocket(client_sock); }
+		else { CloseHandle(hThread); }
 	}
-	hThread = CreateThread(NULL, 0, RecvThread,
-		(LPVOID)client_sock, 0, NULL);
-	if (hThread == NULL) { cout << "err\n"; closesocket(client_sock); }
-	else { CloseHandle(hThread); }
 }
 
 void TCPServer::Run()
