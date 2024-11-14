@@ -1,0 +1,17 @@
+#pragma once
+#include "Scene/Scene.h"
+class CLobbyScene : public CScene
+{
+public:
+	virtual bool Init() override;
+	virtual void Update(float elapsedTime);
+	virtual void KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam);
+
+public:
+	void CheckButton();
+	std::string EditBoxToString();
+	bool SendLoginRequest(std::string name);
+private:
+	HWND		m_hButton[3]{};
+};
+

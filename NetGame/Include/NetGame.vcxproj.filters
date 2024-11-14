@@ -52,6 +52,9 @@
     <ClCompile Include="Scene\LoginScene.cpp">
       <Filter>02. Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\LobbyScene.cpp">
+      <Filter>02. Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene\MainScene.h">
@@ -127,6 +130,9 @@
       <Filter>03. GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Scene\LoginScene.h">
+      <Filter>02. Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\LobbyScene.h">
       <Filter>02. Scene</Filter>
     </ClInclude>
   </ItemGroup>

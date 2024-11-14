@@ -4,6 +4,7 @@
 #include <Engine.h>
 #include <Scene/SceneManager.h>
 #include "MainScene.h"
+#include "LobbyScene.h"
 
 #define IDC_BUTTON 100
 #define IDC_EDIT 101
@@ -12,11 +13,11 @@ bool CLoginScene::Init()
 {
 	CScene::Init();
 
-	CGameObject* back = CreateObject<CGameObject>("Background");
+	CGameObject* back = CreateObject<CGameObject>("eawoi");
 	back->CreateTexture(1);
 	back->SetTexture("LoginBackground", TEXT("Map/Login.bmp"), EObject_Dir::Right);
 	back->SetSize(960.f, 650.f);
-	back->SetPivot(0, 0);
+	back->SetPivot(0.f, 0.f);
 
 	CInput::GetInst()->AddBindFunction<CLoginScene>("IDCheck", EInput_Type::PUSH, this, &CLoginScene::CheckButton, this);
 
@@ -45,7 +46,7 @@ void CLoginScene::CheckButton()
 	{
 		DestroyWindow(m_hEdit);
 		DestroyWindow(m_hButton);
-		CSceneManager::GetInst()->CreateScene<CMainScene>();
+		CSceneManager::GetInst()->CreateScene<CLobbyScene>();
 	}
 }
 
@@ -69,7 +70,7 @@ bool CLoginScene::SendLoginRequest(std::string name)
 
 void CLoginScene::KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam)
 {
-	switch (LOWORD(lParam))
+	switch (LOWORD(wParam))
 	{
 	case IDC_BUTTON:
 		CheckButton();
