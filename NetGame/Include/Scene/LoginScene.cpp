@@ -19,8 +19,6 @@ bool CLoginScene::Init()
 	back->SetSize(960.f, 650.f);
 	back->SetPivot(0.f, 0.f);
 
-	CInput::GetInst()->AddBindFunction<CLoginScene>("IDCheck", EInput_Type::PUSH, this, &CLoginScene::CheckButton, this);
-
 	HWND hwnd = CEngine::GetInst()->GetWindowHandle();
 	HINSTANCE hInst = CEngine::GetInst()->GetWindowInstance();
 
@@ -46,6 +44,7 @@ void CLoginScene::CheckButton()
 	{
 		DestroyWindow(m_hEdit);
 		DestroyWindow(m_hButton);
+
 		CSceneManager::GetInst()->CreateScene<CLobbyScene>();
 	}
 }
@@ -65,6 +64,9 @@ std::string CLoginScene::EditBoxToString()
 
 bool CLoginScene::SendLoginRequest(std::string name)
 {
+	//if (name.length() <= 0)
+	//	return false;
+
 	return true;
 }
 

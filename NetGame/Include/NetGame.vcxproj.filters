@@ -55,6 +55,7 @@
     <ClCompile Include="Scene\LobbyScene.cpp">
       <Filter>02. Scene</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject\LobbyPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene\MainScene.h">
@@ -131,13 +132,14 @@
     </ClInclude>
     <ClInclude Include="..\..\NetServer\Protocol.h">
       <Filter>05. NetClient</Filter>
-	</ClInclude>
-	<ClInclude Include="Scene\LoginScene.h">
+    </ClInclude>
+    <ClInclude Include="Scene\LoginScene.h">
       <Filter>02. Scene</Filter>
     </ClInclude>
     <ClInclude Include="Scene\LobbyScene.h">
       <Filter>02. Scene</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject\LobbyPlayer.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="NetGame.ico">
