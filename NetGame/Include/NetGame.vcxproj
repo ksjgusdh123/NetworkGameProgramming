@@ -167,6 +167,8 @@
     <ClInclude Include="ClientManager.h" />
     <ClInclude Include="GameObject\Player.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Scene\LobbyScene.h" />
+    <ClInclude Include="Scene\LoginScene.h" />
     <ClInclude Include="Scene\MainScene.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -186,6 +188,8 @@
     <ClCompile Include="GameObject\Trap.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NetClient\TCPClient.cpp" />
+    <ClCompile Include="Scene\LobbyScene.cpp" />
+    <ClCompile Include="Scene\LoginScene.cpp" />
     <ClCompile Include="Scene\MainScene.cpp" />
   </ItemGroup>
   <ItemGroup>

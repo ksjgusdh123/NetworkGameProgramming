@@ -1,9 +1,11 @@
 ﻿#include "Engine.h"
 #include "Scene/SceneManager.h"
+#include "Scene/Scene.h"
 #include "Timer.h"
 #include "Input.h"
 #include "Resource/ResourceManager.h"
 #include "PathManager.h"
+
 
 DEFINITION_SINGLE(CEngine)
 bool CEngine::m_loop = true;
@@ -93,6 +95,7 @@ void CEngine::Logic()
     if (PostUpdate(m_elapsedTime))
         return;
 
+
     Render(m_elapsedTime);
 }
 
@@ -108,15 +111,16 @@ bool CEngine::PostUpdate(float elapsedTime)
 
 void CEngine::Render(float elapsedTime)
 {
-    Rectangle(m_hBackDC, -1, -1, m_resolution.width + 1, m_resolution.height + 1);
+    Rectangle(m_hBackDC, -1, -1,
+    m_resolution.width + 1, m_resolution.height + 1);
 
     CSceneManager::GetInst()->Render(m_hBackDC, elapsedTime);
 
-    std::wstring fps = std::to_wstring((int)m_timer->GetFPS());
-    fps += L" fps";
-    TextOut(m_hBackDC, 10, 10, fps.c_str(), (int)fps.size());
+   // std::wstring fps = std::to_wstring((int)m_timer->GetFPS());
+   // fps += L" fps";
+   // TextOut(m_hBackDC, 10, 10, fps.c_str(), (int)fps.size());
 
-    BitBlt(m_hDC, 0, 0, m_resolution.width, m_resolution.height, m_hBackDC, 0, 0, SRCCOPY);
+   BitBlt(m_hDC, 0, 0, m_resolution.width, m_resolution.height, m_hBackDC, 0, 0, SRCCOPY);
 }
 
 void CEngine::Register()
@@ -140,7 +144,7 @@ void CEngine::Register()
 
 bool CEngine::Create()
 {
-    m_hWnd = CreateWindowW(TEXT("NetGame"), TEXT("NetGame"), WS_OVERLAPPEDWINDOW,
+    m_hWnd = CreateWindowW(TEXT("NetGame"), TEXT("NetGame"), WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
         100, 0, 0, 0, nullptr, nullptr, m_hInst, nullptr);
 
     if (!m_hWnd)
@@ -166,6 +170,9 @@ LRESULT CEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         // 윈도우가 종료될때 들어오는 메세지이다.
         m_loop = false;
         PostQuitMessage(0);
+        break;
+    case WM_COMMAND:
+        (CSceneManager::GetInst()->GetScene())->KeyEvent(hWnd, wParam, lParam);
         break;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);

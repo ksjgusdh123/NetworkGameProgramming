@@ -15,7 +15,7 @@ public:
 	virtual void Update(float elapsedTime);
 	virtual void PostUpdate(float elapsedTime);
 	virtual void Render(HDC hDC, float elapsedTime);
-
+	virtual void KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam) {}
 public:
 	template <typename T>
 	T* CreateObject(const std::string& name)
