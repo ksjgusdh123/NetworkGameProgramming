@@ -14,6 +14,7 @@ public:
 private:
 	WSADATA wsa;
 	SOCKET listen_sock;
-	HANDLE hThread;
+	HANDLE hRecvThread;
+	HANDLE hSendThread;
 };
 

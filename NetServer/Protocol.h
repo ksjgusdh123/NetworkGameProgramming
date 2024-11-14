@@ -2,21 +2,20 @@
 
 enum PacketType
 {
-	InputKey,
-	LoginRequest,
-	PlayerChoice,
+	MOVE,
 };
 
 class Packet
 {
 public:
 	int len;
+	int type;
 	char data[BUFSIZ];
-	Packet() {};
-	Packet(int len_, const char* data_): len(len_)
+	Packet(){}
+	Packet(int len_, int type_, const char* data_): len(len_), type(type_)
 	{
 		memcpy(data, data_ , len_);
-		data[len + 1] = '\0';
+		data[len] = '\0';
 	}
 };
 

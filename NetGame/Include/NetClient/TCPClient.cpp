@@ -3,6 +3,7 @@
 #include "ErrDisplay.h"
 
 queue<Packet> recv_queue;
+TCPClient* TCPClient::m_inst;
 
 DWORD WINAPI RecvThread(LPVOID arg)
 {
@@ -10,10 +11,12 @@ DWORD WINAPI RecvThread(LPVOID arg)
 	while (true)
     {
 		int packet_size;
+		int packet_type;
 		char recv_buf[BUFSIZ];
 		recv(sock, (char*)&packet_size, sizeof(int), MSG_WAITALL);
+		recv(sock, (char*)&packet_type, sizeof(int), MSG_WAITALL);
 		recv(sock, recv_buf, packet_size, MSG_WAITALL);
-		Packet p(packet_size, recv_buf);
+		Packet p(packet_size, packet_type,recv_buf);
 		cout << p.data << endl;
 		recv_queue.push(p);
     }
@@ -22,15 +25,13 @@ DWORD WINAPI RecvThread(LPVOID arg)
 bool TCPClient::Init()
 {
 	cout << "Client Init()\n";
-	// 扩加 檬扁拳
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		return false;
-
-	// 家南 积己
 	sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == INVALID_SOCKET) err_quit("socket()");
-
+	
+	Connect();
 	return true;
 }
 
@@ -60,9 +61,10 @@ void TCPClient::Cleanup() {
 	WSACleanup();
 }
 
-void TCPClient::SendPacket(int len, const char* data)
+void TCPClient::SendPacket(Packet* packet)
 {
-	send(sock, (char*)&len, sizeof(int), 0);
-	send(sock, data, len, 0);
+	send(sock, (char*)&packet->len, sizeof(int), 0);
+	send(sock, (char*)&packet->type, sizeof(int), 0);
+	send(sock, packet->data, packet->len, 0);
 }
 
