@@ -122,7 +122,7 @@ bool TCPServer::Init()
 void TCPServer::Connect()
 {
     cout << "Connect()\n";
-    while (clientInfos.size() < 2)
+    while (true)
     {
         sockaddr_in clientaddr;
         int addrlen = sizeof(clientaddr);

@@ -47,7 +47,6 @@ void TCPClient::Connect()
 	serveraddr.sin_port = htons(SERVERPORT);
 	int retval = connect(sock, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR) err_quit("connect()");
-	recv(sock, (char*)&myId, sizeof(int), MSG_WAITALL);
 
 	hRecvThread = CreateThread(NULL, 0, RecvThread, (LPVOID)sock, 0, NULL);
 	if (hRecvThread == NULL) { closesocket(sock); }
