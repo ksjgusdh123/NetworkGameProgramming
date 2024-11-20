@@ -39,6 +39,6 @@ protected:
 
 	Vector2 m_attackSize;
 	Vector2 m_attackPivot;
-
+	int m_playerId;
 };	
 

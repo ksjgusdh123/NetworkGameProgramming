@@ -238,9 +238,6 @@ void CPlayer::CalculateJump(float elapsedTime)
 
 void CPlayer::SendMovePacket(const Vector2& pos)
 {
-	Packet p;
-	p.type = MOVE;
-	sprintf_s(p.data, "%f%f", pos.x, pos.y);
-	p.len = strlen(p.data);
+	C_PlayerMovePkt p(m_playerId, pos.x, pos.y);
 	TCPClient::GetInst()->SendPacket(&p);
 }

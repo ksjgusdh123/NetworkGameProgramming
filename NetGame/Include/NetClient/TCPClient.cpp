@@ -8,6 +8,7 @@ TCPClient* TCPClient::m_inst;
 DWORD WINAPI RecvThread(LPVOID arg)
 {
 	SOCKET sock = (SOCKET)arg;
+
 	while (true)
     {
 		int packet_size;
@@ -31,7 +32,7 @@ bool TCPClient::Init()
 	sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == INVALID_SOCKET) err_quit("socket()");
 	
-	Connect();
+	Connect();	
 	return true;
 }
 
@@ -46,7 +47,8 @@ void TCPClient::Connect()
 	serveraddr.sin_port = htons(SERVERPORT);
 	int retval = connect(sock, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR) err_quit("connect()");
-	
+	recv(sock, (char*)&myId, sizeof(int), MSG_WAITALL);
+
 	hRecvThread = CreateThread(NULL, 0, RecvThread, (LPVOID)sock, 0, NULL);
 	if (hRecvThread == NULL) { closesocket(sock); }
 	else { CloseHandle(hRecvThread); }
