@@ -4,6 +4,8 @@
 #include <Scene/Scene.h>
 #include "Resource/Texture/Texture.h"
 #include "..\PlayerAnimation.h"
+#include "..\NetClient\TCPClient.h"
+
 bool CPlayer::Init()
 {
 	CGameObject::Init();
@@ -72,7 +74,7 @@ void CPlayer::PlayerMoveLeft()
 
 	m_objectDir = EObject_Dir::Left;
 	m_pos.x -= m_velocity.x * 2 * ELAPSED_TIME;
-	SetPos(m_pos);
+	SendMovePacket(m_pos);
 }
 
 void CPlayer::PlayerLeftIdle()
@@ -86,7 +88,7 @@ void CPlayer::PlayerLeftIdle()
 }
 
 void CPlayer::PlayerMoveRight()
-{	
+{
 	switch (m_objectState)
 	{
 	case EObject_State::Basic:
@@ -108,7 +110,7 @@ void CPlayer::PlayerMoveRight()
 
 	m_objectDir = EObject_Dir::Right;
 	m_pos.x += m_velocity.x * 2 * ELAPSED_TIME;
-	SetPos(m_pos);
+	SendMovePacket(m_pos);
 }
 
 void CPlayer::PlayerRightIdle()
@@ -154,7 +156,7 @@ void CPlayer::PlayerJump()
 	}
 	else if (m_objectState == EObject_State::Jump_Down || m_objectState == EObject_State::Jump_Down_L)
 	{
-		return;	
+		return;
 	}
 	else
 		m_prevHeight = m_pos.y;
@@ -232,4 +234,10 @@ void CPlayer::CalculateJump(float elapsedTime)
 		}
 		m_bDoubleJump = false;
 	}
+}
+
+void CPlayer::SendMovePacket(const Vector2& pos)
+{
+	C_PlayerMovePkt p(m_playerId, pos.x, pos.y);
+	TCPClient::GetInst()->SendPacket(&p);
 }

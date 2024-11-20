@@ -2,11 +2,8 @@
 
 int main()
 {
-    TCPServer GameServer;
-
-    if (GameServer.Init()) 
-        GameServer.Run();
-    
+    if (TCPServer::GetInst()->Init())
+        TCPServer::GetInst()->Run();
 
     return 0;
 }
