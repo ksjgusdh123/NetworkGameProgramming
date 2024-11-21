@@ -11,20 +11,20 @@ enum PacketType
 class Packet
 {
 public:
-	int len = 0;
 	int type = 0;
+	int data_size = 0;
 	char data[BUFSIZ]{};
 	Packet() {}
-	Packet(int len_, int type_, const char* data_) : len(len_), type(type_)
+	Packet(int type_, int data_size_, const char* data_) : data_size(data_size_), type(type_)
 	{
-		memcpy(data, data_, len_);
-		data[len] = '\0';
+		memcpy(data, data_, data_size_);
+		data[data_size] = '\0';
 	}
 	Packet(int type_, const std::string& message)
 	{
 		type = type_;
 		snprintf(data, sizeof(data), "%s", message.c_str());
-		len = strlen(data);
+		data_size = strlen(data);
 	}
 };
 
@@ -39,7 +39,7 @@ struct C_PlayerMovePkt :public Packet
 	{
 		type = MOVE;
 		sprintf_s(data, "%d %f %f", player_id, x, y);
-		len = strlen(data);
+		data_size = strlen(data);
 	}
 	void deserialize()
 	{
@@ -58,14 +58,13 @@ struct C_LoginRequestPkt : public Packet
 	{
 		type = LOGIN;
 		sprintf_s(data, "%d %s", player_id, player_name.c_str());
-		len = strlen(data);
+		data_size = strlen(data);
 	}
 
 	void deserialize()
 	{
 		char name_buffer[BUFSIZ];
-		sscanf_s(data, "%d %s", &player_id, name_buffer, sizeof(name_buffer));
-		player_name = name_buffer;
+		sscanf_s(data, "%d %s", &player_id, name_buffer, (unsigned int)sizeof(name_buffer));
 	}
 };
 

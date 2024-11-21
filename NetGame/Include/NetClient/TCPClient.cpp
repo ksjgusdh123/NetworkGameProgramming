@@ -64,8 +64,8 @@ void TCPClient::Cleanup() {
 
 void TCPClient::SendPacket(Packet* packet)
 {
-	send(sock, (char*)&packet->len, sizeof(int), 0);
+	send(sock, (char*)&packet->data_size, sizeof(int), 0);
 	send(sock, (char*)&packet->type, sizeof(int), 0);
-	send(sock, packet->data, packet->len, 0);
+	send(sock, packet->data, packet->data_size, 0);
 }
 
