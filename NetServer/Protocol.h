@@ -1,5 +1,5 @@
 #pragma once
-
+#define DATA_SIZE 250
 enum PacketType
 {
 	LOGIN,
@@ -13,12 +13,14 @@ class Packet
 public:
 	int type = 0;
 	int data_size = 0;
-	char data[BUFSIZ]{};
+	char data[DATA_SIZE]{};
+	int client_id = -1;
+
 	Packet() {}
-	Packet(int type_, int data_size_, const char* data_) : data_size(data_size_), type(type_)
+	Packet(int client_id_, int type_, int data_size_, const char* data_)
+		: client_id(client_id_), data_size(data_size_), type(type_)
 	{
 		memcpy(data, data_, data_size_);
-		data[data_size] = '\0';
 	}
 	Packet(int type_, const std::string& message)
 	{
@@ -30,41 +32,39 @@ public:
 
 struct C_PlayerMovePkt :public Packet
 {
-	int player_id = -1;
 	float x = -1;
 	float y = -1;
 
-	C_PlayerMovePkt(int player_id_, float x_, float y_)
-		: player_id(player_id_), x(x_), y(y_)
+	C_PlayerMovePkt(float x_, float y_)
+		:x(x_), y(y_)
 	{
 		type = MOVE;
-		sprintf_s(data, "%d %f %f", player_id, x, y);
+		sprintf_s(data, "%f %f", x, y);
 		data_size = strlen(data);
 	}
 	void deserialize()
 	{
-		sscanf_s(data, "%d %f %f", &player_id, &x, &y);
+		sscanf_s(data, "%f %f", &x, &y);
 	}
 };
 
 
 struct C_LoginRequestPkt : public Packet
 {
-	int player_id = -1;
 	std::string player_name;
 
-	C_LoginRequestPkt(int player_id_, const std::string& player_name_)
-		: player_id(player_id_), player_name(player_name_)
+	C_LoginRequestPkt(const std::string& player_name_)
+		: player_name(player_name_)
 	{
 		type = LOGIN;
-		sprintf_s(data, "%d %s", player_id, player_name.c_str());
+		sprintf_s(data, "%s", player_name.c_str());
 		data_size = strlen(data);
 	}
 
 	void deserialize()
 	{
 		char name_buffer[BUFSIZ];
-		sscanf_s(data, "%d %s", &player_id, name_buffer, (unsigned int)sizeof(name_buffer));
+		sscanf_s(data, "%s", name_buffer, (unsigned int)sizeof(name_buffer));
 	}
 };
 

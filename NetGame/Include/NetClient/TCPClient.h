@@ -32,5 +32,5 @@ private:
 	static TCPClient* m_inst;
 	SOCKET sock;
 	HANDLE hRecvThread;
-	int myId;
+	int myID;
 };

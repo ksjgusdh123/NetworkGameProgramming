@@ -11,13 +11,15 @@ DWORD WINAPI RecvThread(LPVOID arg)
 
 	while (true)
     {
+		int client_id;
 		int packet_size;
 		int packet_type;
 		char recv_buf[BUFSIZ];
+		recv(sock, (char*)&client_id, sizeof(int), MSG_WAITALL);
 		recv(sock, (char*)&packet_size, sizeof(int), MSG_WAITALL);
 		recv(sock, (char*)&packet_type, sizeof(int), MSG_WAITALL);
 		recv(sock, recv_buf, packet_size, MSG_WAITALL);
-		Packet p(packet_size, packet_type,recv_buf);
+		Packet p(client_id,packet_size, packet_type,recv_buf);
 		cout << p.data << endl;
 		recv_queue.push(p);
     }
@@ -47,6 +49,8 @@ void TCPClient::Connect()
 	serveraddr.sin_port = htons(SERVERPORT);
 	int retval = connect(sock, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR) err_quit("connect()");
+	
+	recv(sock, (char*)&myID, sizeof(int), MSG_WAITALL);
 
 	hRecvThread = CreateThread(NULL, 0, RecvThread, (LPVOID)sock, 0, NULL);
 	if (hRecvThread == NULL) { closesocket(sock); }
@@ -64,8 +68,8 @@ void TCPClient::Cleanup() {
 
 void TCPClient::SendPacket(Packet* packet)
 {
-	send(sock, (char*)&packet->data_size, sizeof(int), 0);
 	send(sock, (char*)&packet->type, sizeof(int), 0);
+	send(sock, (char*)&packet->data_size, sizeof(int), 0);
 	send(sock, packet->data, packet->data_size, 0);
 }
 
