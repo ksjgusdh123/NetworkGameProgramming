@@ -11,18 +11,18 @@ DWORD WINAPI RecvThread(LPVOID arg)
 
     while (true)
     {
-        int packet_size;
+        int data_size;
         int packet_type;
         char recv_buf[BUFSIZ];
 
-        int res = recv(client->socket, (char*)&packet_size, sizeof(int), MSG_WAITALL);
+        int res = recv(client->socket, (char*)&data_size, sizeof(int), MSG_WAITALL);
         if (res <= 0) break;
         res = recv(client->socket, (char*)&packet_type, sizeof(int), MSG_WAITALL);
         if (res <= 0) break;
-        res = recv(client->socket, recv_buf, packet_size, MSG_WAITALL);
+        res = recv(client->socket, recv_buf, data_size, MSG_WAITALL);
         if (res <= 0) break;
 
-        Packet p(packet_size, packet_type, recv_buf);
+        Packet p(data_size, packet_type, recv_buf);
         EnterCriticalSection(&cs);
         TCPServer::GetInst()->recvQ.push(p);
         LeaveCriticalSection(&cs);
@@ -134,6 +134,7 @@ void TCPServer::Connect()
         }
 
         int clientId = static_cast<int>(clientInfos.size() + 1);
+        send(client_sock, (char*)&clientId, sizeof(int), 0);
 
         clientInfos.emplace_back(client_sock, clientId, "");
 
@@ -163,8 +164,8 @@ void TCPServer::SendPacket(const Packet& packet)
 {
     for (const auto& client : clientInfos)
     {
-        send(client.socket, (char*)&packet.len, sizeof(int), 0);
+        send(client.socket, (char*)&packet.data_size, sizeof(int), 0);
         send(client.socket, (char*)&packet.type, sizeof(int), 0);
-        send(client.socket, packet.data, packet.len, 0);
+        send(client.socket, packet.data, packet.data_size, 0);
     }
 }
