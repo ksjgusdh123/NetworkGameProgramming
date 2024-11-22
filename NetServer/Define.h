@@ -15,6 +15,7 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <array>
 #include "Protocol.h"
 
 using namespace std;

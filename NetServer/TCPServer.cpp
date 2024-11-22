@@ -9,12 +9,12 @@ DWORD WINAPI RecvThread(LPVOID arg)
 	cout << "Start RecvThread!\n";
 
 	SOCKET client_sock = (SOCKET)arg;
-	int client_id = static_cast<int>(TCPServer::GetInst()->clientInfos.size() + 1);
+	int client_id = static_cast<int>(TCPServer::GetInst()->clients.size() + 1);
 	int res = send(client_sock, (char*)&client_id, sizeof(int), 0);
 	if (res == SOCKET_ERROR) { err_display("send()"); return -1; }
 
-	ClientInfo client(client_sock, client_id, "");
-	TCPServer::GetInst()->clientInfos.emplace_back(client);
+	Client client(client_sock, client_id, "");
+	TCPServer::GetInst()->clients.emplace_back(client);
 
 	while (true)
 	{
@@ -53,42 +53,27 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 			Sleep(100);
 			continue;
 		}
-		Packet p = recvQ.front();
+		Packet packet = recvQ.front();
 		recvQ.pop();
 
-		switch (p.type)
+		switch (packet.type)
 		{
 		case LOGIN:
 		{
-			C_LoginRequestPkt* cur = (C_LoginRequestPkt*)&p;
+			C_LoginRequestPkt* cur = (C_LoginRequestPkt*)&packet;
 			cur->deserialize();
-
-			cout << "Login Request Received: Player ID=" << cur->client_id
-				<< ", Player Name=" << cur->player_name << endl;
-
-			auto& clientList = TCPServer::GetInst()->clientInfos;
-			if (std::any_of(clientList.begin(), clientList.end(), [&](const ClientInfo& client) { return client.id == cur->client_id; }))
-			{
-				cout << "Player ID " << cur->client_id << " already logged in.\n";
-
-				Packet errorPacket(LOGIN_FAIL, "Player already logged in.");
-				TCPServer::GetInst()->SendPacket(errorPacket);
-			}
-			else
-			{
-				cout << "Player ID " << cur->client_id << " successfully logged in.\n";
-
-				Packet successPacket(LOGIN_SUCCESS, "Login successful.");
-				TCPServer::GetInst()->SendPacket(successPacket);
-			}
+			cout << "[LOGIN] " << cur->client_id << " Player Name = " << cur->data << endl;
+			auto& cur_client = TCPServer::GetInst()->clients[cur->client_id-1];
+			cur_client.name = cur->data;
+			TCPServer::GetInst()->SendPacket(packet);
 			break;
 		}
 		case MOVE:
 		{
-			C_PlayerMovePkt* cur = (C_PlayerMovePkt*)&p;
+			C_PlayerMovePkt* cur = (C_PlayerMovePkt*)&packet;
 			cur->deserialize();
-			cout << "Player " << cur->client_id << " moved to (" << cur->x << "," << cur->y << ")\n";
-			TCPServer::GetInst()->SendPacket(p);
+			cout << "[MOVE] " << cur->client_id << " Player moved to (" << cur->x << "," << cur->y << ")\n";
+			TCPServer::GetInst()->SendPacket(packet);
 			break;
 		}
 		default:
@@ -151,7 +136,7 @@ void TCPServer::Run()
 
 void TCPServer::SendPacket(const Packet& packet)
 {
-	for (const auto& client : clientInfos)
+	for (const auto& client : clients)
 	{
 		int res = send(client.socket, (char*)&packet.client_id, sizeof(int), 0);
 		res = send(client.socket, (char*)&packet.data_size, sizeof(int), 0);

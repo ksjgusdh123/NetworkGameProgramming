@@ -1,10 +1,21 @@
 #pragma once
 #define DATA_SIZE 250
+
+struct PlayerInfo
+{
+	int id;
+	int x, y;
+	short hp;
+	short damage;
+	char role_type;
+	char state;
+};
+
+//================
+
 enum PacketType
 {
 	LOGIN,
-	LOGIN_SUCCESS,
-	LOGIN_FAIL,
 	MOVE,
 };
 
@@ -21,12 +32,6 @@ public:
 		: client_id(client_id_), data_size(data_size_), type(type_)
 	{
 		memcpy(data, data_, data_size_);
-	}
-	Packet(int type_, const std::string& message)
-	{
-		type = type_;
-		snprintf(data, sizeof(data), "%s", message.c_str());
-		data_size = strlen(data);
 	}
 };
 
@@ -51,20 +56,18 @@ struct C_PlayerMovePkt :public Packet
 
 struct C_LoginRequestPkt : public Packet
 {
-	std::string player_name;
+	//std::string player_name;
 
 	C_LoginRequestPkt(const std::string& player_name_)
-		: player_name(player_name_)
 	{
 		type = LOGIN;
-		sprintf_s(data, "%s", player_name.c_str());
+		sprintf_s(data, "%s", player_name_.c_str());
 		data_size = strlen(data);
 	}
 
 	void deserialize()
 	{
-		char name_buffer[BUFSIZ];
-		sscanf_s(data, "%s", name_buffer, (unsigned int)sizeof(name_buffer));
+		//player_name = std::string(data, data_size);
 	}
 };
 

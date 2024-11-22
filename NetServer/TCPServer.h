@@ -1,13 +1,12 @@
 #pragma once
 #include "Define.h"
-#include <queue>
 
-struct ClientInfo {
+struct Client {
 	SOCKET socket;
-	int id;
 	string name;
-
-	ClientInfo(SOCKET sock, int clientId, const string& clientName)
+	PlayerInfo player;
+	int& id = player.id;
+	Client(SOCKET sock, int clientId, const string& clientName)
 		: socket(sock), id(clientId), name(clientName) {}
 };
 
@@ -37,7 +36,7 @@ public:
 	void SendPacket(const Packet& packet);
 public:
 	queue<Packet> recvQ;
-	vector<ClientInfo> clientInfos;
+	vector<Client> clients;
 
 private:
 	static TCPServer* m_inst;

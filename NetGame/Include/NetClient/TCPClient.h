@@ -9,10 +9,12 @@ public:
 	TCPClient() : sock(INVALID_SOCKET) { Init(); };
 	~TCPClient() { Cleanup(); }
 
+	void ProcessPacket();
+	void SendPacket(Packet* packet);
+
 	bool Init();
 	void Connect();
 	void Cleanup();
-	void SendPacket(Packet* packet);
 
 	static TCPClient* GetInst()
 	{

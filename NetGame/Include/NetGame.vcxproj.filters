@@ -55,7 +55,9 @@
     <ClCompile Include="Scene\LobbyScene.cpp">
       <Filter>02. Scene</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject\LobbyPlayer.cpp" />
+    <ClCompile Include="GameObject\LobbyPlayer.cpp">
+      <Filter>03. GameObject\01. Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene\MainScene.h">
@@ -139,7 +141,9 @@
     <ClInclude Include="Scene\LobbyScene.h">
       <Filter>02. Scene</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject\LobbyPlayer.h" />
+    <ClInclude Include="GameObject\LobbyPlayer.h">
+      <Filter>03. GameObject\01. Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="NetGame.ico">

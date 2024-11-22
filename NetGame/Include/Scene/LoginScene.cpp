@@ -5,6 +5,8 @@
 #include <Scene/SceneManager.h>
 #include "MainScene.h"
 #include "LobbyScene.h"
+#include "Protocol.h"
+#include "..\NetClient\TCPClient.h"
 
 #define IDC_BUTTON 100
 #define IDC_EDIT 101
@@ -66,6 +68,9 @@ bool CLoginScene::SendLoginRequest(std::string name)
 {
 	//if (name.length() <= 0)
 	//	return false;
+
+	C_LoginRequestPkt packet(name);
+	TCPClient::GetInst()->SendPacket(&packet);
 
 	return true;
 }

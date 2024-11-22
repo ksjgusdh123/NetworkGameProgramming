@@ -3,6 +3,8 @@
 #include "ErrDisplay.h"
 
 queue<Packet> recv_queue;
+CRITICAL_SECTION cs;
+
 TCPClient* TCPClient::m_inst;
 
 DWORD WINAPI RecvThread(LPVOID arg)
@@ -25,9 +27,52 @@ DWORD WINAPI RecvThread(LPVOID arg)
     }
 	return true;
 }
+
+void TCPClient::ProcessPacket()
+{
+	EnterCriticalSection(&cs);
+	if (recv_queue.empty())
+	{
+		LeaveCriticalSection(&cs);
+	}
+	Packet p = recv_queue.front();
+	recv_queue.pop();
+	LeaveCriticalSection(&cs);
+
+	switch (p.type)
+	{
+	case LOGIN:
+	{
+		C_LoginRequestPkt* cur = (C_LoginRequestPkt*)&p;
+		cur->deserialize();
+		break;
+	}
+	case MOVE:
+	{
+		C_PlayerMovePkt* cur = (C_PlayerMovePkt*)&p;
+		cur->deserialize();
+		cout << "Player " << cur->client_id << " moved to (" << cur->x << "," << cur->y << ")\n";
+		
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+void TCPClient::SendPacket(Packet* packet)
+{
+	send(sock, (char*)&packet->type, sizeof(int), 0);
+	send(sock, (char*)&packet->data_size, sizeof(int), 0);
+	send(sock, packet->data, packet->data_size, 0);
+}
+
 bool TCPClient::Init()
 {
 	cout << "Client Init()\n";
+
+	InitializeCriticalSection(&cs);
+
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		return false;
@@ -64,12 +109,5 @@ void TCPClient::Cleanup() {
 		sock = INVALID_SOCKET;
 	}
 	WSACleanup();
-}
-
-void TCPClient::SendPacket(Packet* packet)
-{
-	send(sock, (char*)&packet->type, sizeof(int), 0);
-	send(sock, (char*)&packet->data_size, sizeof(int), 0);
-	send(sock, packet->data, packet->data_size, 0);
 }
 
