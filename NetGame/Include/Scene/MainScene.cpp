@@ -21,6 +21,19 @@ bool CMainScene::Init()
     back->SetSize(2000.f, 1000.f);
     back->SetPivot(0.5f, 0.5f);
 
+
+    CTrap* trap = CreateObject<CTrap>("trap");
+    trap->SetPos(-570.f, 415.f);
+
+    trap = CreateObject<CTrap>("trap");
+    trap->SetPos(-40.f, 140.f);
+
+    trap = CreateObject<CTrap>("trap");
+    trap->SetPos(600.f, 40.f);
+
+    trap = CreateObject<CTrap>("trap");
+    trap->SetPos(600.f, 240.f);
+
     CreateMap();
 
     CStar* star = CreateObject<CStar>("star");
@@ -29,11 +42,8 @@ bool CMainScene::Init()
     CHeart* heart = CreateObject<CHeart>("heart");
     heart->SetPos(200.f, 350.f);
 
-    CTrap* trap = CreateObject<CTrap>("trap");
-    trap->SetPos(300.f, 350.f);
-
     CPortal* portal = CreateObject<CPortal>("portal");
-    portal->SetPos(400.f, 350.f);
+    portal->SetPos(730.f, -150.f);
     
     Vector2 resolution = { (float)CEngine::GetInst()->GetResolution().width,
     (float)CEngine::GetInst()->GetResolution().height };
@@ -118,6 +128,103 @@ void CMainScene::CreateMap()
     tilePosX += 150.f;
     tile->SetTileNum(3);
 
+
+    // 상자 계단
+    tile = CreateObject<CTile>("crate");
+    tile->SetPos(-800.f, 425.f);
+    tile->SetTileNum(17);
+    tile = CreateObject<CTile>("crate");
+    tile->SetPos(-750.f, 425.f);
+    tile->SetTileNum(17);
+    tile = CreateObject<CTile>("crate");
+    tile->SetPos(-750.f, 375.f);
+    tile->SetTileNum(17);
+    tile = CreateObject<CTile>("crate");
+    tile->SetPos(-700.f, 425.f);
+    tile->SetTileNum(17);
+    tile = CreateObject<CTile>("crate");
+    tile->SetPos(-700.f, 375.f);
+    tile->SetTileNum(17);
+    tile = CreateObject<CTile>("crate");
+    tile->SetPos(-700.f, 325.f);
+    tile->SetTileNum(17);
+
+    // 상자 계단2
+    tile = CreateObject<CTile>("crate");
+    tile->SetPos(-550.f, 425.f);
+    tile->SetTileNum(17);
+    tile = CreateObject<CTile>("crate");
+    tile->SetPos(-500.f, 425.f);
+    tile->SetTileNum(17);
+    tile = CreateObject<CTile>("crate");
+    tile->SetPos(-500.f, 375.f);
+    tile->SetTileNum(17);
+    tile = CreateObject<CTile>("crate");
+    tile->SetPos(-500.f, 325.f);
+    tile->SetTileNum(17);
+
+    tile = CreateObject<CTile>("crate");
+    tile->SetPos(-450.f, 425.f);
+    tile->SetTileNum(17);
+    tile = CreateObject<CTile>("crate");
+    tile->SetPos(-450.f, 375.f);
+    tile->SetTileNum(17);
+
+    tile = CreateObject<CTile>("crate");
+    tile->SetPos(-400.f, 425.f);
+    tile->SetTileNum(17);
+
+    //
+    tile = CreateObject<CTile>("tile14");
+    tile->SetPos(-380.f, 250.f);
+    tile->SetTileNum(14);
+    tile = CreateObject<CTile>("tile15");
+    tile->SetPos(-330.f, 250.f);
+    tile->SetTileNum(15);
+    tile = CreateObject<CTile>("tile16");
+    tile->SetPos(-280.f, 250.f);
+    tile->SetTileNum(16);
+
+    tile = CreateObject<CTile>("tile14");
+    tile->SetPos(-130.f, 200.f);
+    tile->SetTileNum(14);
+    tile = CreateObject<CTile>("tile15");
+    tile->SetPos(-80.f, 200.f);
+    tile->SetTileNum(15);
+    tile = CreateObject<CTile>("tile16");
+    tile->SetPos(-30.f, 200.f);
+    tile->SetTileNum(16);
+
+    tile = CreateObject<CTile>("tile14");
+    tile->SetPos(70.f, 170.f);
+    tile->SetTileNum(14);
+    tile = CreateObject<CTile>("tile15");
+    tile->SetPos(120.f, 170.f);
+    tile->SetTileNum(15);
+    tile = CreateObject<CTile>("tile16");
+    tile->SetPos(170.f, 170.f);
+    tile->SetTileNum(16);
+
+    tile = CreateObject<CTile>("tile14");
+    tile->SetPos(-380.f, 100.f);
+    tile->SetTileNum(14);
+    tile = CreateObject<CTile>("tile15");
+    tile->SetPos(-330.f, 100.f);
+    tile->SetTileNum(15);
+    tile = CreateObject<CTile>("tile16");
+    tile->SetPos(-280.f, 100.f);
+    tile->SetTileNum(16);
+    //
+    // 근접 몬스터 가두는 상자
+
+    tile = CreateObject<CTile>("crate");
+    tile->SetPos(-250.f, 425.f);
+    tile->SetTileNum(17);
+
+    tile = CreateObject<CTile>("crate");
+    tile->SetPos(50.f, 425.f);
+    tile->SetTileNum(17);
+    
 
     // 두번째 발판
     tile = CreateObject<CTile>("tile1");

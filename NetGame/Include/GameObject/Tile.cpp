@@ -14,7 +14,7 @@ bool CTile::Init()
 	CGameObject::Init();
 
 	SetPivot(0.5f, 0.5f);
-	CreateTexture(16);
+	CreateTexture(17);
 	SetTexture("Tile(1)", TEXT("Map/Tile (1).bmp"), ETile_Num::Tile_1, ETexture_Type::Sprite);
 	SetTexture("Tile(2)", TEXT("Map/Tile (2).bmp"), ETile_Num::Tile_2, ETexture_Type::Sprite);
 	SetTexture("Tile(3)", TEXT("Map/Tile (3).bmp"), ETile_Num::Tile_3, ETexture_Type::Sprite);
@@ -31,8 +31,9 @@ bool CTile::Init()
 	SetTexture("Tile(14)", TEXT("Map/Tile (14).bmp"), ETile_Num::Tile_14, ETexture_Type::Sprite);
 	SetTexture("Tile(15)", TEXT("Map/Tile (15).bmp"), ETile_Num::Tile_15, ETexture_Type::Sprite);
 	SetTexture("Tile(16)", TEXT("Map/Tile (16).bmp"), ETile_Num::Tile_16, ETexture_Type::Sprite);
+	SetTexture("Crate", TEXT("Map/Crate.bmp"), ETile_Num::Tile_17, ETexture_Type::Sprite);
 
-	for (int i = 0 ; i < 16; ++i){
+	for (int i = 0 ; i < 17; ++i){
 	SetColorKey(255.f, 255.f, 255.f, i);
 	}
 	SetSize(50.f, 50.f);
@@ -97,8 +98,12 @@ void CTile::Render(HDC hDC, float elapsedTime)
 		{
 			if (m_texture[(int)m_objectNum - 1]->GetEnableColorKey())
 			{
+				int size{ 128 };
+				if ((int)m_objectNum == 17) size = 106;
+			
+
 				TransparentBlt(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y,
-					m_texture[(int)m_objectNum - 1]->GetDC(), 0, 0, 128, 128, m_texture[(int)m_objectNum - 1]->GetColorKey());
+					m_texture[(int)m_objectNum - 1]->GetDC(), 0, 0, size, size, m_texture[(int)m_objectNum - 1]->GetColorKey());
 			}
 			else
 			{
