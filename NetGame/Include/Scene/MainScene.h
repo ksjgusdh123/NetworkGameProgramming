@@ -17,7 +17,7 @@ public:
 	virtual bool Init() override;
 	virtual void Update(float elapsedTime);
 	bool IsPlayerInRicheAttackArea();
-
+	void CreateMap();
 private:
 	class CPlayer* player;
 	class CGameObject* monster;

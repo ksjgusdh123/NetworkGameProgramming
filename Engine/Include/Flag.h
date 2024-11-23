@@ -69,6 +69,7 @@ enum class ETile_Num
 	Tile_14,
 	Tile_15,
 	Tile_16,
+	Tile_17,
 	max
 };
 
