@@ -19,14 +19,9 @@ bool CMainScene::Init()
     back->CreateTexture(1);
     back->SetTexture("Background", TEXT("Map/BG.bmp"), EObject_Dir::Right);
     back->SetSize(2000.f, 1000.f);
+    back->SetPivot(0.5f, 0.5f);
 
-    CTile* tile = CreateObject<CTile>("tile");
-    tile->SetPos(100.f, 150.f);
-    tile->SetTileNum(1);
-
-    tile = CreateObject<CTile>("tile2");
-    tile->SetPos(350.f, 150.f);
-    tile->SetTileNum(16);
+    CreateMap();
 
     CStar* star = CreateObject<CStar>("star");
     star->SetPos(400.f, 100.f);
@@ -49,7 +44,7 @@ bool CMainScene::Init()
 
 
     player = CreateObject<CArcher>("wns");
-    player->SetPos(100.f, 100.f);
+    player->SetPos(0.f, 180.f);
     SetPlayer(player);
     GetCamera()->SetTarget(player);
 
@@ -100,3 +95,131 @@ bool CMainScene::IsPlayerInRicheAttackArea()
     return false;
 }
 
+void CMainScene::CreateMap()
+{
+    float tilePosX = -930.f;
+    float tilePosY = 475.f;
+
+    // 첫 발판
+    CTile* tile = CreateObject<CTile>("tile");
+    tile->SetPos(tilePosX, tilePosY);
+    tile->SetTileNum(1);
+    tilePosX += 50.f;
+
+    for (int i = 0; i < 20; ++i) {
+        tile = CreateObject<CTile>("tile2");
+        tile->SetPos(tilePosX, 475.f);
+        tilePosX += 50.f;
+        tile->SetTileNum(2);
+    }
+
+    tile = CreateObject<CTile>("tile3");
+    tile->SetPos(tilePosX, 475.f);
+    tilePosX += 150.f;
+    tile->SetTileNum(3);
+
+
+    // 두번째 발판
+    tile = CreateObject<CTile>("tile1");
+    tile->SetPos(tilePosX, 475.f);
+    tilePosX += 50.f;
+    tile->SetTileNum(1);
+
+    for (int i = 0; i < 6; ++i) {
+        tile = CreateObject<CTile>("tile2");
+        tile->SetPos(tilePosX, 475.f);
+        tilePosX += 50.f;
+        tile->SetTileNum(2);
+    }
+
+    tile = CreateObject<CTile>("tile3");
+    tile->SetPos(tilePosX, 475.f);
+    tilePosX += 250.f;
+    tile->SetTileNum(3);
+
+    // 점프맵 발판
+    tile = CreateObject<CTile>("tile14");
+    tile->SetPos(tilePosX, 400.f);
+    tile->SetTileNum(14);
+    tile = CreateObject<CTile>("tile14");
+    tile->SetPos(tilePosX, 200.f);
+    tile->SetTileNum(14);
+    tilePosX += 50.f;
+
+    tile = CreateObject<CTile>("tile15");
+    tile->SetPos(tilePosX, 400.f);
+    tile->SetTileNum(15);
+    tile = CreateObject<CTile>("tile15");
+    tile->SetPos(tilePosX, 200.f);
+    tile->SetTileNum(15);
+    tilePosX += 50.f;
+
+    tile = CreateObject<CTile>("tile16");
+    tile->SetPos(tilePosX, 400.f);
+    tile->SetTileNum(16);
+    tile = CreateObject<CTile>("tile16");
+    tile->SetPos(tilePosX, 200.f);
+    tile->SetTileNum(16);
+    
+    tilePosX -= 400.f;
+
+    tile = CreateObject<CTile>("tile14");
+    tile->SetPos(tilePosX, 300.f);
+    tile->SetTileNum(14);
+    tile = CreateObject<CTile>("tile14");
+    tile->SetPos(tilePosX, 100.f);
+    tile->SetTileNum(14);
+    tilePosX += 50.f;
+
+    tile = CreateObject<CTile>("tile15");
+    tile->SetPos(tilePosX, 300.f);
+    tile->SetTileNum(15);
+    tile = CreateObject<CTile>("tile15");
+    tile->SetPos(tilePosX, 100.f);
+    tile->SetTileNum(15);
+    tilePosX += 50.f;
+
+    tile = CreateObject<CTile>("tile16");
+    tile->SetPos(tilePosX, 300.f);
+    tile->SetTileNum(16);
+    tile = CreateObject<CTile>("tile16");
+    tile->SetPos(tilePosX, 100.f);
+    tile->SetTileNum(16);
+
+
+    tilePosX -= 400.f;
+
+    tile = CreateObject<CTile>("tile14");
+    tile->SetPos(tilePosX, 0.f);
+    tile->SetTileNum(14);
+    tilePosX += 50.f;
+
+    tile = CreateObject<CTile>("tile15");
+    tile->SetPos(tilePosX, 0.f);
+    tile->SetTileNum(15);
+    tilePosX += 50.f;
+
+    tile = CreateObject<CTile>("tile16");
+    tile->SetPos(tilePosX, 0.f);
+    tile->SetTileNum(16);
+
+    tilePosX += 200.f;
+
+
+    // 포탈 발판
+    tile = CreateObject<CTile>("tile14");
+    tile->SetPos(tilePosX, -100.f);
+    tile->SetTileNum(14);
+    tilePosX += 50.f;
+
+    for (int i = 0; i < 4; ++i) {
+        tile = CreateObject<CTile>("tile15");
+        tile->SetPos(tilePosX, -100.f);
+        tile->SetTileNum(15);
+        tilePosX += 50.f;
+    }
+
+    tile = CreateObject<CTile>("tile16");
+    tile->SetPos(tilePosX, -100.f);
+    tile->SetTileNum(16);
+}

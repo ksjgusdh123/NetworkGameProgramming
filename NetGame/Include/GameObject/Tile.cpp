@@ -35,7 +35,7 @@ bool CTile::Init()
 	for (int i = 0 ; i < 16; ++i){
 	SetColorKey(255.f, 255.f, 255.f, i);
 	}
-	SetSize(90.f, 90.f);
+	SetSize(50.f, 50.f);
 	
 	m_objectDir = EObject_Dir::Right;
 	return true;
