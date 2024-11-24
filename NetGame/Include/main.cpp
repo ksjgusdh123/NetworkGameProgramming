@@ -10,7 +10,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     if (!mgr.Init(hInstance))
         return 0;
 
-    TCPClient::GetInst();
+    //TCPClient::GetInst();
 
     int ret = mgr.Run();
 

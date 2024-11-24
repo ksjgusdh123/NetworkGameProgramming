@@ -26,6 +26,7 @@ protected:
 	void CalculateJump(float elapsedTime);
 
 	void SendMovePacket(const Vector2& pos);
+
 protected:
 	int m_frame = 0;
 	float m_nowFrame = 0;

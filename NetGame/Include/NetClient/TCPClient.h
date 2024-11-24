@@ -11,6 +11,7 @@ public:
 
 	void ProcessPacket();
 	void SendPacket(Packet* packet);
+	int GetMyClientID() { return myID; }
 
 	bool Init();
 	void Connect();

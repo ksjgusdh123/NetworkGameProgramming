@@ -70,7 +70,7 @@ bool CLoginScene::SendLoginRequest(std::string name)
 	//	return false;
 
 	C_LoginRequestPkt packet(name);
-	TCPClient::GetInst()->SendPacket(&packet);
+	//TCPClient::GetInst()->SendPacket(&packet);
 
 	return true;
 }
