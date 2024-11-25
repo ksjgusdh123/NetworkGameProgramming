@@ -10,11 +10,14 @@
 #include <Collision.h>
 #include <Engine.h>
 #include <Scene/Camera.h>
+#include "..\NetClient\TCPClient.h"
 
 bool CMainScene::Init()
 {
     CScene::Init();
-
+    // 게임 시작 요청 패킷 전송
+    /*C_GameStartRequestPkt packet{};
+    PacketManager::GetInst().EnqueueSendPacket(packet);*/
     CGameObject* back = CreateObject<CGameObject>("Background");
     back->CreateTexture(1);
     back->SetTexture("Background", TEXT("Map/BG.bmp"), EObject_Dir::Right);

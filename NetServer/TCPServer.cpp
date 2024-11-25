@@ -89,6 +89,11 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 			TCPServer::GetInst()->SendPacket(packet);	
 			break;
 		}
+		case GameStartRequest:
+		{
+			cout << "전송 받음" << endl;
+			break;
+		}
 		default:
 			break;
 		}

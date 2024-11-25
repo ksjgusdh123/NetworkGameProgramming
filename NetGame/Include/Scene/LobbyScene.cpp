@@ -73,7 +73,9 @@ void CLobbyScene::Update(float elapsedTime)
 			m_hButton[i] = NULL;
 		}
 		if(m_hButton[2] == NULL)
-		CSceneManager::GetInst()->CreateScene<CMainScene>();
+			CSceneManager::GetInst()->CreateScene<CMainScene>();
+
+		
 	}
 }
 

@@ -19,6 +19,8 @@ enum PacketType
 	LoginRequest,
 	LobbyRequest,
 	PlayerMove,
+	GameStartRequest,
+	Tiles,
 };
 
 class Packet
@@ -111,6 +113,36 @@ struct C_LobbyRequestPkt : public Packet
 		}
 	}
 
+};
+
+struct C_GameStartRequestPkt : public Packet
+{
+	C_GameStartRequestPkt()
+	{
+		type = GameStartRequest;
+		sprintf_s(data, "%s", std::string{"HI"});
+		data_size = strlen(data);
+	}
+
+	void deserialize()
+	{
+
+	}
+};
+
+struct C_TilesPkt : public Packet
+{
+	C_TilesPkt()
+	{
+		type = Tiles;
+		sprintf_s(data, "%s", std::string{"HI"});
+		data_size = strlen(data);
+	}
+
+	void deserialize()
+	{
+
+	}
 };
 
 //
