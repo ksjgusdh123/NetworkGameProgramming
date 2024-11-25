@@ -1,11 +1,11 @@
 #pragma once
-#include "GameObject.h"
+#include "Player.h"
 
-class CPlayer :public CGameObject
+class CMyPlayer :public CPlayer
 {
 public:
-	CPlayer() {}
-	virtual ~CPlayer() {}
+	CMyPlayer() {}
+	virtual ~CMyPlayer() {}
 
 public:
 	virtual bool Init() override;
@@ -13,7 +13,7 @@ public:
 	virtual void PostUpdate(float elapsedTime) override;
 	virtual void Render(HDC hDC, float elapsedTime) override;
 
-protected:	
+protected:
 	void PlayerMoveLeft();
 	void PlayerLeftIdle();
 	void PlayerMoveRight();
@@ -26,19 +26,5 @@ protected:
 	void CalculateJump(float elapsedTime);
 
 	void SendMovePacket(const Vector2& pos);
-
-protected:
-	int m_frame = 0;
-	float m_nowFrame = 0;
-	bool m_bFrameCheck = false;
-
-	float m_prevHeight = 0;
-	float m_jumpTime = 0;
-	bool m_bJump = false;
-	bool m_bDoubleJump = false;
-	int m_multipleNum = 1;
-
-	Vector2 m_attackSize;
-	Vector2 m_attackPivot;
-};	
+};
 

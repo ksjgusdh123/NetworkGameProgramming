@@ -24,9 +24,9 @@ bool CLoginScene::Init()
 	HINSTANCE hInst = CEngine::GetInst()->GetWindowInstance();
 
 	m_hEdit = CreateWindow(TEXT("edit"), TEXT(""), WS_CHILD | WS_VISIBLE | WS_BORDER, 380, 500, 180, 25, hwnd, (HMENU)IDC_EDIT, hInst, NULL);
-	m_hButton = CreateWindow(L"button", L"È®ÀÎ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 600, 500, 100, 25, hwnd, (HMENU)IDC_BUTTON, hInst, NULL);
+	m_hButton = CreateWindow(L"button", L"È®ï¿½ï¿½", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 600, 500, 100, 25, hwnd, (HMENU)IDC_BUTTON, hInst, NULL);
 
-	// ¿¡µðÆ® ÄÁÆ®·Ñ¿¡ ÃÖ´ë 10ÀÚ¸¸ ÀÔ·ÂÇÒ ¼ö ÀÖµµ·Ï ¼³Á¤
+	// ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½Æ®ï¿½Ñ¿ï¿½ ï¿½Ö´ï¿½ 10ï¿½Ú¸ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Öµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	SendMessage(m_hEdit, EM_SETLIMITTEXT, 10, 0);
 
 	return true;
@@ -41,7 +41,7 @@ void CLoginScene::CheckButton()
 {
 	std::string str = EditBoxToString(); 
 	if (str == "") return;
-	// ¼­¹ö º¸³»°í Á¤º¸ ¹Þ°í -> Áßº¹ °Ë»ç ÈÄ ·Î±×ÀÎ bool°ª
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Þ°ï¿½ -> ï¿½ßºï¿½ ï¿½Ë»ï¿½ ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ boolï¿½ï¿½
 	if (SendLoginRequest(str))
 	{
 		DestroyWindow(m_hEdit);
@@ -53,11 +53,11 @@ void CLoginScene::CheckButton()
 
 std::string CLoginScene::EditBoxToString()
 {
-	// À¯´ÏÄÚµå ¹®ÀÚ¿­À» À§ÇÑ wchar_t ¹è¿­ »ç¿ë
+	// ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ wchar_t ï¿½è¿­ ï¿½ï¿½ï¿½
 	wchar_t str[11];
 	GetDlgItemText(CEngine::GetInst()->GetWindowHandle(), IDC_EDIT, str, 11);
 
-	// wstringÀ» stringÀ¸·Î º¯È¯
+	// wstringï¿½ï¿½ stringï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
 	std::wstring wstr(str);
 	std::string result(wstr.begin(), wstr.end());
 

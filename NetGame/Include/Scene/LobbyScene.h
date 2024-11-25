@@ -3,6 +3,13 @@
 
 // client ID로 배열 0, 1쓸 지 구분한다고 하였을 시
 
+struct LobbyData
+{
+	EPlayer_Job job = EPlayer_Job::Sword;
+	bool bReady = false;
+	class CLobbyPlayer* player = NULL;
+};
+
 class CLobbyScene : public CScene
 {
 public:
@@ -17,9 +24,6 @@ public:
 private:
 	//std::string m_name[2];
 	HWND			m_hButton[3]{};
-	EPlayer_Job		m_job[2];
-	bool			m_bReady[2];
-	CGameObject*	m_object[2];
-	class CLobbyPlayer* m_player[2];
+	LobbyData       m_LobbyData[2];
 };
 

@@ -21,25 +21,14 @@ bool CLobbyScene::Init()
 	back->SetSize(960.f, 650.f);
 	back->SetPivot(0.f, 0.f);
 
-	m_player[0] = CreateObject<CLobbyPlayer>("Player1");
-	m_player[0]->SetSize(100.f, 200.f);
-	m_player[0]->SetPos(270.f, 300.f);
+	m_LobbyData[0].player = CreateObject<CLobbyPlayer>("Player1");
+	m_LobbyData[0].player->SetSize(100.f, 200.f);
+	m_LobbyData[0].player->SetPos(270.f, 300.f);
 
-	m_player[1] = CreateObject<CLobbyPlayer>("Player2");
-	m_player[1]->SetSize(100.f, 200.f);
-	m_player[1]->SetPos(680.f, 300.f);
+	m_LobbyData[1].player = CreateObject<CLobbyPlayer>("Player2");
+	m_LobbyData[1].player->SetSize(100.f, 200.f);
+	m_LobbyData[1].player->SetPos(680.f, 300.f);
 
-	//m_object[0] = CreateObject<CGameObject>("player1");
-	//m_object[0]->CreateTexture(1);
-	//m_object[0]->SetTexture("pl", TEXT("Player/Sword.bmp"), EObject_Dir::Right);
-	//m_object[0]->SetSize(100.f, 200.f);
-	//m_object[0]->SetPos(270.f, 300.f);
-
-	/*m_object[1] = CreateObject<CGameObject>("player2");
-	m_object[1]->CreateTexture(1);
-	m_object[1]->SetTexture("pl2", TEXT("Player/Archer.bmp"), EObject_Dir::Right);
-	m_object[1]->SetSize(100.f, 200.f);
-	m_object[1]->SetPos(680.f, 300.f);*/
 
 	HWND hwnd = CEngine::GetInst()->GetWindowHandle();
 	HINSTANCE hInst = CEngine::GetInst()->GetWindowInstance();
@@ -55,7 +44,7 @@ void CLobbyScene::Update(float elapsedTime)
 {
 	CScene::Update(elapsedTime);
 
-	if (m_bReady[0] && m_bReady[1])
+	if (m_LobbyData[0].bReady && m_LobbyData[1].bReady)
 	{
 		for (int i = 0; i < 3; ++i)
 		{
@@ -72,14 +61,14 @@ void CLobbyScene::KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	switch (LOWORD(wParam))
 	{
 	case IDC_BUTTON:
-		m_player[0]->SetJob(EPlayer_Job::Sword);
+		m_LobbyData[0].player->SetJob(EPlayer_Job::Sword);
 		break;
 	case IDC_BUTTON2:
-		m_player[0]->SetJob(EPlayer_Job::Archer);
+		m_LobbyData[0].player->SetJob(EPlayer_Job::Archer);
 		break;
 	case IDC_BUTTON3:
-		m_bReady[0] = !m_bReady[0];
-		m_bReady[1] = !m_bReady[1];
+		m_LobbyData[0].bReady = !m_LobbyData[0].bReady;
+		m_LobbyData[1].bReady = !m_LobbyData[1].bReady;
 		break;
 	}
 }
