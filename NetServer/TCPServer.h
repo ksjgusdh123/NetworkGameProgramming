@@ -2,18 +2,6 @@
 #include "Define.h"
 #include <queue>
 
-struct Client {
-	SOCKET socket;
-	string name;
-	PlayerInfo player;
-	int& id = player.id;
-	Client(SOCKET sock, int clientId, const string& clientName)
-		: socket(sock), name(clientName)
-	{
-		id = clientId;
-	}
-};
-
 class TCPServer
 {
 public:

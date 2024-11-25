@@ -18,6 +18,17 @@ void PacketManager::ProcessPacket(const Packet& packet)
 		cur->deserialize();
 	}
 	break;
+	case LobbyRequest:
+	{
+		C_LobbyRequestPkt* cur = (C_LobbyRequestPkt*)&packet;
+		cur->deserialize();
+		ClientNum = cur->ClientNum;
+		for (int i = 0; i < ClientNum; ++i)
+		{
+			strcpy_s(name[i], sizeof(name[i]), cur->name[i]);
+		}
+	}
+	break;
 	default:
 		break;
 	}
@@ -49,7 +60,7 @@ void PacketManager::EnqueueSendPacket(const Packet& packet)
 	send_queue.push(packet);
 	LeaveCriticalSection(&cs);
 }
-
+	
 void PacketManager::DequeueSendPacket()
 {
 	EnterCriticalSection(&cs);
