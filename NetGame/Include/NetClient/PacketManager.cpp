@@ -2,28 +2,19 @@
 #define RECV_CS 0
 #define SEND_CS 1
 
-void PacketManager::ProcessPacket()
+void PacketManager::ProcessPacket(const Packet& packet)
 {
-	EnterCriticalSection(&cs[RECV_CS]);
-	if (recv_queue.empty())
-	{
-		LeaveCriticalSection(&cs[RECV_CS]);
-	}
-	Packet p = recv_queue.front();
-	recv_queue.pop();
-	LeaveCriticalSection(&cs[RECV_CS]);
-
-	switch (p.type)
+	switch (packet.type)
 	{
 	case LoginRequest:
 	{
-		C_LoginRequestPkt* cur = (C_LoginRequestPkt*)&p;
+		C_LoginRequestPkt* cur = (C_LoginRequestPkt*)&packet;
 		cur->deserialize();
 	}
 	break;
 	case PlayerMove:
 	{
-		C_PlayerMovePkt* cur = (C_PlayerMovePkt*)&p;
+		C_PlayerMovePkt* cur = (C_PlayerMovePkt*)&packet;
 		cur->deserialize();
 	}
 	break;
@@ -54,30 +45,22 @@ Packet PacketManager::RecvPacket()
 
 void PacketManager::EnqueueSendPacket(const Packet& packet)
 {
-	EnterCriticalSection(&cs[SEND_CS]);
+	EnterCriticalSection(&cs);
 	send_queue.push(packet);
-	LeaveCriticalSection(&cs[SEND_CS]);
+	LeaveCriticalSection(&cs);
 }
 
 void PacketManager::DequeueSendPacket()
 {
-	EnterCriticalSection(&cs[SEND_CS]);
+	EnterCriticalSection(&cs);
 	if (send_queue.empty() || m_sock == INVALID_SOCKET) {
-		LeaveCriticalSection(&cs[SEND_CS]);
+		LeaveCriticalSection(&cs);
 		return;
 	}
 	Packet packet = send_queue.front();
 	send_queue.pop();
-	LeaveCriticalSection(&cs[SEND_CS]);
+	LeaveCriticalSection(&cs);
 	SendPacket(packet);
-}
-
-void PacketManager::EnqueueRecvPacket()
-{
-	Packet packet = RecvPacket();
-	EnterCriticalSection(&cs[RECV_CS]);
-	recv_queue.push(packet);
-	LeaveCriticalSection(&cs[RECV_CS]);
 }
 
 void PacketManager::Init(const SOCKET& sock)
@@ -88,13 +71,11 @@ void PacketManager::Init(const SOCKET& sock)
 
 PacketManager::PacketManager()
 {
-	for (auto& c : cs)
-		InitializeCriticalSection(&c);
+	InitializeCriticalSection(&cs);
 }
 
 PacketManager::~PacketManager()
 {
-	for (auto& c : cs)
-		DeleteCriticalSection(&c);
+	DeleteCriticalSection(&cs);
 }
 
