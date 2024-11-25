@@ -239,5 +239,5 @@ void CMyPlayer::CalculateJump(float elapsedTime)
 void CMyPlayer::SendMovePacket(const Vector2& pos)
 {
 	C_PlayerMovePkt p(pos.x, pos.y);
-	TCPClient::GetInst()->SendPacket(&p);
+	//TCPClient::GetInst()->SendPacket(&p);
 }

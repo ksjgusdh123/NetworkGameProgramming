@@ -24,9 +24,9 @@ bool CLoginScene::Init()
 	HINSTANCE hInst = CEngine::GetInst()->GetWindowInstance();
 
 	m_hEdit = CreateWindow(TEXT("edit"), TEXT(""), WS_CHILD | WS_VISIBLE | WS_BORDER, 380, 500, 180, 25, hwnd, (HMENU)IDC_EDIT, hInst, NULL);
-	m_hButton = CreateWindow(L"button", L"Ȯ��", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 600, 500, 100, 25, hwnd, (HMENU)IDC_BUTTON, hInst, NULL);
+	m_hButton = CreateWindow(L"button", L"Ȯ��", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 600, 500, 100, 25, hwnd, (HMENU)IDC_BUTTON, hInst, NULL);
 
-	// ����Ʈ ��Ʈ�ѿ� �ִ� 10�ڸ� �Է��� �� �ֵ��� ����
+	// ????? ?????? ??? 10??? ????? ?? ????? ????
 	SendMessage(m_hEdit, EM_SETLIMITTEXT, 10, 0);
 
 	return true;
@@ -41,7 +41,7 @@ void CLoginScene::CheckButton()
 {
 	std::string str = EditBoxToString(); 
 	if (str == "") return;
-	// ���� ������ ���� �ް� -> �ߺ� �˻� �� �α��� bool��
+	// ???? ?????? ???? ??? -> ??? ??? ?? ?��??? bool??
 	if (SendLoginRequest(str))
 	{
 		DestroyWindow(m_hEdit);
@@ -53,11 +53,11 @@ void CLoginScene::CheckButton()
 
 std::string CLoginScene::EditBoxToString()
 {
-	// �����ڵ� ���ڿ��� ���� wchar_t �迭 ���
+	// ??????? ??????? ???? wchar_t ?�� ???
 	wchar_t str[11];
 	GetDlgItemText(CEngine::GetInst()->GetWindowHandle(), IDC_EDIT, str, 11);
 
-	// wstring�� string���� ��ȯ
+	// wstring?? string???? ???
 	std::wstring wstr(str);
 	std::string result(wstr.begin(), wstr.end());
 

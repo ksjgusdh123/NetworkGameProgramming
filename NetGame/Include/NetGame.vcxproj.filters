@@ -60,7 +60,8 @@
     </ClCompile>
     <ClCompile Include="NetClient\PacketManager.cpp">
       <Filter>05. NetClient</Filter>
-    <ClCompile Include="GameObject\MyPlayer.cpp">
+	</ClCompile>
+	<ClCompile Include="GameObject\MyPlayer.cpp">
       <Filter>03. GameObject\01. Player</Filter>
     </ClCompile>
   </ItemGroup>
@@ -151,7 +152,8 @@
     </ClInclude>
     <ClInclude Include="NetClient\PacketManager.h">
       <Filter>05. NetClient</Filter>
-    <ClInclude Include="GameObject\MyPlayer.h">
+	</ClInclude>
+	<ClInclude Include="GameObject\MyPlayer.h">
       <Filter>03. GameObject\01. Player</Filter>
     </ClInclude>
   </ItemGroup>
