@@ -16,7 +16,7 @@ bool CLobbyScene::Init()
 {
 	CScene::Init();
 
-	
+
 	CGameObject* back = CreateObject<CGameObject>("RoomBackground");
 	back->CreateTexture(1);
 	back->SetTexture("LobbyBackground", TEXT("Map/RoomBackground.bmp"), EObject_Dir::Right);
@@ -27,7 +27,7 @@ bool CLobbyScene::Init()
 	m_LobbyData[0].player->SetSize(100.f, 200.f);
 	m_LobbyData[0].player->SetPos(270.f, 300.f);
 	m_LobbyData[0].player->SetEnable(true);
-	
+
 	m_LobbyData[1].player = CreateObject<CLobbyPlayer>("Player2");
 	m_LobbyData[1].player->SetSize(100.f, 200.f);
 	m_LobbyData[1].player->SetPos(680.f, 300.f);
@@ -50,7 +50,7 @@ void CLobbyScene::Update(float elapsedTime)
 	switch (clientNum)
 	{
 	case 1:
-		if(!m_LobbyData[0].player->GetEnable())
+		if (!m_LobbyData[0].player->GetEnable())
 			m_LobbyData[0].player->SetEnable(true);
 		break;
 	case 2:
@@ -70,8 +70,8 @@ void CLobbyScene::Update(float elapsedTime)
 			DestroyWindow(m_hButton[i]);
 			m_hButton[i] = NULL;
 		}
-		if(m_hButton[2] == NULL)
-		CSceneManager::GetInst()->CreateScene<CMainScene>();
+		if (m_hButton[2] == NULL)
+			CSceneManager::GetInst()->CreateScene<CMainScene>();
 	}
 }
 
@@ -112,6 +112,12 @@ void CLobbyScene::PacketEvent(const Packet& packet)
 {
 	switch (packet.type)
 	{
+	case LoginRequest:
+	{
+		C_LoginRequestPkt* cur = (C_LoginRequestPkt*)&packet;
+		cur->deserialize();
+		break;
+	}
 	case PlayerChoice:
 	{
 		C_PlayerChoicePkt* cur = (C_PlayerChoicePkt*)&packet;
