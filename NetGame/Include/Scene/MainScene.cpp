@@ -53,11 +53,15 @@ bool CMainScene::Init()
     m_cameraVelocity = Vector2(100.f, 100.f);
 
 
-    player = CreateObject<CArcher>("wns");
-    player->SetPos(0.f, 180.f);
-    player->InitInput();
+    player = CreateObject<CArcher>("player");
+    player->SetPos(-100.f, 180.f);
     SetPlayer(player);
-    GetCamera()->SetTarget(player);
+
+    myplayer = CreateObject<CArcher>("myplayer");
+    myplayer->SetPos(0.f, 180.f);
+    myplayer->InitInput();
+    SetMyPlayer(myplayer);
+    GetCamera()->SetTarget(myplayer);
 
     monster = CreateObject<CGameObject>("gus");
     monster->CreateTexture(1);

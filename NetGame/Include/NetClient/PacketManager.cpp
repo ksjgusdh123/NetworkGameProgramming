@@ -1,6 +1,6 @@
 #include "PacketManager.h"
-#define RECV_CS 0
-#define SEND_CS 1
+#include "..\Scene\MainScene.h"
+#include <Scene/SceneManager.h>
 
 void PacketManager::ProcessPacket(const Packet& packet)
 {
@@ -16,6 +16,9 @@ void PacketManager::ProcessPacket(const Packet& packet)
 	{
 		C_PlayerMovePkt* cur = (C_PlayerMovePkt*)&packet;
 		cur->deserialize();
+		if (cur->client_id == m_myID) break;
+		auto curScene = CSceneManager::GetInst()->GetScene();
+		curScene->GetPlayer()->SetPos({ cur->x,cur->y });
 	}
 	break;
 	case LobbyRequest:

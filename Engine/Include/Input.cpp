@@ -1,4 +1,5 @@
 #include "Input.h"
+#include "Engine.h"
 #include "Scene/Scene.h"
 
 DEFINITION_SINGLE(CInput)
@@ -108,6 +109,8 @@ void CInput::ClearCallback(const CScene* scene)
 
 void CInput::UpdateKeyState()
 {
+	if (GetForegroundWindow() != CEngine::GetInst()->GetWindowHandle()) return;
+
 	GetAsyncKeyState(VK_CONTROL) & 0x8000 ? m_ctrl = true : m_ctrl = false;
 	GetAsyncKeyState(VK_MENU) & 0x8000 ? m_alt = true : m_alt = false;
 	GetAsyncKeyState(VK_SHIFT) & 0x8000 ? m_shift = true : m_shift = false;
