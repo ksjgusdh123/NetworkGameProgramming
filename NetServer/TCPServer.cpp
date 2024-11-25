@@ -50,7 +50,6 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 		if (recvQ.empty())
 		{
 			LeaveCriticalSection(&cs);
-			Sleep(100);
 			continue;
 		}
 		Packet packet = recvQ.front();
@@ -120,7 +119,7 @@ bool TCPServer::Init()
 
 	InitializeCriticalSection(&cs);
 
-	hWorkerThread = CreateThread(NULL, 0, WorkerThread, NULL, 0, NULL);
+	HANDLE hWorkerThread = CreateThread(NULL, 0, WorkerThread, NULL, 0, NULL);
 	if (hWorkerThread == NULL) err_display("WorkerThread");
 
 	return true;
@@ -140,7 +139,7 @@ void TCPServer::Connect()
 			continue;
 		}
 
-		hRecvThread = CreateThread(NULL, 0, RecvThread, (LPVOID)client_sock, 0, NULL);
+		HANDLE hRecvThread = CreateThread(NULL, 0, RecvThread, (LPVOID)client_sock, 0, NULL);
 		if (hRecvThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hRecvThread); }
 	}

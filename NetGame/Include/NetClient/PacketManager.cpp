@@ -49,7 +49,7 @@ Packet PacketManager::RecvPacket()
 	recv(m_sock, (char*)&packet_type, sizeof(int), MSG_WAITALL);
 	recv(m_sock, (char*)&packet_size, sizeof(int), MSG_WAITALL);
 	recv(m_sock, recv_buf, packet_size, MSG_WAITALL);
-	return Packet(client_id, packet_size, packet_type, recv_buf);
+	return Packet(client_id, packet_type, packet_size, recv_buf);
 }
 
 void PacketManager::EnqueueSendPacket(const Packet& packet)
@@ -62,7 +62,7 @@ void PacketManager::EnqueueSendPacket(const Packet& packet)
 void PacketManager::DequeueSendPacket()
 {
 	EnterCriticalSection(&cs[SEND_CS]);
-	if (send_queue.empty()) {
+	if (send_queue.empty() || m_sock == INVALID_SOCKET) {
 		LeaveCriticalSection(&cs[SEND_CS]);
 		return;
 	}
@@ -88,13 +88,13 @@ void PacketManager::Init(const SOCKET& sock)
 
 PacketManager::PacketManager()
 {
-	for(auto& c:cs)
-	InitializeCriticalSection(&c);
+	for (auto& c : cs)
+		InitializeCriticalSection(&c);
 }
 
 PacketManager::~PacketManager()
 {
 	for (auto& c : cs)
-	DeleteCriticalSection(&c);
+		DeleteCriticalSection(&c);
 }
 

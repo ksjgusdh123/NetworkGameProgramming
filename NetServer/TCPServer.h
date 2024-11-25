@@ -48,6 +48,5 @@ private:
 	static TCPServer* m_inst;
 	WSADATA wsa;
 	SOCKET server_sock;
-	HANDLE hRecvThread, hWorkerThread;
 };
 

@@ -39,7 +39,8 @@ void CLoginScene::Update(float elapsedTime)
 
 void CLoginScene::CheckButton()
 {
-	std::string str = EditBoxToString();
+	std::string str = EditBoxToString(); 
+	if (str == "") return;
 	// 서버 보내고 정보 받고 -> 중복 검사 후 로그인 bool값
 	if (SendLoginRequest(str))
 	{

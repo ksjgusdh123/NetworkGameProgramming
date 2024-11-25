@@ -33,3 +33,16 @@ struct ItemInfo
 	int x, y;
 	short amount;
 };
+#define PLAYER_NUM 2
+#define MONSTER_NUM 5
+#define TILE_NUM 1
+#define ITEM_NUM 1
+
+class GameData
+{
+public:
+	PlayerInfo* player[PLAYER_NUM];
+	MonsterInfo monster[MONSTER_NUM];
+	TileInfo tile[TILE_NUM];
+	ItemInfo item[ITEM_NUM];
+};

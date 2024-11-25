@@ -11,6 +11,8 @@ public:
 	void DequeueSendPacket();
 	void EnqueueRecvPacket();
 
+	int GetMyID() { return m_myID; };
+	
 	static PacketManager& GetInst()
 	{
 		static PacketManager inst;
