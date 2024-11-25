@@ -8,7 +8,8 @@ DWORD WINAPI RecvThread(LPVOID arg)
 	PacketManager::GetInst().Init(sock);
 	while (true)
 	{
-		PacketManager::GetInst().EnqueueRecvPacket();
+		Packet packet = PacketManager::GetInst().RecvPacket();
+		PacketManager::GetInst().ProcessPacket(packet);
 	}
 	return true;
 }
@@ -20,7 +21,7 @@ DWORD WINAPI SendThread(LPVOID arg)
 	while (true)
 	{
 		PacketManager::GetInst().DequeueSendPacket();
-		Sleep(1000/30);
+		Sleep(1000 / 30);
 	}
 	return true;
 }
