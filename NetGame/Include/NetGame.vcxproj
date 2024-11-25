@@ -153,7 +153,6 @@
     <ClInclude Include="GameObject\Ghost.h" />
     <ClInclude Include="GameObject\Heart.h" />
     <ClInclude Include="GameObject\LobbyPlayer.h" />
-    <ClInclude Include="GameObject\MyPlayer.h" />
     <ClInclude Include="GameObject\Portal.h" />
     <ClInclude Include="GameObject\Riche.h" />
     <ClInclude Include="GameObject\RicheAttack.h" />
@@ -182,7 +181,6 @@
     <ClCompile Include="GameObject\Ghost.cpp" />
     <ClCompile Include="GameObject\Heart.cpp" />
     <ClCompile Include="GameObject\LobbyPlayer.cpp" />
-    <ClCompile Include="GameObject\MyPlayer.cpp" />
     <ClCompile Include="GameObject\Player.cpp" />
     <ClCompile Include="GameObject\Portal.cpp" />
     <ClCompile Include="GameObject\Riche.cpp" />

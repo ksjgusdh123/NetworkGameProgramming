@@ -6,6 +6,7 @@
 #include "MainScene.h"
 #include "..\PlayerAnimation.h"
 #include "..\GameObject\LobbyPlayer.h"
+#include "..\NetClient\TCPClient.h"
 
 #define IDC_BUTTON 100	
 #define IDC_BUTTON2 101	
@@ -15,7 +16,10 @@ bool CLobbyScene::Init()
 {
 	CScene::Init();
 
-	CGameObject* back = CreateObject<CGameObject>("eawoi");
+	C_LobbyRequestPkt packet{};
+	PacketManager::GetInst().EnqueueSendPacket(packet);
+	
+	CGameObject* back = CreateObject<CGameObject>("RoomBackground");
 	back->CreateTexture(1);
 	back->SetTexture("LobbyBackground", TEXT("Map/RoomBackground.bmp"), EObject_Dir::Right);
 	back->SetSize(960.f, 650.f);
@@ -24,11 +28,12 @@ bool CLobbyScene::Init()
 	m_LobbyData[0].player = CreateObject<CLobbyPlayer>("Player1");
 	m_LobbyData[0].player->SetSize(100.f, 200.f);
 	m_LobbyData[0].player->SetPos(270.f, 300.f);
-
+	m_LobbyData[0].player->SetEnable(false);
+	
 	m_LobbyData[1].player = CreateObject<CLobbyPlayer>("Player2");
 	m_LobbyData[1].player->SetSize(100.f, 200.f);
 	m_LobbyData[1].player->SetPos(680.f, 300.f);
-
+	m_LobbyData[1].player->SetEnable(false);
 
 	HWND hwnd = CEngine::GetInst()->GetWindowHandle();
 	HINSTANCE hInst = CEngine::GetInst()->GetWindowInstance();
@@ -43,6 +48,22 @@ bool CLobbyScene::Init()
 void CLobbyScene::Update(float elapsedTime)
 {
 	CScene::Update(elapsedTime);
+
+	switch (PacketManager::GetInst().ClientNum)
+	{
+	case 1:
+		if(!m_LobbyData[0].player->GetEnable())
+			m_LobbyData[0].player->SetEnable(true);
+		break;
+	case 2:
+		if (!m_LobbyData[0].player->GetEnable())
+			m_LobbyData[0].player->SetEnable(true);
+		if (!m_LobbyData[1].player->GetEnable())
+			m_LobbyData[1].player->SetEnable(true);
+		break;
+	default:
+		break;
+	}
 
 	if (m_LobbyData[0].bReady && m_LobbyData[1].bReady)
 	{

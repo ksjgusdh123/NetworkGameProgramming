@@ -25,5 +25,6 @@ private:
 	//std::string m_name[2];
 	HWND			m_hButton[3]{};
 	LobbyData       m_LobbyData[2];
+
 };
 

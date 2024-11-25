@@ -16,14 +16,6 @@ bool CPlayer::Init()
 	SetTexture("Player_L", TEXT("Player/player_L.png"), EObject_Dir::Left, ETexture_Type::CIMAGE);
 	SetTexture("Player", TEXT("Player/player.png"), EObject_Dir::Right, ETexture_Type::CIMAGE);
 	SetSize(50.f, 60.f);
-
-	CInput::GetInst()->AddBindFunction<CPlayer>("Attack", EInput_Type::PUSH, this, &CPlayer::PlayerAttack, m_scene);
-	CInput::GetInst()->AddBindFunction<CPlayer>("Jump", EInput_Type::PUSH, this, &CPlayer::PlayerJump, m_scene);
-	CInput::GetInst()->AddBindFunction<CPlayer>("MoveLeft", EInput_Type::PUSH, this, &CPlayer::PlayerMoveLeft, m_scene);
-	CInput::GetInst()->AddBindFunction<CPlayer>("MoveLeft", EInput_Type::UP, this, &CPlayer::PlayerLeftIdle, m_scene);
-	CInput::GetInst()->AddBindFunction<CPlayer>("MoveRight", EInput_Type::PUSH, this, &CPlayer::PlayerMoveRight, m_scene);
-	CInput::GetInst()->AddBindFunction<CPlayer>("MoveRight", EInput_Type::UP, this, &CPlayer::PlayerRightIdle, m_scene);
-
 	return true;
 }
 
@@ -48,6 +40,16 @@ void CPlayer::PostUpdate(float elapsedTime)
 void CPlayer::Render(HDC hDC, float elapsedTime)
 {
 	CGameObject::Render(hDC, elapsedTime);
+}
+
+void CPlayer::InitInput()
+{
+	CInput::GetInst()->AddBindFunction<CPlayer>("Attack", EInput_Type::PUSH, this, &CPlayer::PlayerAttack, m_scene);
+	CInput::GetInst()->AddBindFunction<CPlayer>("Jump", EInput_Type::PUSH, this, &CPlayer::PlayerJump, m_scene);
+	CInput::GetInst()->AddBindFunction<CPlayer>("MoveLeft", EInput_Type::PUSH, this, &CPlayer::PlayerMoveLeft, m_scene);
+	CInput::GetInst()->AddBindFunction<CPlayer>("MoveLeft", EInput_Type::UP, this, &CPlayer::PlayerLeftIdle, m_scene);
+	CInput::GetInst()->AddBindFunction<CPlayer>("MoveRight", EInput_Type::PUSH, this, &CPlayer::PlayerMoveRight, m_scene);
+	CInput::GetInst()->AddBindFunction<CPlayer>("MoveRight", EInput_Type::UP, this, &CPlayer::PlayerRightIdle, m_scene);
 }
 
 void CPlayer::PlayerMoveLeft()

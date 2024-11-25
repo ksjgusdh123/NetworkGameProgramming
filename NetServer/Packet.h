@@ -1,9 +1,23 @@
 #pragma once
+#define _CRT_SECURE_NO_WARNINGS
 #define DATA_SIZE 250
+
+struct Client {
+	SOCKET socket;
+	std::string name;
+	PlayerInfo player;
+	int& id = player.id;
+	Client(SOCKET sock, int clientId, const std::string& clientName)
+		: socket(sock), name(clientName)
+	{
+		id = clientId;
+	}
+};
 
 enum PacketType
 {
 	LoginRequest,
+	LobbyRequest,
 	PlayerMove,
 };
 
@@ -54,6 +68,49 @@ struct C_LoginRequestPkt : public Packet
 	{
 		
 	}
+};
+
+struct C_LobbyRequestPkt : public Packet
+{
+	int ClientNum = 0;
+	char name[2][20];
+	C_LobbyRequestPkt()
+	{
+		type = LobbyRequest;
+		sprintf_s(data, "%d", 4);
+		data_size = strlen(data);
+	}
+
+	void initial(const std::vector<Client>& clients)
+	{
+		type = LobbyRequest;
+
+		int num = clients.size();
+		int offset = sprintf_s(data, "%d ", num);
+
+		for (int i = 0; i < num; ++i) {
+			offset += sprintf_s(data + offset, sizeof(data) - offset, "%s ", clients[i].name.c_str());
+		}
+		data_size = strlen(data);
+	}
+
+	void deserialize()
+	{
+		const char* current = data; // 현재 읽는 위치
+		sscanf_s(current, "%d ", &ClientNum); // 클라이언트 수 읽기
+
+		// 클라이언트 이름 읽기
+		current = strchr(current, ' ') + 1; // 숫자 이후로 이동
+
+		for (int i = 0; i < ClientNum; ++i)
+		{
+			char n[128]; // 이름을 임시로 저장할 버퍼
+			sscanf_s(current, "%s ", n, (unsigned)_countof(n)); // 이름 읽기
+			strcpy_s(name[i], sizeof(name[i]), n);
+			current = strchr(current, ' ') + 1; // 다음 이름으로 이동
+		}
+	}
+
 };
 
 //
