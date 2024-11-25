@@ -1,4 +1,7 @@
 #include "PacketManager.h"
+#include "..\ClientInfo.h"
+#include <Scene/SceneManager.h>
+#include <Scene/Scene.h>
 #define RECV_CS 0
 #define SEND_CS 1
 
@@ -18,17 +21,12 @@ void PacketManager::ProcessPacket(const Packet& packet)
 		cur->deserialize();
 	}
 	break;
-	case LobbyRequest:
+	case PlayerChoice:
+	case GameStartRequest:
 	{
-		C_LobbyRequestPkt* cur = (C_LobbyRequestPkt*)&packet;
-		cur->deserialize();
-		ClientNum = cur->ClientNum;
-		for (int i = 0; i < ClientNum; ++i)
-		{
-			strcpy_s(name[i], sizeof(name[i]), cur->name[i]);
-		}
+		CSceneManager::GetInst()->GetScene()->PacketEvent(packet);
 	}
-	break;
+		break;
 	default:
 		break;
 	}

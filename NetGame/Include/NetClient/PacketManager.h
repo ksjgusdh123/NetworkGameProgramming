@@ -22,8 +22,6 @@ public:
 	PacketManager();
 	~PacketManager();
 
-	int ClientNum = 0;
-	char name[2][20];
 
 private:
 	queue<Packet> send_queue;

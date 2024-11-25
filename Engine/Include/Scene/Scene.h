@@ -16,6 +16,7 @@ public:
 	virtual void PostUpdate(float elapsedTime);
 	virtual void Render(HDC hDC, float elapsedTime);
 	virtual void KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam) {}
+	virtual void PacketEvent(const class Packet& packet) {}
 public:
 	template <typename T>
 	T* CreateObject(const std::string& name)

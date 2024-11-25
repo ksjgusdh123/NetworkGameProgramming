@@ -16,9 +16,18 @@ struct Client {
 
 enum PacketType
 {
+	//InputKey,
 	LoginRequest,
-	LobbyRequest,
+	PlayerChoice,
+	GameStartRequest,
 	PlayerMove,
+	PlayerAttack,
+
+	GameStartResponse,
+	GameState,
+	GameEndNotification,
+	PlayerInfoUpdate,
+	MonsterInfoUpdate,
 };
 
 class Packet
@@ -70,47 +79,40 @@ struct C_LoginRequestPkt : public Packet
 	}
 };
 
-struct C_LobbyRequestPkt : public Packet
+struct C_PlayerChoicePkt : public Packet
 {
-	int ClientNum = 0;
-	char name[2][20];
-	C_LobbyRequestPkt()
+	int idx;
+	int j;
+
+	void initial(int idx, const int job_)
 	{
-		type = LobbyRequest;
-		sprintf_s(data, "%d", 4);
-		data_size = strlen(data);
-	}
-
-	void initial(const std::vector<Client>& clients)
-	{
-		type = LobbyRequest;
-
-		int num = clients.size();
-		int offset = sprintf_s(data, "%d ", num);
-
-		for (int i = 0; i < num; ++i) {
-			offset += sprintf_s(data + offset, sizeof(data) - offset, "%s ", clients[i].name.c_str());
-		}
+		type = PlayerChoice;
+		sprintf_s(data, "%d %d", idx, job_);
 		data_size = strlen(data);
 	}
 
 	void deserialize()
 	{
-		const char* current = data; // 현재 읽는 위치
-		sscanf_s(current, "%d ", &ClientNum); // 클라이언트 수 읽기
+		sscanf_s(data, "%d %d", &idx, &j);
+	}
+};
 
-		// 클라이언트 이름 읽기
-		current = strchr(current, ' ') + 1; // 숫자 이후로 이동
+struct C_GameStartRequestPkt : public Packet
+{
+	int idx;
+	bool ready;
 
-		for (int i = 0; i < ClientNum; ++i)
-		{
-			char n[128]; // 이름을 임시로 저장할 버퍼
-			sscanf_s(current, "%s ", n, (unsigned)_countof(n)); // 이름 읽기
-			strcpy_s(name[i], sizeof(name[i]), n);
-			current = strchr(current, ' ') + 1; // 다음 이름으로 이동
-		}
+	void initial(int idx, const bool bReady)
+	{
+		type = GameStartRequest;
+		sprintf_s(data, "%d %d", idx, bReady);
+		data_size = strlen(data);
 	}
 
+	void deserialize()
+	{
+		sscanf_s(data, "%d %d", &idx, &ready);
+	}
 };
 
 //

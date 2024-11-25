@@ -16,8 +16,6 @@ bool CLobbyScene::Init()
 {
 	CScene::Init();
 
-	C_LobbyRequestPkt packet{};
-	PacketManager::GetInst().EnqueueSendPacket(packet);
 	
 	CGameObject* back = CreateObject<CGameObject>("RoomBackground");
 	back->CreateTexture(1);
@@ -28,12 +26,12 @@ bool CLobbyScene::Init()
 	m_LobbyData[0].player = CreateObject<CLobbyPlayer>("Player1");
 	m_LobbyData[0].player->SetSize(100.f, 200.f);
 	m_LobbyData[0].player->SetPos(270.f, 300.f);
-	m_LobbyData[0].player->SetEnable(false);
+	m_LobbyData[0].player->SetEnable(true);
 	
 	m_LobbyData[1].player = CreateObject<CLobbyPlayer>("Player2");
 	m_LobbyData[1].player->SetSize(100.f, 200.f);
 	m_LobbyData[1].player->SetPos(680.f, 300.f);
-	m_LobbyData[1].player->SetEnable(false);
+	m_LobbyData[1].player->SetEnable(true);
 
 	HWND hwnd = CEngine::GetInst()->GetWindowHandle();
 	HINSTANCE hInst = CEngine::GetInst()->GetWindowInstance();
@@ -49,7 +47,7 @@ void CLobbyScene::Update(float elapsedTime)
 {
 	CScene::Update(elapsedTime);
 
-	switch (PacketManager::GetInst().ClientNum)
+	switch (clientNum)
 	{
 	case 1:
 		if(!m_LobbyData[0].player->GetEnable())
@@ -82,14 +80,53 @@ void CLobbyScene::KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	switch (LOWORD(wParam))
 	{
 	case IDC_BUTTON:
-		m_LobbyData[0].player->SetJob(EPlayer_Job::Sword);
+	{
+		C_PlayerChoicePkt packet{};
+		m_LobbyData[PacketManager::GetInst().GetMyID()].player->SetJob(EPlayer_Job::Sword);
+		packet.initial(PacketManager::GetInst().GetMyID(), (int)EPlayer_Job::Sword);
+		PacketManager::GetInst().EnqueueSendPacket(packet);
 		break;
+	}
 	case IDC_BUTTON2:
-		m_LobbyData[0].player->SetJob(EPlayer_Job::Archer);
+	{
+		C_PlayerChoicePkt packet{};
+		m_LobbyData[PacketManager::GetInst().GetMyID()].player->SetJob(EPlayer_Job::Archer);
+		packet.initial(PacketManager::GetInst().GetMyID(), (int)EPlayer_Job::Archer);
+		PacketManager::GetInst().EnqueueSendPacket(packet);
 		break;
+	}
 	case IDC_BUTTON3:
-		m_LobbyData[0].bReady = !m_LobbyData[0].bReady;
-		m_LobbyData[1].bReady = !m_LobbyData[1].bReady;
+	{
+		//m_LobbyData[0].bReady = !m_LobbyData[0].bReady;
+		//m_LobbyData[1].bReady = !m_LobbyData[1].bReady;
+		m_LobbyData[PacketManager::GetInst().GetMyID()].bReady = !m_LobbyData[PacketManager::GetInst().GetMyID()].bReady;
+		C_GameStartRequestPkt packet{};
+		packet.initial(PacketManager::GetInst().GetMyID(), m_LobbyData[PacketManager::GetInst().GetMyID()].bReady);
+		PacketManager::GetInst().EnqueueSendPacket(packet);
+		break;
+	}
+	}
+}
+
+void CLobbyScene::PacketEvent(const Packet& packet)
+{
+	switch (packet.type)
+	{
+	case PlayerChoice:
+	{
+		C_PlayerChoicePkt* cur = (C_PlayerChoicePkt*)&packet;
+		cur->deserialize();
+		m_LobbyData[cur->idx].player->SetJob((EPlayer_Job)cur->j);
+		break;
+	}
+	case GameStartRequest:
+	{
+		C_GameStartRequestPkt* cur = (C_GameStartRequestPkt*)&packet;
+		cur->deserialize();
+		m_LobbyData[cur->idx].bReady = cur->ready;
+		break;
+	}
+	default:
 		break;
 	}
 }

@@ -76,17 +76,18 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 			TCPServer::GetInst()->SendPacket(packet);
 			break;
 		}
-		case LobbyRequest:
+		case PlayerChoice:
 		{
-			C_LobbyRequestPkt* cur = (C_LobbyRequestPkt*)&packet;
-			cur->initial(TCPServer::GetInst()->clients);
+			C_PlayerChoicePkt* cur = (C_PlayerChoicePkt*)&packet;
 			cur->deserialize();
-			cout << "[Lobby] PlayerNum: " << cur->ClientNum << "\n";
-			for (int i = 0; i < cur->ClientNum; ++i)
-			{
-				cout << i << " - " << cur->name[i] << '\n';
-			}
-			TCPServer::GetInst()->SendPacket(packet);	
+			TCPServer::GetInst()->SendPacket(packet);
+			break;
+		}
+		case GameStartRequest:
+		{
+			C_GameStartRequestPkt* cur = (C_GameStartRequestPkt*)&packet;
+			cur->deserialize();
+			TCPServer::GetInst()->SendPacket(packet);
 			break;
 		}
 		default:
