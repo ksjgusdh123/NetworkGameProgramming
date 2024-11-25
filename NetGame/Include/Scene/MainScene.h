@@ -18,8 +18,10 @@ public:
 	virtual void Update(float elapsedTime);
 	bool IsPlayerInRicheAttackArea();
 	void CreateMap();
+
 private:
 	class CPlayer* player;
+	class CPlayer* myplayer;
 	class CGameObject* monster;
 	CGhost* ghost;
 	CRiche* riche;

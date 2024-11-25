@@ -21,7 +21,7 @@ DWORD WINAPI SendThread(LPVOID arg)
 	while (true)
 	{
 		PacketManager::GetInst().DequeueSendPacket();
-		Sleep(1000 / 30);
+		//Sleep(1000 / 30);
 	}
 	return true;
 }
