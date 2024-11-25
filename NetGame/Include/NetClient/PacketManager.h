@@ -7,7 +7,9 @@ public:
 	void ProcessPacket();
 	void SendPacket(const Packet& packet);
 	Packet RecvPacket();
-	void RecvPacketPushQueue();
+	void EnqueueSendPacket(const Packet& packet);
+	void DequeueSendPacket();
+	void EnqueueRecvPacket();
 
 	static PacketManager& GetInst()
 	{
@@ -20,7 +22,8 @@ public:
 	~PacketManager();
 private:
 	queue<Packet> recv_queue;
-	CRITICAL_SECTION cs;
+	queue<Packet> send_queue;
+	CRITICAL_SECTION cs[2];
 	SOCKET m_sock;
 	int m_myID;
 };

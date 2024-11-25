@@ -69,7 +69,7 @@ bool CLoginScene::SendLoginRequest(std::string name)
 	//	return false;
 
 	C_LoginRequestPkt packet(name);
-	PacketManager::GetInst().SendPacket(packet);
+	PacketManager::GetInst().EnqueueSendPacket(packet);
 
 	return true;
 }

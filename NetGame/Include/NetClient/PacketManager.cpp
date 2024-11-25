@@ -1,15 +1,17 @@
 #include "PacketManager.h"
+#define RECV_CS 0
+#define SEND_CS 1
 
 void PacketManager::ProcessPacket()
 {
-	EnterCriticalSection(&cs);
+	EnterCriticalSection(&cs[RECV_CS]);
 	if (recv_queue.empty())
 	{
-		LeaveCriticalSection(&cs);
+		LeaveCriticalSection(&cs[RECV_CS]);
 	}
 	Packet p = recv_queue.front();
 	recv_queue.pop();
-	LeaveCriticalSection(&cs);
+	LeaveCriticalSection(&cs[RECV_CS]);
 
 	switch (p.type)
 	{
@@ -50,12 +52,32 @@ Packet PacketManager::RecvPacket()
 	return Packet(client_id, packet_size, packet_type, recv_buf);
 }
 
-void PacketManager::RecvPacketPushQueue()
+void PacketManager::EnqueueSendPacket(const Packet& packet)
 {
-	Packet p = RecvPacket();
-	EnterCriticalSection(&cs);
-	recv_queue.push(p);
-	LeaveCriticalSection(&cs);
+	EnterCriticalSection(&cs[SEND_CS]);
+	send_queue.push(packet);
+	LeaveCriticalSection(&cs[SEND_CS]);
+}
+
+void PacketManager::DequeueSendPacket()
+{
+	EnterCriticalSection(&cs[SEND_CS]);
+	if (send_queue.empty()) {
+		LeaveCriticalSection(&cs[SEND_CS]);
+		return;
+	}
+	Packet packet = send_queue.front();
+	send_queue.pop();
+	LeaveCriticalSection(&cs[SEND_CS]);
+	SendPacket(packet);
+}
+
+void PacketManager::EnqueueRecvPacket()
+{
+	Packet packet = RecvPacket();
+	EnterCriticalSection(&cs[RECV_CS]);
+	recv_queue.push(packet);
+	LeaveCriticalSection(&cs[RECV_CS]);
 }
 
 void PacketManager::Init(const SOCKET& sock)
@@ -66,11 +88,13 @@ void PacketManager::Init(const SOCKET& sock)
 
 PacketManager::PacketManager()
 {
-	InitializeCriticalSection(&cs);
+	for(auto& c:cs)
+	InitializeCriticalSection(&c);
 }
 
 PacketManager::~PacketManager()
 {
-	DeleteCriticalSection(&cs);
+	for (auto& c : cs)
+	DeleteCriticalSection(&c);
 }
 
