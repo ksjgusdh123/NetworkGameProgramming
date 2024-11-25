@@ -1,5 +1,6 @@
 #pragma once
 #include "Define.h"
+#include <queue>
 
 struct Client {
 	SOCKET socket;
@@ -7,14 +8,17 @@ struct Client {
 	PlayerInfo player;
 	int& id = player.id;
 	Client(SOCKET sock, int clientId, const string& clientName)
-		: socket(sock), id(clientId), name(clientName) {}
+		: socket(sock), name(clientName)
+	{
+		id = clientId;
+	}
 };
 
 class TCPServer
 {
 public:
 	TCPServer() : server_sock(INVALID_SOCKET) {};
-	~TCPServer() { closesocket(server_sock); WSACleanup(); };
+	~TCPServer() { Cleanup(); };
 	static TCPServer* GetInst()
 	{
 		if (!m_inst)
@@ -29,18 +33,19 @@ public:
 			m_inst = nullptr;
 		}
 	}
+public:
+	void SendPacket(const Packet& packet);
+
 	bool Init();
 	void Connect();
 	void Run();
-
-	void SendPacket(const Packet& packet);
+	void Cleanup();
 public:
 	queue<Packet> recvQ;
 	vector<Client> clients;
 
 private:
 	static TCPServer* m_inst;
-
 	WSADATA wsa;
 	SOCKET server_sock;
 	HANDLE hRecvThread, hWorkerThread;

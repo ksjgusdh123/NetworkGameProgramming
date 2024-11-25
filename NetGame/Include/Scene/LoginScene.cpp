@@ -5,7 +5,6 @@
 #include <Scene/SceneManager.h>
 #include "MainScene.h"
 #include "LobbyScene.h"
-#include "Protocol.h"
 #include "..\NetClient\TCPClient.h"
 
 #define IDC_BUTTON 100

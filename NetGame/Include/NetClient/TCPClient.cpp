@@ -18,8 +18,8 @@ DWORD WINAPI RecvThread(LPVOID arg)
 		int packet_type;
 		char recv_buf[BUFSIZ];
 		recv(sock, (char*)&client_id, sizeof(int), MSG_WAITALL);
-		recv(sock, (char*)&packet_size, sizeof(int), MSG_WAITALL);
 		recv(sock, (char*)&packet_type, sizeof(int), MSG_WAITALL);
+		recv(sock, (char*)&packet_size, sizeof(int), MSG_WAITALL);
 		recv(sock, recv_buf, packet_size, MSG_WAITALL);
 		Packet p(client_id,packet_size, packet_type,recv_buf);
 		cout << p.data << endl;
@@ -41,13 +41,13 @@ void TCPClient::ProcessPacket()
 
 	switch (p.type)
 	{
-	case LOGIN:
+	case LoginRequest:
 	{
 		C_LoginRequestPkt* cur = (C_LoginRequestPkt*)&p;
 		cur->deserialize();
 		break;
 	}
-	case MOVE:
+	case PlayerMove:
 	{
 		C_PlayerMovePkt* cur = (C_PlayerMovePkt*)&p;
 		cur->deserialize();
@@ -104,6 +104,7 @@ void TCPClient::Connect()
 
 
 void TCPClient::Cleanup() {
+	DeleteCriticalSection(&cs);
 	if (sock != INVALID_SOCKET) {
 		closesocket(sock);
 		sock = INVALID_SOCKET;

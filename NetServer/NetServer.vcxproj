@@ -104,7 +104,6 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,7 +134,8 @@
   <ItemGroup>
     <ClInclude Include="Define.h" />
     <ClInclude Include="ErrDisplay.h" />
-    <ClInclude Include="Protocol.h" />
+    <ClInclude Include="GameData.h" />
+    <ClInclude Include="Packet.h" />
     <ClInclude Include="TCPServer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

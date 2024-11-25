@@ -16,7 +16,8 @@
 #include <vector>
 #include <queue>
 #include <array>
-#include "Protocol.h"
+#include "GameData.h"
+#include "Packet.h"
 
 using namespace std;
 

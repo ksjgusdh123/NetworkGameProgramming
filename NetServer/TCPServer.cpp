@@ -4,12 +4,12 @@
 TCPServer* TCPServer::m_inst;
 CRITICAL_SECTION cs;
 
+int g_id = 0;
 DWORD WINAPI RecvThread(LPVOID arg)
 {
 	cout << "Start RecvThread!\n";
-
 	SOCKET client_sock = (SOCKET)arg;
-	int client_id = static_cast<int>(TCPServer::GetInst()->clients.size() + 1);
+	int client_id = g_id++;
 	int res = send(client_sock, (char*)&client_id, sizeof(int), 0);
 	if (res == SOCKET_ERROR) { err_display("send()"); return -1; }
 
@@ -18,18 +18,19 @@ DWORD WINAPI RecvThread(LPVOID arg)
 
 	while (true)
 	{
-		int packet_type;
+		int type;
 		int data_size;
-		char packet_data[DATA_SIZE];
+		char data[DATA_SIZE];
+		int res;
 
-		int res = recv(client.socket, (char*)&packet_type, sizeof(int), MSG_WAITALL);
+		res = recv(client.socket, (char*)&type, sizeof(int), MSG_WAITALL);
 		if (res <= 0) break;
 		res = recv(client.socket, (char*)&data_size, sizeof(int), MSG_WAITALL);
 		if (res <= 0) break;
-		res = recv(client.socket, packet_data, data_size, MSG_WAITALL);
+		res = recv(client.socket, data, data_size, MSG_WAITALL);
 		if (res <= 0) break;
 
-		Packet p(client.id, packet_type, data_size, packet_data);
+		Packet p(client_id, type, data_size, data);
 		EnterCriticalSection(&cs);
 		TCPServer::GetInst()->recvQ.push(p);
 		LeaveCriticalSection(&cs);
@@ -37,7 +38,6 @@ DWORD WINAPI RecvThread(LPVOID arg)
 
 	cout << "End RecvThread!\n";
 	closesocket(client.socket);
-
 	return 0;
 }
 
@@ -55,20 +55,21 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 		}
 		Packet packet = recvQ.front();
 		recvQ.pop();
+		LeaveCriticalSection(&cs);
 
 		switch (packet.type)
 		{
-		case LOGIN:
+		case LoginRequest:
 		{
 			C_LoginRequestPkt* cur = (C_LoginRequestPkt*)&packet;
 			cur->deserialize();
 			cout << "[LOGIN] " << cur->client_id << " Player Name = " << cur->data << endl;
-			auto& cur_client = TCPServer::GetInst()->clients[cur->client_id-1];
+			auto& cur_client = TCPServer::GetInst()->clients[cur->client_id];
 			cur_client.name = cur->data;
 			TCPServer::GetInst()->SendPacket(packet);
 			break;
 		}
-		case MOVE:
+		case PlayerMove:
 		{
 			C_PlayerMovePkt* cur = (C_PlayerMovePkt*)&packet;
 			cur->deserialize();
@@ -80,6 +81,19 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 			break;
 		}
 		LeaveCriticalSection(&cs);
+	}
+}
+
+void TCPServer::SendPacket(const Packet& packet)
+{
+	int res;
+	for (const auto& client : clients)
+	{
+		res = send(client.socket, (char*)&packet.client_id, sizeof(int), 0);
+		res = send(client.socket, (char*)&packet.type, sizeof(int), 0);
+		res = send(client.socket, (char*)&packet.data_size, sizeof(int), 0);
+		res = send(client.socket, packet.data, packet.data_size, 0);
+		if (res == SOCKET_ERROR) { err_display("send()"); }
 	}
 }
 
@@ -115,12 +129,16 @@ bool TCPServer::Init()
 void TCPServer::Connect()
 {
 	cout << "Connect()\n";
-	while (true)
+	while (clients.size() < 2)
 	{
 		sockaddr_in clientaddr;
 		int addrlen = sizeof(clientaddr);
 		SOCKET client_sock = accept(server_sock, (sockaddr*)&clientaddr, &addrlen);
-		if (client_sock == INVALID_SOCKET) { err_display("accept()"); continue; }
+		if (client_sock == INVALID_SOCKET)
+		{
+			err_display("accept()");
+			continue;
+		}
 
 		HANDLE hRecvThread = CreateThread(NULL, 0, RecvThread, (LPVOID)client_sock, 0, NULL);
 		if (hRecvThread == NULL) { closesocket(client_sock); }
@@ -134,14 +152,9 @@ void TCPServer::Run()
 	Connect();
 }
 
-void TCPServer::SendPacket(const Packet& packet)
+void TCPServer::Cleanup()
 {
-	for (const auto& client : clients)
-	{
-		int res = send(client.socket, (char*)&packet.client_id, sizeof(int), 0);
-		res = send(client.socket, (char*)&packet.data_size, sizeof(int), 0);
-		res = send(client.socket, (char*)&packet.type, sizeof(int), 0);
-		res = send(client.socket, packet.data, packet.data_size, 0);
-		if (res == SOCKET_ERROR) { err_display("send()"); }
-	}
-}
+	DeleteCriticalSection(&cs);
+	closesocket(server_sock);
+	WSACleanup();
+};
