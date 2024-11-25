@@ -161,6 +161,7 @@
     <ClInclude Include="GameObject\Swordman.h" />
     <ClInclude Include="GameObject\Trap.h" />
     <ClInclude Include="MonsterAnimation.h" />
+    <ClInclude Include="NetClient\PacketManager.h" />
     <ClInclude Include="NetClient\TCPClient.h" />
     <ClInclude Include="ObjectAnimation.h" />
     <ClInclude Include="PlayerAnimation.h" />
@@ -189,6 +190,7 @@
     <ClCompile Include="GameObject\Swordman.cpp" />
     <ClCompile Include="GameObject\Trap.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NetClient\PacketManager.cpp" />
     <ClCompile Include="NetClient\TCPClient.cpp" />
     <ClCompile Include="Scene\LobbyScene.cpp" />
     <ClCompile Include="Scene\LoginScene.cpp" />

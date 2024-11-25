@@ -239,5 +239,5 @@ void CPlayer::CalculateJump(float elapsedTime)
 void CPlayer::SendMovePacket(const Vector2& pos)
 {
 	C_PlayerMovePkt p(pos.x, pos.y);
-	TCPClient::GetInst()->SendPacket(&p);
+	PacketManager::GetInst().SendPacket(p);
 }

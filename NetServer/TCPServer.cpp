@@ -140,7 +140,7 @@ void TCPServer::Connect()
 			continue;
 		}
 
-		HANDLE hRecvThread = CreateThread(NULL, 0, RecvThread, (LPVOID)client_sock, 0, NULL);
+		hRecvThread = CreateThread(NULL, 0, RecvThread, (LPVOID)client_sock, 0, NULL);
 		if (hRecvThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hRecvThread); }
 	}

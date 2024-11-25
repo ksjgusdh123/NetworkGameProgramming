@@ -58,6 +58,9 @@
     <ClCompile Include="GameObject\LobbyPlayer.cpp">
       <Filter>03. GameObject\01. Player</Filter>
     </ClCompile>
+    <ClCompile Include="NetClient\PacketManager.cpp">
+      <Filter>05. NetClient</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene\MainScene.h">
@@ -143,6 +146,9 @@
     </ClInclude>
     <ClInclude Include="GameObject\LobbyPlayer.h">
       <Filter>03. GameObject\01. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="NetClient\PacketManager.h">
+      <Filter>05. NetClient</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
