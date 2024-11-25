@@ -55,6 +55,7 @@ bool CMainScene::Init()
 
     player = CreateObject<CArcher>("wns");
     player->SetPos(0.f, 180.f);
+    player->InitInput();
     SetPlayer(player);
     GetCamera()->SetTarget(player);
 

@@ -13,6 +13,9 @@ public:
 	virtual void PostUpdate(float elapsedTime) override;
 	virtual void Render(HDC hDC, float elapsedTime) override;
 
+public:
+	void InitInput();
+
 protected:	
 	void PlayerMoveLeft();
 	void PlayerLeftIdle();
