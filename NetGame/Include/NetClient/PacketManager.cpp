@@ -24,6 +24,12 @@ void PacketManager::ProcessPacket(const Packet& packet)
 		curScene->GetPlayer()->SetPos({ cur->x,cur->y });
 		break;
 	}
+	case Tiles:
+	{		
+		C_TilesPkt* cur = (C_TilesPkt*)&packet;
+		cur->deserialize();
+	}
+	break;
 	default:
 		break;
 	}

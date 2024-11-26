@@ -70,8 +70,9 @@ void CLobbyScene::Update(float elapsedTime)
 			DestroyWindow(m_hButton[i]);
 			m_hButton[i] = NULL;
 		}
-		if (m_hButton[2] == NULL)
+		if(m_hButton[2] == NULL)
 			CSceneManager::GetInst()->CreateScene<CMainScene>();
+
 	}
 }
 

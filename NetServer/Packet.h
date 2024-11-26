@@ -1,6 +1,19 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
-#define DATA_SIZE 250
+#define DATA_SIZE 2048
+
+struct vector2
+{
+	float x = 0.f, y = 0.f;
+
+	vector2() { x = 0.f; y = 0.f; }
+	vector2(float _x, float _y) { x = _x; y = _y; }
+	vector2(const vector2& v) { x = v.x; y = v.y; }
+
+	vector2 operator+ (const vector2& v) const { return vector2(x + v.x, y + v.y); }
+	vector2 operator- (const vector2& v) const { return vector2(x - v.x, y - v.y); }
+	vector2 operator* (const vector2& v) const { return vector2(x * v.x, y * v.y); }
+};
 
 struct Client {
 	SOCKET socket;
@@ -23,12 +36,12 @@ enum PacketType
 	GameStartRequest,
 	PlayerMove,
 	PlayerAttack,
-
 	GameStartResponse,
 	GameState,
 	GameEndNotification,
 	PlayerInfoUpdate,
 	MonsterInfoUpdate,
+	Tiles,
 };
 
 class Packet
@@ -38,6 +51,7 @@ public:
 	int type = 0;
 	int data_size = 0;
 	char data[DATA_SIZE]{};
+
 	Packet() {}
 	Packet(int client_id_, int type_, int data_size_, const char* data_)
 		: client_id(client_id_), type(type_), data_size(data_size_)
@@ -111,6 +125,47 @@ struct C_GameStartRequestPkt : public Packet
 	void deserialize()
 	{
 		sscanf_s(data, "%d", &ready);
+	}
+};
+
+//struct C_GameStartRequestPkt : public Packet
+//{
+//	C_GameStartRequestPkt()
+//	{
+//		type = GameStartRequest;
+//		sprintf_s(data, "%s", std::string{"HI"});
+//		data_size = strlen(data);
+//	}
+//
+//	void deserialize()
+//	{
+//
+//	}
+//};
+
+struct C_TilesPkt : public Packet {
+	C_TilesPkt(int tileCount, const std::vector<int>& tileTypes, const std::vector<vector2>& tilePositions) {
+		type = Tiles; // 타입 설정
+		
+		// 데이터를 문자열로 직렬화하여 data에 저장
+		char* write_ptr = data;
+		int offset = 0;
+
+		// 1. 타일 개수 추가
+		offset += sprintf_s(write_ptr + offset, sizeof(data) - offset, "%d ", tileCount);
+
+		// 2. 각 타일의 타입과 위치 추가
+		for (int i = 0; i < tileCount; ++i) {
+			offset += sprintf_s(write_ptr + offset, sizeof(data) - offset, "%d %.2f %.2f ",
+				tileTypes[i], tilePositions[i].x, tilePositions[i].y);
+		}
+		
+		// 데이터 크기 설정
+		data_size = strlen(data);
+	}
+
+	void deserialize() {
+		// 역직렬화는 필요 시 구현
 	}
 };
 

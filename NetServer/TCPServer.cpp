@@ -90,6 +90,12 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 			TCPServer::GetInst()->SendPacket(packet);
 			break;
 		}
+		case GameStartRequest:
+		{
+			cout << "전송 받음";
+			TCPServer::GetInst()->CreateTilePacket();
+			break;
+		}
 		default:
 			break;
 		}
@@ -171,3 +177,181 @@ void TCPServer::Cleanup()
 	closesocket(server_sock);
 	WSACleanup();
 };
+
+
+
+void TCPServer::CreateTilePacket()
+{
+
+	// 타일 번호와 위치 정보를 담을 데이터
+	std::vector<int> tileNumbers;
+	std::vector<vector2> tilePositions;
+
+	// 타일 데이터 수집 (CreateMap에서 정의한 타일 정보를 기반으로)
+	float tilePosX = -930.f;
+	float tilePosY = 475.f;
+
+	// 첫 발판
+	tileNumbers.push_back(1);
+	tilePositions.push_back({ tilePosX, tilePosY });
+	tilePosX += 50.f;
+
+	for (int i = 0; i < 20; ++i) {
+		tileNumbers.push_back(2);
+		tilePositions.push_back({ tilePosX, 475.f });
+		tilePosX += 50.f;
+	}
+
+	tileNumbers.push_back(3);
+	tilePositions.push_back({ tilePosX, 475.f });
+	tilePosX += 150.f;
+
+	// 상자 계단
+	tileNumbers.push_back(17);
+	tilePositions.push_back({ -800.f, 425.f });
+	tileNumbers.push_back(17);
+	tilePositions.push_back({ -750.f, 425.f });
+	tileNumbers.push_back(17);
+	tilePositions.push_back({ -750.f, 375.f });
+	tileNumbers.push_back(17);
+	tilePositions.push_back({ -700.f, 425.f });
+	tileNumbers.push_back(17);
+	tilePositions.push_back({ -700.f, 375.f });
+	tileNumbers.push_back(17);
+	tilePositions.push_back({ -700.f, 325.f });
+
+	// 상자 계단2
+	tileNumbers.push_back(17);
+	tilePositions.push_back({ -550.f, 425.f });
+	tileNumbers.push_back(17);
+	tilePositions.push_back({ -500.f, 425.f });
+	tileNumbers.push_back(17);
+	tilePositions.push_back({ -500.f, 375.f });
+	tileNumbers.push_back(17);
+	tilePositions.push_back({ -500.f, 325.f });
+	tileNumbers.push_back(17);
+	tilePositions.push_back({ -450.f, 425.f });
+	tileNumbers.push_back(17);
+	tilePositions.push_back({ -450.f, 375.f });
+	tileNumbers.push_back(17);
+	tilePositions.push_back({ -400.f, 425.f });
+
+	// 중간 발판
+	tileNumbers.push_back(14);
+	tilePositions.push_back({ -380.f, 250.f });
+	tileNumbers.push_back(15);
+	tilePositions.push_back({ -330.f, 250.f });
+	tileNumbers.push_back(16);
+	tilePositions.push_back({ -280.f, 250.f });
+
+	tileNumbers.push_back(14);
+	tilePositions.push_back({ -130.f, 200.f });
+	tileNumbers.push_back(15);
+	tilePositions.push_back({ -80.f, 200.f });
+	tileNumbers.push_back(16);
+	tilePositions.push_back({ -30.f, 200.f });
+
+	tileNumbers.push_back(14);
+	tilePositions.push_back({ 70.f, 170.f });
+	tileNumbers.push_back(15);
+	tilePositions.push_back({ 120.f, 170.f });
+	tileNumbers.push_back(16);
+	tilePositions.push_back({ 170.f, 170.f });
+
+	tileNumbers.push_back(14);
+	tilePositions.push_back({ -380.f, 100.f });
+	tileNumbers.push_back(15);
+	tilePositions.push_back({ -330.f, 100.f });
+	tileNumbers.push_back(16);
+	tilePositions.push_back({ -280.f, 100.f });
+
+	// 근접 몬스터 가두는 상자
+	tileNumbers.push_back(17);
+	tilePositions.push_back({ -250.f, 425.f });
+	tileNumbers.push_back(17);
+	tilePositions.push_back({ 50.f, 425.f });
+
+	// 두 번째 발판
+	tileNumbers.push_back(1);
+	tilePositions.push_back({ tilePosX, 475.f });
+	tilePosX += 50.f;
+
+	for (int i = 0; i < 6; ++i) {
+		tileNumbers.push_back(2);
+		tilePositions.push_back({ tilePosX, 475.f });
+		tilePosX += 50.f;
+	}
+
+	tileNumbers.push_back(3);
+	tilePositions.push_back({ tilePosX, 475.f });
+	tilePosX += 250.f;
+
+	// 점프맵 발판
+	tileNumbers.push_back(14);
+	tilePositions.push_back({ tilePosX, 400.f });
+	tileNumbers.push_back(14);
+	tilePositions.push_back({ tilePosX, 200.f });
+	tilePosX += 50.f;
+
+	tileNumbers.push_back(15);
+	tilePositions.push_back({ tilePosX, 400.f });
+	tileNumbers.push_back(15);
+	tilePositions.push_back({ tilePosX, 200.f });
+	tilePosX += 50.f;
+
+	tileNumbers.push_back(16);
+	tilePositions.push_back({ tilePosX, 400.f });
+	tileNumbers.push_back(16);
+	tilePositions.push_back({ tilePosX, 200.f });
+
+	tilePosX -= 400.f;
+
+	tileNumbers.push_back(14);
+	tilePositions.push_back({ tilePosX, 300.f });
+	tileNumbers.push_back(14);
+	tilePositions.push_back({ tilePosX, 100.f });
+	tilePosX += 50.f;
+
+	tileNumbers.push_back(15);
+	tilePositions.push_back({ tilePosX, 300.f });
+	tileNumbers.push_back(15);
+	tilePositions.push_back({ tilePosX, 100.f });
+	tilePosX += 50.f;
+
+	tileNumbers.push_back(16);
+	tilePositions.push_back({ tilePosX, 300.f });
+	tileNumbers.push_back(16);
+	tilePositions.push_back({ tilePosX, 100.f });
+
+	tilePosX -= 400.f;
+
+	tileNumbers.push_back(14);
+	tilePositions.push_back({ tilePosX, 0.f });
+	tilePosX += 50.f;
+
+	tileNumbers.push_back(15);
+	tilePositions.push_back({ tilePosX, 0.f });
+	tilePosX += 50.f;
+
+	tileNumbers.push_back(16);
+	tilePositions.push_back({ tilePosX, 0.f });
+
+	tilePosX += 200.f;
+
+	// 포탈 발판
+	tileNumbers.push_back(14);
+	tilePositions.push_back({ tilePosX, -100.f });
+	tilePosX += 50.f;
+
+	for (int i = 0; i < 4; ++i) {
+		tileNumbers.push_back(15);
+		tilePositions.push_back({ tilePosX, -100.f });
+		tilePosX += 50.f;
+	}
+
+	tileNumbers.push_back(16);
+	tilePositions.push_back({ tilePosX, -100.f });
+
+	C_TilesPkt packet((int)tileNumbers.size(), tileNumbers, tilePositions);
+	TCPServer::GetInst()->SendPacket(packet);
+}
