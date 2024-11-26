@@ -1,6 +1,19 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
-#define DATA_SIZE 250
+#define DATA_SIZE 4096
+
+struct vector2
+{
+	float x = 0.f, y = 0.f;
+
+	vector2() { x = 0.f; y = 0.f; }
+	vector2(float _x, float _y) { x = _x; y = _y; }
+	vector2(const vector2& v) { x = v.x; y = v.y; }
+
+	vector2 operator+ (const vector2& v) const { return vector2(x + v.x, y + v.y); }
+	vector2 operator- (const vector2& v) const { return vector2(x - v.x, y - v.y); }
+	vector2 operator* (const vector2& v) const { return vector2(x * v.x, y * v.y); }
+};
 
 struct Client {
 	SOCKET socket;
@@ -130,18 +143,29 @@ struct C_GameStartRequestPkt : public Packet
 	}
 };
 
-struct C_TilesPkt : public Packet
-{
-	C_TilesPkt()
-	{
-		type = Tiles;
-		sprintf_s(data, "%s", std::string{"HI"});
+struct C_TilesPkt : public Packet {
+	C_TilesPkt(int tileCount, const std::vector<int>& tileTypes, const std::vector<vector2>& tilePositions) {
+		type = Tiles; // 타입 설정
+		
+		// 데이터를 문자열로 직렬화하여 data에 저장
+		char* write_ptr = data;
+		int offset = 0;
+
+		// 1. 타일 개수 추가
+		offset += sprintf_s(write_ptr + offset, sizeof(data) - offset, "%d ", tileCount);
+
+		// 2. 각 타일의 타입과 위치 추가
+		for (int i = 0; i < tileCount; ++i) {
+			offset += sprintf_s(write_ptr + offset, sizeof(data) - offset, "%d %.2f %.2f ",
+				tileTypes[i], tilePositions[i].x, tilePositions[i].y);
+		}
+
+		// 데이터 크기 설정
 		data_size = strlen(data);
 	}
 
-	void deserialize()
-	{
-
+	void deserialize() {
+		// 역직렬화는 필요 시 구현
 	}
 };
 

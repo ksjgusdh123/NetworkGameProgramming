@@ -28,6 +28,7 @@ public:
 	void Connect();
 	void Run();
 	void Cleanup();
+	void CreateTilePacket();
 public:
 	queue<Packet> recvQ;
 	vector<Client> clients;
