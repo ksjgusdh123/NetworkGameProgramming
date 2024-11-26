@@ -70,6 +70,7 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 		}
 		case PlayerMove:
 		{
+			cout << "!!!" << endl;
 			C_PlayerMovePkt* cur = (C_PlayerMovePkt*)&packet;
 			cur->deserialize();
 			cout << "[MOVE] " << cur->client_id << " Player moved to (" << cur->x << "," << cur->y << ")\n";
@@ -90,12 +91,12 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 			TCPServer::GetInst()->SendPacket(packet);
 			break;
 		}
-		case GameStartRequest:
+		/*case GameStartRequest:
 		{
 			cout << "전송 받음";
 			TCPServer::GetInst()->CreateTilePacket();
 			break;
-		}
+		}*/
 		default:
 			break;
 		}
