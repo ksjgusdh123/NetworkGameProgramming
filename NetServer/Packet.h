@@ -1,19 +1,4 @@
 #pragma once
-#define _CRT_SECURE_NO_WARNINGS
-#define DATA_SIZE 250
-
-struct Client {
-	SOCKET socket;
-	std::string name;
-	PlayerInfo player;
-	int& id = player.id;
-	Client(SOCKET sock, int clientId, const std::string& clientName)
-		: socket(sock), name(clientName)
-	{
-		id = clientId;
-	}
-};
-
 	
 enum PacketType
 {
@@ -37,7 +22,7 @@ public:
 	int client_id = -1;
 	int type = 0;
 	int data_size = 0;
-	char data[DATA_SIZE]{};
+	char data[BUFSIZ]{};
 	Packet() {}
 	Packet(int client_id_, int type_, int data_size_, const char* data_)
 		: client_id(client_id_), type(type_), data_size(data_size_)

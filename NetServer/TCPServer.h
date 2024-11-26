@@ -1,6 +1,6 @@
 #pragma once
 #include "Define.h"
-#include <queue>
+#include "GameManager.h"
 
 class TCPServer
 {

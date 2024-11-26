@@ -1,26 +1,27 @@
-#include "TCPServer.h"
 #include "ErrDisplay.h"
+#include "TCPServer.h"
+#include "GameManager.h"
 
 TCPServer* TCPServer::m_inst;
 CRITICAL_SECTION cs;
 
-int g_id = 0;
 DWORD WINAPI RecvThread(LPVOID arg)
 {
 	cout << "Start RecvThread!\n";
 	SOCKET client_sock = (SOCKET)arg;
-	int client_id = g_id++;
+	
+	Client client(client_sock);
+	TCPServer::GetInst()->clients.emplace_back(client);
+
+	int client_id = client.player.id;
 	int res = send(client_sock, (char*)&client_id, sizeof(int), 0);
 	if (res == SOCKET_ERROR) { err_display("send()"); return -1; }
-
-	Client client(client_sock, client_id, "");
-	TCPServer::GetInst()->clients.emplace_back(client);
 
 	while (true)
 	{
 		int type;
 		int data_size;
-		char data[DATA_SIZE];
+		char data[BUFSIZ];
 		int res;
 
 		res = recv(client.socket, (char*)&type, sizeof(int), MSG_WAITALL);
@@ -64,7 +65,7 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 			cur->deserialize();
 			cout << "[LOGIN] " << cur->client_id << " Player Name = " << cur->data << endl;
 			auto& cur_client = TCPServer::GetInst()->clients[cur->client_id];
-			cur_client.name = cur->data;
+			cur_client.player.name = cur->data;
 			TCPServer::GetInst()->SendPacket(packet);
 			break;
 		}

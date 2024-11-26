@@ -16,12 +16,9 @@
 #include <vector>
 #include <queue>
 #include <array>
-#include "GameData.h"
 #include "Packet.h"
+#include "GameData.h"
 
 using namespace std;
 
 #define SERVERPORT 9000
-
-
-
