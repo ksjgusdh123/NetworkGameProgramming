@@ -7,6 +7,7 @@ struct LobbyData
 {
 	EPlayer_Job job = EPlayer_Job::Sword;
 	bool bReady = false;
+	int id;
 	class CLobbyPlayer* player = NULL;
 };
 

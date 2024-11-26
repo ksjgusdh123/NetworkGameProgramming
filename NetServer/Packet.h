@@ -14,6 +14,7 @@ struct Client {
 	}
 };
 
+	
 enum PacketType
 {
 	//InputKey,
@@ -81,37 +82,35 @@ struct C_LoginRequestPkt : public Packet
 
 struct C_PlayerChoicePkt : public Packet
 {
-	int idx;
 	int j;
 
-	void initial(int idx, const int job_)
+	C_PlayerChoicePkt(const int job_)
 	{
 		type = PlayerChoice;
-		sprintf_s(data, "%d %d", idx, job_);
+		sprintf_s(data, "%d", job_);
 		data_size = strlen(data);
 	}
 
 	void deserialize()
 	{
-		sscanf_s(data, "%d %d", &idx, &j);
+		sscanf_s(data, "%d", &j);
 	}
 };
 
 struct C_GameStartRequestPkt : public Packet
 {
-	int idx;
 	bool ready;
 
-	void initial(int idx, const bool bReady)
+	C_GameStartRequestPkt(const bool bReady)
 	{
 		type = GameStartRequest;
-		sprintf_s(data, "%d %d", idx, bReady);
+		sprintf_s(data, "%d", bReady);
 		data_size = strlen(data);
 	}
 
 	void deserialize()
 	{
-		sscanf_s(data, "%d %d", &idx, &ready);
+		sscanf_s(data, "%d", &ready);
 	}
 };
 
