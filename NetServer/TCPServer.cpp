@@ -91,12 +91,12 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 			TCPServer::GetInst()->SendPacket(packet);
 			break;
 		}
-		/*case GameStartRequest:
+		case TileRequest:
 		{
-			cout << "전송 받음";
+			cout << "[TileRequest] - 전송 받음" << endl;
 			TCPServer::GetInst()->CreateTilePacket();
 			break;
-		}*/
+		}
 		default:
 			break;
 		}
@@ -355,4 +355,6 @@ void TCPServer::CreateTilePacket()
 
 	C_TilesPkt packet((int)tileNumbers.size(), tileNumbers, tilePositions);
 	TCPServer::GetInst()->SendPacket(packet);
+
+	
 }

@@ -18,6 +18,9 @@ public:
 	virtual void Update(float elapsedTime);
 	bool IsPlayerInRicheAttackArea();
 	void CreateMap();
+	void CreateStageOneMap();
+
+	virtual void PacketEvent(const class Packet& packet);
 
 private:
 	class CPlayer* player;
@@ -26,5 +29,9 @@ private:
 	CGhost* ghost;
 	CRiche* riche;
 	Vector2				m_cameraVelocity;
+	int m_tileNum{};
+	std::vector<int> m_tileType;
+	std::vector<float> m_tilePosX;
+	std::vector<float> m_tilePosY;
 };
 

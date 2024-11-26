@@ -15,9 +15,7 @@
 bool CMainScene::Init()
 {
     CScene::Init();
-    // 게임 시작 요청 패킷 전송
-    //C_GameStartRequestPkt packet{};
-    //PacketManager::GetInst().EnqueueSendPacket(packet);
+
     CGameObject* back = CreateObject<CGameObject>("Background");
     back->CreateTexture(1);
     back->SetTexture("Background", TEXT("Map/BG.bmp"), EObject_Dir::Right);
@@ -37,8 +35,7 @@ bool CMainScene::Init()
     trap = CreateObject<CTrap>("trap");
     trap->SetPos(600.f, 240.f);
 
-    CreateMap();
-
+  
     CStar* star = CreateObject<CStar>("star");
     star->SetPos(400.f, 100.f);
 
@@ -79,6 +76,12 @@ bool CMainScene::Init()
     riche = CreateObject<CRiche>("riche");
     riche->SetPos(300.f, 100.f);
 
+    // 게임 시작 요청 패킷 전송
+    C_TileRequestPkt packet{};
+    PacketManager::GetInst().EnqueueSendPacket(packet);
+
+   
+
     return true;
 }
 
@@ -112,6 +115,23 @@ bool CMainScene::IsPlayerInRicheAttackArea()
 
     return false;
 }
+
+void CMainScene::PacketEvent(const Packet& packet)
+{
+    switch (packet.type)
+    {
+    case Tiles:
+    {	
+        C_TilesPkt* cur = (C_TilesPkt*)&packet;
+        cur->deserialize(m_tileNum, m_tileType, m_tilePosX, m_tilePosY);
+        CreateStageOneMap();
+    }
+    default:
+        break;
+    }
+}
+
+
 
 void CMainScene::CreateMap()
 {
@@ -337,4 +357,16 @@ void CMainScene::CreateMap()
     tile = CreateObject<CTile>("tile16");
     tile->SetPos(tilePosX, -100.f);
     tile->SetTileNum(16);
+}
+
+
+void CMainScene::CreateStageOneMap()
+{
+    CTile* tile;
+    for (int i = 0; i < m_tileNum; ++i) {
+        std::string tileName = "tile" + std::to_string(m_tileType[i]);
+        tile = CreateObject<CTile>(tileName);
+        tile->SetPos(m_tilePosX[i] , m_tilePosY[i]);
+        tile->SetTileNum(m_tileType[i]);
+    }
 }

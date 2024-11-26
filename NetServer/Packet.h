@@ -41,6 +41,7 @@ enum PacketType
 	GameEndNotification,
 	PlayerInfoUpdate,
 	MonsterInfoUpdate,
+	TileRequest,
 	Tiles,
 };
 
@@ -128,20 +129,20 @@ struct C_GameStartRequestPkt : public Packet
 	}
 };
 
-//struct C_GameStartRequestPkt : public Packet
-//{
-//	C_GameStartRequestPkt()
-//	{
-//		type = GameStartRequest;
-//		sprintf_s(data, "%s", std::string{"HI"});
-//		data_size = strlen(data);
-//	}
-//
-//	void deserialize()
-//	{
-//
-//	}
-//};
+struct C_TileRequestPkt : public Packet
+{
+	C_TileRequestPkt()
+	{
+		type = TileRequest;
+		sprintf_s(data, "%s", std::string{"HI"});
+		data_size = strlen(data);
+	}
+
+	void deserialize()
+	{
+
+	}
+};
 
 struct C_TilesPkt : public Packet {
 	C_TilesPkt(int tileCount, const std::vector<int>& tileTypes, const std::vector<vector2>& tilePositions) {
@@ -164,8 +165,42 @@ struct C_TilesPkt : public Packet {
 		data_size = strlen(data);
 	}
 
-	void deserialize() {
-		// 역직렬화는 필요 시 구현
+	void deserialize(int& tileNum, std::vector<int>& tileTypes, std::vector<float>& tilePosX, std::vector<float>& tilePosY) {
+		// 데이터 파싱 시작
+		const char* read_ptr = data;
+
+		// 1. 타일 개수 파싱
+		sscanf_s(read_ptr, "%d ", &tileNum);
+
+		// 타일 개수 크기만큼 읽고 포인터 이동
+		while (*read_ptr != ' ') ++read_ptr; // 첫 공백까지 이동
+		++read_ptr; // 공백 넘어 이동
+
+		// 2. 각 타일의 타입과 위치 파싱
+		tileTypes.clear();
+		tilePosX.clear();
+		tilePosY.clear();
+		for (int i = 0; i < tileNum; ++i) {
+			int tileType;
+			float posX, posY;
+
+			// 타입, x, y 순으로 파싱
+			sscanf_s(read_ptr, "%d %f %f ", &tileType, &posX, &posY);
+
+			tileTypes.push_back(tileType);
+			tilePosX.push_back(posX);
+			tilePosY.push_back(posY);
+
+			// 읽은 데이터만큼 포인터 이동
+			while (*read_ptr != ' ') ++read_ptr; // 첫 공백까지 이동
+			++read_ptr; // 공백 넘어 이동
+
+			while (*read_ptr != ' ') ++read_ptr; // 두 번째 공백까지 이동
+			++read_ptr; // 공백 넘어 이동
+
+			while (*read_ptr != ' ' && *read_ptr != '\0') ++read_ptr; // 세 번째 공백 또는 끝까지 이동
+			if (*read_ptr == ' ') ++read_ptr; // 마지막 공백 넘어 이동
+		}
 	}
 };
 
