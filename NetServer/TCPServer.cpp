@@ -352,4 +352,5 @@ void TCPServer::CreateTilePacket()
 	tilePositions.push_back({ tilePosX, -100.f });
 
 	C_TilesPkt packet((int)tileNumbers.size(), tileNumbers, tilePositions);
+	TCPServer::GetInst()->SendPacket(packet);
 }

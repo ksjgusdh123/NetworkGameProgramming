@@ -1,6 +1,6 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
-#define DATA_SIZE 4096
+#define DATA_SIZE 2048
 
 struct vector2
 {
@@ -43,6 +43,7 @@ public:
 	int type = 0;
 	int data_size = 0;
 	char data[DATA_SIZE]{};
+
 	Packet() {}
 	Packet(int client_id_, int type_, int data_size_, const char* data_)
 		: client_id(client_id_), type(type_), data_size(data_size_)
@@ -159,7 +160,7 @@ struct C_TilesPkt : public Packet {
 			offset += sprintf_s(write_ptr + offset, sizeof(data) - offset, "%d %.2f %.2f ",
 				tileTypes[i], tilePositions[i].x, tilePositions[i].y);
 		}
-
+		
 		// 데이터 크기 설정
 		data_size = strlen(data);
 	}

@@ -29,6 +29,12 @@ void PacketManager::ProcessPacket(const Packet& packet)
 		}
 	}
 	break;
+	case Tiles:
+	{		
+		C_TilesPkt* cur = (C_TilesPkt*)&packet;
+		cur->deserialize();
+	}
+	break;
 	default:
 		break;
 	}
