@@ -81,17 +81,15 @@ void CLobbyScene::KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	{
 	case IDC_BUTTON:
 	{
-		C_PlayerChoicePkt packet{};
 		m_LobbyData[PacketManager::GetInst().GetMyID()].player->SetJob(EPlayer_Job::Sword);
-		packet.initial(PacketManager::GetInst().GetMyID(), (int)EPlayer_Job::Sword);
+		C_PlayerChoicePkt packet((int)EPlayer_Job::Sword);
 		PacketManager::GetInst().EnqueueSendPacket(packet);
 		break;
 	}
 	case IDC_BUTTON2:
 	{
-		C_PlayerChoicePkt packet{};
 		m_LobbyData[PacketManager::GetInst().GetMyID()].player->SetJob(EPlayer_Job::Archer);
-		packet.initial(PacketManager::GetInst().GetMyID(), (int)EPlayer_Job::Archer);
+		C_PlayerChoicePkt packet((int)EPlayer_Job::Archer);
 		PacketManager::GetInst().EnqueueSendPacket(packet);
 		break;
 	}
@@ -100,8 +98,7 @@ void CLobbyScene::KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam)
 		//m_LobbyData[0].bReady = !m_LobbyData[0].bReady;
 		//m_LobbyData[1].bReady = !m_LobbyData[1].bReady;
 		m_LobbyData[PacketManager::GetInst().GetMyID()].bReady = !m_LobbyData[PacketManager::GetInst().GetMyID()].bReady;
-		C_GameStartRequestPkt packet{};
-		packet.initial(PacketManager::GetInst().GetMyID(), m_LobbyData[PacketManager::GetInst().GetMyID()].bReady);
+		C_GameStartRequestPkt packet(m_LobbyData[PacketManager::GetInst().GetMyID()].bReady);
 		PacketManager::GetInst().EnqueueSendPacket(packet);
 		break;
 	}
@@ -122,14 +119,14 @@ void CLobbyScene::PacketEvent(const Packet& packet)
 	{
 		C_PlayerChoicePkt* cur = (C_PlayerChoicePkt*)&packet;
 		cur->deserialize();
-		m_LobbyData[cur->idx].player->SetJob((EPlayer_Job)cur->j);
+		m_LobbyData[cur->client_id].player->SetJob((EPlayer_Job)cur->j);
 		break;
 	}
 	case GameStartRequest:
 	{
 		C_GameStartRequestPkt* cur = (C_GameStartRequestPkt*)&packet;
 		cur->deserialize();
-		m_LobbyData[cur->idx].bReady = cur->ready;
+		m_LobbyData[cur->client_id].bReady = cur->ready;
 		break;
 	}
 	default:
