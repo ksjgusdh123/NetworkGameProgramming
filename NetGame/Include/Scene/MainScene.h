@@ -5,6 +5,7 @@
 #include "../GameObject/Ghost.h"
 #include "../GameObject/Riche.h"
 #include "../GameObject/RicheAttack.h"
+#include "../GameObject/Boss.h"
 #include "../GameObject//Tile.h"
 // Warning: SceneManager에서 MainScene을 알 수 없기 때문에 씬이 제거될 때 MainScene으로 캐스팅 되지 않는다. (Scene 소멸자만 호출)
 //			때문에 할당된 객체는 모두 Scene 클래스에 등록해야 한다. ex) CScene::CreateObject()
@@ -20,7 +21,7 @@ public:
 	void CreateMap();
 	void CreateStageOneMap();
 	void ResourceInit();
-
+	void BossAttack();
 	virtual void PacketEvent(const class Packet& packet);
 
 private:
@@ -29,10 +30,12 @@ private:
 	class CGameObject* monster;
 	CGhost* ghost;
 	CRiche* riche;
+	CBoss* boss;
 	Vector2				m_cameraVelocity;
 	int m_tileNum{};
 	std::vector<int> m_tileType;
 	std::vector<float> m_tilePosX;
 	std::vector<float> m_tilePosY;
+	float m_timer = 0.f;
 };
 

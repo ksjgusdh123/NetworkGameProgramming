@@ -32,6 +32,7 @@ enum class EObject_Dir
 {
 	Right,
 	Left,
+	Up,
 	Max
 };
 
@@ -44,10 +45,14 @@ enum class EObject_State
 	Run,
 	Attack,
 	Attack_L,
+	Attack2,
+	Attack_L2,
 	Jump,
 	Jump_L,
 	Jump_Down,
 	Jump_Down_L,
+	Telpo,
+	Telpo_L,
 	Max
 };
 

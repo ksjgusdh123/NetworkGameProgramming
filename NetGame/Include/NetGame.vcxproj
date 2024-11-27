@@ -164,6 +164,8 @@
     <ClInclude Include="BossAnimation.h" />
     <ClInclude Include="GameObject\Archer.h" />
     <ClInclude Include="GameObject\Arrow.h" />
+    <ClInclude Include="GameObject\Boss.h" />
+    <ClInclude Include="GameObject\BossAttack.h" />
     <ClInclude Include="GameObject\Ghost.h" />
     <ClInclude Include="GameObject\Heart.h" />
     <ClInclude Include="GameObject\LobbyPlayer.h" />
@@ -192,6 +194,8 @@
     <ClCompile Include="ClientManager.cpp" />
     <ClCompile Include="GameObject\Archer.cpp" />
     <ClCompile Include="GameObject\Arrow.cpp" />
+    <ClCompile Include="GameObject\Boss.cpp" />
+    <ClCompile Include="GameObject\BossAttack.cpp" />
     <ClCompile Include="GameObject\Ghost.cpp" />
     <ClCompile Include="GameObject\Heart.cpp" />
     <ClCompile Include="GameObject\LobbyPlayer.cpp" />
