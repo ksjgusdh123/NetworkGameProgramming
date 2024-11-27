@@ -38,10 +38,10 @@ bool CMainScene::Init()
     trap->SetPos(600.f, 240.f);
 
     CStar* star = CreateObject<CStar>("star");
-    star->SetPos(400.f, 100.f);
+    star->SetPos(-570.f, 415.f);
 
     CHeart* heart = CreateObject<CHeart>("heart");
-    heart->SetPos(200.f, 350.f);
+    heart->SetPos(280.f, 415.f);
 
     CPortal* portal = CreateObject<CPortal>("portal");
     portal->SetPos(730.f, -150.f);
@@ -64,18 +64,24 @@ bool CMainScene::Init()
     SetMyPlayer(myplayer);
     GetCamera()->SetTarget(myplayer);
 
-    monster = CreateObject<CGameObject>("gus");
+ /*   monster = CreateObject<CGameObject>("gus");
     monster->CreateTexture(1);
     monster->SetTexture("Plyer", TEXT("Player/Bazzi_Lobby.bmp"), EObject_Dir::Right);
 	monster->SetColorKey(255, 0, 255);
     monster->SetSize(50.f, 60.f);
-    monster->SetPos(100.f, 200.f);
+    monster->SetPos(100.f, 200.f);*/
 
 
     ghost = CreateObject<CGhost>("fdkaj");
+    ghost->SetPos(-100.f, 410.f);
+    ghost->m_originalPosX = ghost->GetPos().x;
 
     riche = CreateObject<CRiche>("riche");
-    riche->SetPos(300.f, 100.f);
+    riche->SetPos(120.f, 80.f);
+    
+    riche = CreateObject<CRiche>("riche");
+    riche->SetPos(450.f, 380.f);
+
 
     // 게임 시작 요청 패킷 전송
     C_TileRequestPkt packet{};

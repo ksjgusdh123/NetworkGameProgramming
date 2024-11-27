@@ -24,7 +24,6 @@ bool CGhost::Init()
 	m_bIsAlive = true;
 
 	m_range = 100.f; // 이동 범위 설정
-	m_originalPosX = GetPos().x; // 초기 위치 저장
 
 	return true;
 }
