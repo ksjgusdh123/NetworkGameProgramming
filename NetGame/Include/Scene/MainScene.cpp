@@ -82,6 +82,8 @@ bool CMainScene::Init()
     riche = CreateObject<CRiche>("riche");
     riche->SetPos(450.f, 380.f);
 
+    CBoss* boss = CreateObject<CBoss>("boss");
+    boss->SetPos(0.f, 0.f);
 
     // 게임 시작 요청 패킷 전송
     C_TileRequestPkt packet{};
