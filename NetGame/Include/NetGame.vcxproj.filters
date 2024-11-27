@@ -64,6 +64,9 @@
     <ClCompile Include="GameObject\Boss.cpp">
       <Filter>03. GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject\BossAttack.cpp">
+      <Filter>03. GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene\MainScene.h">
@@ -154,6 +157,9 @@
       <Filter>05. NetClient</Filter>
     </ClInclude>
     <ClInclude Include="GameObject\Boss.h">
+      <Filter>03. GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\BossAttack.h">
       <Filter>03. GameObject</Filter>
     </ClInclude>
   </ItemGroup>
