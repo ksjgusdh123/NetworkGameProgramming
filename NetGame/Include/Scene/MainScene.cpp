@@ -25,6 +25,9 @@ bool CMainScene::Init()
     back->SetPivot(0.5f, 0.5f);
 
 
+    boss = CreateObject<CBoss>("boss");
+    boss->SetPos(0.f, 0.f);
+
     CTrap* trap = CreateObject<CTrap>("trap");
     trap->SetPos(-570.f, 415.f);
 
@@ -82,9 +85,6 @@ bool CMainScene::Init()
     riche = CreateObject<CRiche>("riche");
     riche->SetPos(450.f, 380.f);
 
-    CBoss* boss = CreateObject<CBoss>("boss");
-    boss->SetPos(0.f, 0.f);
-
     // 게임 시작 요청 패킷 전송
     C_TileRequestPkt packet{};
     PacketManager::GetInst().EnqueueSendPacket(packet);
@@ -101,7 +101,12 @@ void CMainScene::Update(float elapsedTime)
     if (IsPlayerInRicheAttackArea()){
         riche->Attack(player->GetPos());
     }
-
+    m_timer += elapsedTime;
+    if (m_timer > 2.0f) {
+        if (boss->GetActive())
+            BossAttack();
+        m_timer = 0.f;
+    }
     for (auto& object : m_objects[2])
     {
         if (player->GetCollision()->CheckCollision(object->GetCollision()))
@@ -138,6 +143,11 @@ void CMainScene::PacketEvent(const Packet& packet)
     default:
         break;
     }
+}
+
+void CMainScene::BossAttack()
+{
+    boss->Attack(player->GetPos());
 }
 
 

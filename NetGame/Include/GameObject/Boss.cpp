@@ -27,6 +27,7 @@ bool CBoss::Init()
 	SetAnimation(Boss_Attack1_L, 8, EObject_State::Attack_L);
 	SetAnimation(Boss_Attack1_R, 8, EObject_State::Attack);
 	SetAnimation(Boss_Attack2_L, 8, EObject_State::Attack_L2);
+	SetAnimation(Boss_Attack2_R, 8, EObject_State::Attack2);
 	SetAnimation(B_TELPO, 17, EObject_State::Telpo);
 	SetAnimation(B_TELPO, 17, EObject_State::Telpo_L);
 	SetSize(130.f, 160.f);
@@ -43,17 +44,28 @@ void CBoss::Update(float elapsedTime)
 {
 	CGameObject::Update(elapsedTime);
 
-	if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L) {
-		m_timer += elapsedTime;
+	m_timer += elapsedTime;
 
-		if (m_timer >= 1.f) {
-			if (m_objectState == EObject_State::Attack)
-				m_objectState = EObject_State::Basic;
-			if (m_objectState == EObject_State::Attack_L)
-				m_objectState = EObject_State::Basic_L;
+	if (m_timer >= 1.f) {
+		if (m_objectState == EObject_State::Attack)
+			m_objectState = EObject_State::Basic;
+		if (m_objectState == EObject_State::Attack_L)
+			m_objectState = EObject_State::Basic_L;
+		if (m_objectState == EObject_State::Attack_L2)
+			m_objectState = EObject_State::Basic_L;
+		if (m_objectState == EObject_State::Attack2)
+			m_objectState = EObject_State::Basic;
+		if (m_objectState == EObject_State::Telpo) {
+			m_objectState = EObject_State::Telpo;
+			SetPos(m_target.x, m_pos.y);
 		}
+		if (m_objectState == EObject_State::Telpo_L) {
+			m_objectState = EObject_State::Telpo_L;
+			SetPos(m_target.x, m_pos.y);
+		}
+
 	}
-	
+
 }
 
 void CBoss::PostUpdate(float elapsedTime)
@@ -64,13 +76,46 @@ void CBoss::PostUpdate(float elapsedTime)
 
 void CBoss::Attack(Vector2 target)
 {
-	if (target.x >= m_pos.x) {
-		m_objectState = EObject_State::Attack;
-		m_objectDir = EObject_Dir::Right;
-	}
-	else{
-		m_objectState = EObject_State::Attack_L;
-		m_objectDir = EObject_Dir::Left;
+	float distance = abs(target.x - GetPos().x);
+	int bossAttack = 0;
+	if (distance > 400.f)
+		bossAttack = 2;
+	else if (distance <= 400.f && distance > 100.f)
+		bossAttack = 1;
+	else
+		bossAttack = 0;
+
+	switch (bossAttack) {
+	case 0:
+		if (target.x >= m_pos.x) {
+			m_objectState = EObject_State::Attack;
+			m_objectDir = EObject_Dir::Right;
+		}
+		else {
+			m_objectState = EObject_State::Attack_L;
+			m_objectDir = EObject_Dir::Left;
+		}
+		break;
+	case 1:
+		if (target.x >= m_pos.x) {
+			m_objectState = EObject_State::Attack2;
+			m_objectDir = EObject_Dir::Right;
+		}
+		else {
+			m_objectState = EObject_State::Attack_L2;
+			m_objectDir = EObject_Dir::Left;
+		}
+		break;
+	case 2:
+		if (target.x >= m_pos.x) {
+			m_objectState = EObject_State::Telpo;
+			m_objectDir = EObject_Dir::Up;
+		}
+		else {
+			m_objectState = EObject_State::Telpo_L;
+			m_objectDir = EObject_Dir::Up;
+		}
+		break;
 	}
 	m_target = target;
 	m_timer = 0.f;

@@ -21,7 +21,7 @@ public:
 	void CreateMap();
 	void CreateStageOneMap();
 	void ResourceInit();
-
+	void BossAttack();
 	virtual void PacketEvent(const class Packet& packet);
 
 private:
@@ -30,10 +30,12 @@ private:
 	class CGameObject* monster;
 	CGhost* ghost;
 	CRiche* riche;
+	CBoss* boss;
 	Vector2				m_cameraVelocity;
 	int m_tileNum{};
 	std::vector<int> m_tileType;
 	std::vector<float> m_tilePosX;
 	std::vector<float> m_tilePosY;
+	float m_timer = 0.f;
 };
 
