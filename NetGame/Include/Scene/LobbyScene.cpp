@@ -76,6 +76,26 @@ void CLobbyScene::Update(float elapsedTime)
 	}
 }
 
+void CLobbyScene::Render(HDC hDC, float elapsedTime)
+{
+	CScene::Render(hDC, elapsedTime);
+	TCHAR buffer[32];
+	//_stprintf_s(buffer, _T("%d"), PacketManager::GetInst().GetMyID());
+
+	// 클라이언트 닉네임 출력 위치
+	//TextOut(hDC, 250, 115, buffer, _tcslen(buffer));
+	//TextOut(hDC, 650, 115, buffer, _tcslen(buffer));
+	
+	if (m_LobbyData[0].bReady)
+	{
+		TextOut(hDC, 250, 400, TEXT("Ready!"), 6);
+	}
+	if (m_LobbyData[1].bReady)
+	{
+		TextOut(hDC, 650, 400, TEXT("Ready!"), 6);
+	}
+}
+
 void CLobbyScene::KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam)
 {
 	switch (LOWORD(wParam))
@@ -96,8 +116,8 @@ void CLobbyScene::KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	}
 	case IDC_BUTTON3:
 	{
-		//m_LobbyData[0].bReady = !m_LobbyData[0].bReady;
-		//m_LobbyData[1].bReady = !m_LobbyData[1].bReady;
+		/*m_LobbyData[0].bReady = !m_LobbyData[0].bReady;
+		m_LobbyData[1].bReady = !m_LobbyData[1].bReady;*/
 		m_LobbyData[PacketManager::GetInst().GetMyID()].bReady = !m_LobbyData[PacketManager::GetInst().GetMyID()].bReady;
 		C_GameStartRequestPkt packet(m_LobbyData[PacketManager::GetInst().GetMyID()].bReady);
 		PacketManager::GetInst().EnqueueSendPacket(packet);

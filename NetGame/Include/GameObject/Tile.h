@@ -15,8 +15,9 @@ public:
 	virtual void PostUpdate(float elapsedTime) override;
 	virtual void Render(HDC hDC, float elapsedTime) override;
 	virtual void SetTexture(const std::string& name, const std::wstring& fileName, ETile_Num num, ETexture_Type type = ETexture_Type::Sprite, const std::string& pathName = TEXTURE_PATH);
-	virtual bool SetColorKey(unsigned char r, unsigned char g, unsigned char b, int idx);
+	void SettingTile(int num);
 
-	void SetTileNum(int num) { m_objectNum = (ETile_Num)num; }
+	void SetTileNum(int num);
+
 };
 

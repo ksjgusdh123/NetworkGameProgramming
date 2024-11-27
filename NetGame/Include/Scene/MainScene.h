@@ -19,6 +19,7 @@ public:
 	bool IsPlayerInRicheAttackArea();
 	void CreateMap();
 	void CreateStageOneMap();
+	void ResourceInit();
 
 	virtual void PacketEvent(const class Packet& packet);
 

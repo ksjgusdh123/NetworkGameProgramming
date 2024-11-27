@@ -53,6 +53,7 @@ enum class EObject_State
 
 enum class ETile_Num
 {
+	Tile_NONE,
 	Tile_1,
 	Tile_2,
 	Tile_3,

@@ -27,8 +27,6 @@ bool CArcher::Init()
 	SetAnimation(ATTACK_A_R, 12, EObject_State::Attack);
 	SetAnimation(ATTACK_A_L, 12, EObject_State::Attack_L);
 
-	CInput::GetInst()->AddBindFunction<CArcher>("Attack", EInput_Type::PUSH, this, &CArcher::PlayerAttack, m_scene);
-
 	return true;
 }
 
@@ -45,6 +43,12 @@ void CArcher::PostUpdate(float elapsedTime)
 void CArcher::Render(HDC hDC, float elapsedTime)
 {
 	CPlayer::Render(hDC, elapsedTime);
+}
+
+void CArcher::InitInput()
+{
+	CPlayer::InitInput();
+	CInput::GetInst()->AddBindFunction<CArcher>("Attack", EInput_Type::PUSH, this, &CArcher::PlayerAttack, m_scene);
 }
 
 void CArcher::CheckFrame(float elapsedTime)

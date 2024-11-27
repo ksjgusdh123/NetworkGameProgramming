@@ -11,10 +11,12 @@
 #include <Engine.h>
 #include <Scene/Camera.h>
 #include "..\NetClient\TCPClient.h"
+#include "Scene/SceneResource.h"
 
 bool CMainScene::Init()
 {
     CScene::Init();
+    ResourceInit();
 
     CGameObject* back = CreateObject<CGameObject>("Background");
     back->CreateTexture(1);
@@ -35,7 +37,6 @@ bool CMainScene::Init()
     trap = CreateObject<CTrap>("trap");
     trap->SetPos(600.f, 240.f);
 
-  
     CStar* star = CreateObject<CStar>("star");
     star->SetPos(400.f, 100.f);
 
@@ -369,4 +370,25 @@ void CMainScene::CreateStageOneMap()
         tile->SetPos(m_tilePosX[i] , m_tilePosY[i]);
         tile->SetTileNum(m_tileType[i]);
     }
+}
+
+void CMainScene::ResourceInit()
+{
+    GetSceneResource()->LoadTexture("Tile(1)", TEXT("Map/Tile (1).bmp"));
+    GetSceneResource()->LoadTexture("Tile(2)", TEXT("Map/Tile (2).bmp"));
+    GetSceneResource()->LoadTexture("Tile(3)", TEXT("Map/Tile (3).bmp"));
+    GetSceneResource()->LoadTexture("Tile(4)", TEXT("Map/Tile (4).bmp"));
+    GetSceneResource()->LoadTexture("Tile(5)", TEXT("Map/Tile (5).bmp"));
+    GetSceneResource()->LoadTexture("Tile(6)", TEXT("Map/Tile (6).bmp"));
+    GetSceneResource()->LoadTexture("Tile(7)", TEXT("Map/Tile (7).bmp"));
+    GetSceneResource()->LoadTexture("Tile(8)", TEXT("Map/Tile (8).bmp"));
+    GetSceneResource()->LoadTexture("Tile(9)", TEXT("Map/Tile (9).bmp"));
+    GetSceneResource()->LoadTexture("Tile(10)", TEXT("Map/Tile (10).bmp"));
+    GetSceneResource()->LoadTexture("Tile(11)", TEXT("Map/Tile (11).bmp"));
+    GetSceneResource()->LoadTexture("Tile(12)", TEXT("Map/Tile (12).bmp"));
+    GetSceneResource()->LoadTexture("Tile(13)", TEXT("Map/Tile (13).bmp"));
+    GetSceneResource()->LoadTexture("Tile(14)", TEXT("Map/Tile (14).bmp"));
+    GetSceneResource()->LoadTexture("Tile(15)", TEXT("Map/Tile (15).bmp"));
+    GetSceneResource()->LoadTexture("Tile(16)", TEXT("Map/Tile (16).bmp"));
+    GetSceneResource()->LoadTexture("Tile(17)", TEXT("Map/Tile (17).bmp"));
 }

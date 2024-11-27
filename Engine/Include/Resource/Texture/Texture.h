@@ -47,7 +47,7 @@ public:
 
 	void SetColorKey(unsigned char r, unsigned char g, unsigned char b, int idx = 0)
 	{
-		m_vecImageInfo[idx]->colorKey = RGB(r, g, b);
+		m_vecImageInfo[idx]->colorKey = RGB(r, g, b);	
 		m_vecImageInfo[idx]->enableColorKey = true;
 	}
 

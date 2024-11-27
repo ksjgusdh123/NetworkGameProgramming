@@ -14,28 +14,6 @@ bool CTile::Init()
 	CGameObject::Init();
 
 	SetPivot(0.5f, 0.5f);
-	CreateTexture(17);
-	SetTexture("Tile(1)", TEXT("Map/Tile (1).bmp"), ETile_Num::Tile_1, ETexture_Type::Sprite);
-	SetTexture("Tile(2)", TEXT("Map/Tile (2).bmp"), ETile_Num::Tile_2, ETexture_Type::Sprite);
-	SetTexture("Tile(3)", TEXT("Map/Tile (3).bmp"), ETile_Num::Tile_3, ETexture_Type::Sprite);
-	SetTexture("Tile(4)", TEXT("Map/Tile (4).bmp"), ETile_Num::Tile_4, ETexture_Type::Sprite);
-	SetTexture("Tile(5)", TEXT("Map/Tile (5).bmp"), ETile_Num::Tile_5, ETexture_Type::Sprite);
-	SetTexture("Tile(6)", TEXT("Map/Tile (6).bmp"), ETile_Num::Tile_6, ETexture_Type::Sprite);
-	SetTexture("Tile(7)", TEXT("Map/Tile (7).bmp"), ETile_Num::Tile_7, ETexture_Type::Sprite);
-	SetTexture("Tile(8)", TEXT("Map/Tile (8).bmp"), ETile_Num::Tile_8, ETexture_Type::Sprite);
-	SetTexture("Tile(9)", TEXT("Map/Tile (9).bmp"), ETile_Num::Tile_9, ETexture_Type::Sprite);
-	SetTexture("Tile(10)", TEXT("Map/Tile (10).bmp"), ETile_Num::Tile_10, ETexture_Type::Sprite);
-	SetTexture("Tile(11)", TEXT("Map/Tile (11).bmp"), ETile_Num::Tile_11, ETexture_Type::Sprite);
-	SetTexture("Tile(12)", TEXT("Map/Tile (12).bmp"), ETile_Num::Tile_12, ETexture_Type::Sprite);
-	SetTexture("Tile(13)", TEXT("Map/Tile (13).bmp"), ETile_Num::Tile_13, ETexture_Type::Sprite);
-	SetTexture("Tile(14)", TEXT("Map/Tile (14).bmp"), ETile_Num::Tile_14, ETexture_Type::Sprite);
-	SetTexture("Tile(15)", TEXT("Map/Tile (15).bmp"), ETile_Num::Tile_15, ETexture_Type::Sprite);
-	SetTexture("Tile(16)", TEXT("Map/Tile (16).bmp"), ETile_Num::Tile_16, ETexture_Type::Sprite);
-	SetTexture("Crate", TEXT("Map/Crate.bmp"), ETile_Num::Tile_17, ETexture_Type::Sprite);
-
-	for (int i = 0 ; i < 17; ++i){
-	SetColorKey(255.f, 255.f, 255.f, i);
-	}
 	SetSize(50.f, 50.f);
 	
 	m_objectDir = EObject_Dir::Right;
@@ -93,22 +71,17 @@ void CTile::Render(HDC hDC, float elapsedTime)
 			return;
 
 
-
-		if (m_texture[(int)m_objectNum - 1]->GetTextureType() == ETexture_Type::Sprite)
+		if (m_texture[0]->GetTextureType() == ETexture_Type::Sprite)
 		{
-			if (m_texture[(int)m_objectNum - 1]->GetEnableColorKey())
+			if (m_texture[0]->GetEnableColorKey())
 			{
 				int size{ 128 };
-				if ((int)m_objectNum == 17) size = 106;
+				if ((int)m_objectNum == 17) 
+					size = 106;
 			
 
 				TransparentBlt(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y,
-					m_texture[(int)m_objectNum - 1]->GetDC(), 0, 0, size, size, m_texture[(int)m_objectNum - 1]->GetColorKey());
-			}
-			else
-			{
-				BitBlt(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y,
-					m_texture[(int)m_objectNum - 1]->GetDC(), 0, 0, SRCCOPY);
+					m_texture[0]->GetDC(), 0, 0, size, size, m_texture[0]->GetColorKey());
 			}
 		}
 	}
@@ -117,21 +90,31 @@ void CTile::Render(HDC hDC, float elapsedTime)
 
 void CTile::SetTexture(const std::string& name, const std::wstring& fileName, ETile_Num num, ETexture_Type type, const std::string& pathName)
 {
+	CreateTexture(1);
 	m_scene->GetSceneResource()->LoadTexture(name, fileName, pathName);
 
-	m_texture[(int)num] = m_scene->GetSceneResource()->FindTexture(name);
-	m_texture[(int)num]->SetTextureType(type);
-	m_texture[(int)num]->AddRef();
-	//SetSize((float)m_texture->GetWidth(), (float)m_texture->GetHeight());
+	m_texture[0] = m_scene->GetSceneResource()->FindTexture(name);
+	m_texture[0]->SetTextureType(type);
+	m_texture[0]->AddRef();
+
+	SetColorKey(255.f, 255.f, 255.f, 0);
+
 }
 
-
-bool CTile::SetColorKey(unsigned char r, unsigned char g, unsigned char b, int idx)
+void CTile::SettingTile(int num)
 {
-	if (!m_texture)
-		return false;
 
-	m_texture[idx]->SetColorKey(r, g, b);
-
-	return true;
 }
+
+
+
+void CTile::SetTileNum(int num)
+{
+	m_objectNum = (ETile_Num)num;
+
+	std::wstring filePath = L"Map/Tile (" + std::to_wstring(num) + L").bmp";
+	std::string textureName = "Tile(" + std::to_string(num) + ")";
+
+	SetTexture(textureName.c_str(), filePath.c_str(), m_objectNum, ETexture_Type::Sprite);
+}
+
