@@ -25,7 +25,6 @@ public:
 private:
 	InGameData* m_inGameData;
 	class CPlayer* player[2];
-	class CGameObject* monster;
 	CGhost* ghost;
 	CRiche* riche;
 	Vector2	m_cameraVelocity;

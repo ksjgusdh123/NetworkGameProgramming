@@ -6,16 +6,7 @@
 
 void PacketManager::ProcessPacket(const Packet& packet)
 {
-	switch (packet.type)
-	{
-	case LobbyUpdateResponse:
-	{
-		CSceneManager::GetInst()->GetScene()->RecvGameData(packet);
-		break;
-	}
-	default:
-		break;
-	}
+	CSceneManager::GetInst()->GetScene()->RecvGameData(packet);
 }
 
 void PacketManager::SendPacket(const Packet& packet)

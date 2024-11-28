@@ -75,7 +75,7 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 			}
 			case LobbyUpdateRequest:
 			{
-				S_LobbyInfoPacket* RecvPacket = (S_LobbyInfoPacket*)&packet;
+				C_LobbyUpdateRequest* RecvPacket = (C_LobbyUpdateRequest*)&packet;
 				LobbyData* gameData = GameManager::GetInst().GetLobbyData();
 				const int i = RecvPacket->client_id;
 				memcpy(&gameData->players[i], RecvPacket->data, RecvPacket->data_size);
@@ -85,11 +85,11 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 			}
 			case GameUpdateRequest:
 			{
-				S_GameInfoPacket* RecvPacket = (S_GameInfoPacket*)&packet;
-				LobbyData* gameData = GameManager::GetInst().GetLobbyData();
+				C_GameUpdateRequest* RecvPacket = (C_GameUpdateRequest*)&packet;
+				InGameData* gameData = GameManager::GetInst().GetInGameData();
 				const int i = RecvPacket->client_id;
 				memcpy(&gameData->players[i], RecvPacket->data, RecvPacket->data_size);
-				S_LobbyInfoPacket SendPacket(*gameData);
+				S_GameInfoPacket SendPacket(*gameData);
 				TCPServer::GetInst()->SendPacket(SendPacket);
 				break;
 			}

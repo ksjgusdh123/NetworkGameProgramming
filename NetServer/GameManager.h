@@ -17,6 +17,7 @@ class GameManager {
 public:
     void AddLobbyPlayer(const Client& client);
     LobbyData* GetLobbyData() { return &lobbyData; };
+    InGameData* GetInGameData() { return &gameData; };
 
     void InitGameData();
     void PrintLobbyState();

@@ -1,8 +1,6 @@
 #pragma once
 #include "Scene/Scene.h"
 
-// client ID로 배열 0, 1쓸 지 구분한다고 하였을 시
-
 class CLobbyScene : public CScene
 {
 public:

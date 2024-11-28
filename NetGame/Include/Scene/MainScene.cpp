@@ -56,8 +56,8 @@ bool CMainScene::Init()
 	m_cameraVelocity = Vector2(100.f, 100.f);
 
 
-	player[0] = CreateObject<CArcher>("player");
-	player[1] = CreateObject<CArcher>("player");
+	player[0] = CreateObject<CArcher>("player0");
+	player[1] = CreateObject<CArcher>("player1");
 	player[0]->SetPos(-100.f, 180.f);
 	player[1]->SetPos(-100.f, 180.f);
 	SetPlayer(player[abs(1 - m_myid)]);
@@ -65,14 +65,6 @@ bool CMainScene::Init()
 	player[m_myid]->InitInput();
 	SetMyPlayer(player[m_myid]);
 	GetCamera()->SetTarget(player[m_myid]);
-
-	monster = CreateObject<CGameObject>("gus");
-	monster->CreateTexture(1);
-	monster->SetTexture("Plyer", TEXT("Player/Bazzi_Lobby.bmp"), EObject_Dir::Right);
-	monster->SetColorKey(255, 0, 255);
-	monster->SetSize(50.f, 60.f);
-	monster->SetPos(100.f, 200.f);
-
 
 	ghost = CreateObject<CGhost>("fdkaj");
 
