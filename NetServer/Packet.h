@@ -119,7 +119,7 @@ struct C_GameStartRequestPkt : public Packet
 
 struct C_LobbyUpdateRequest : public Packet
 {
-	C_LobbyUpdateRequest(const PlayerInfo& lobbyData_)
+	C_LobbyUpdateRequest(const LobbyPlayerInfo& lobbyData_)
 	{
 		type = LobbyUpdateRequest;
 		data_size = sizeof(lobbyData_);

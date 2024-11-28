@@ -15,6 +15,7 @@
 bool CLobbyScene::Init()
 {
 	CScene::Init();
+	m_myid = PacketManager::GetInst().GetMyID();
 	m_lobbyData = &PacketManager::GetInst().lobbyData;
 
 	CGameObject* back = CreateObject<CGameObject>("RoomBackground");
@@ -63,7 +64,7 @@ void CLobbyScene::Update(float elapsedTime)
 		break;
 	}
 
-	if (m_lobbyData->players[0].bReady && m_lobbyData->players[1].bReady)
+	if (m_LobbyPlayer[0]->GetReady() && m_LobbyPlayer[1]->GetReady())
 	{
 		for (int i = 0; i < 3; ++i)
 		{
@@ -91,11 +92,9 @@ void CLobbyScene::KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	}
 	case IDC_BUTTON3:
 	{
+		m_lobbyData->players[PacketManager::GetInst().GetMyID()].bReady = !m_lobbyData->players[PacketManager::GetInst().GetMyID()].bReady;
 		//m_LobbyData[0].bReady = !m_LobbyData[0].bReady;
 		//m_LobbyData[1].bReady = !m_LobbyData[1].bReady;
-		//m_LobbyData[PacketManager::GetInst().GetMyID()].bReady = !m_LobbyData[PacketManager::GetInst().GetMyID()].bReady;
-		//C_GameStartRequestPkt packet(m_LobbyData[PacketManager::GetInst().GetMyID()].bReady);
-		//PacketManager::GetInst().EnqueueSendPacket(packet);
 		break;
 	}
 	}
@@ -109,11 +108,14 @@ void CLobbyScene::PacketEvent(const Packet& packet)
 	{
 		S_LobbyInfoPacket* RecvPacket = (S_LobbyInfoPacket*)&packet;
 		memcpy(m_lobbyData, RecvPacket->data, RecvPacket->data_size);
-
+		m_lobbyData->players[m_myid].id = m_myid;
 		for (int i = 0; i < 2; ++i)
 		{
 			m_LobbyPlayer[i]->SetJob((EPlayer_Job)m_lobbyData->players[i].job);
+			m_LobbyPlayer[i]->SetReady(m_lobbyData->players[i].bReady);
+			m_LobbyPlayer[i]->SetName(m_lobbyData->players[i].name);
 		}
+
 		break;
 	}
 	default:

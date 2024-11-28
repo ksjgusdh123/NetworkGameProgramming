@@ -42,7 +42,7 @@ void GameManager::PrintLobbyState()
         std::cout << "Player " << i
             << ": ID=" << player.id
             << ", Name=" << player.name
-            << ", Job=" << player.job << "\n";
+            << ", Job=" << (int)player.job << "\n";
     }
 }
 

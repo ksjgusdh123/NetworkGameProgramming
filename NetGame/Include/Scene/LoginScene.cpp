@@ -69,8 +69,8 @@ bool CLoginScene::SendLoginRequest(std::string name)
 {
 	//if (name.length() <= 0)
 	//	return false;
-
-	char* myName = PacketManager::GetInst().lobbyData.players[m_myid].name;
+	int i = PacketManager::GetInst().GetMyID();
+	char* myName = PacketManager::GetInst().lobbyData.players[PacketManager::GetInst().GetMyID()].name;
 	memcpy(myName, name.c_str(), name.length());
 
 	C_LoginRequestPkt packet(name);

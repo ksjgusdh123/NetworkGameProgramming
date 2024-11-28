@@ -75,6 +75,8 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 			LobbyData* gameData = GameManager::GetInst().GetLobbyData();
 			S_LobbyInfoPacket* RecvPacket = (S_LobbyInfoPacket*)&packet;
 			const int i = RecvPacket->client_id;
+			int size = sizeof(LobbyData);
+			int size2 = sizeof(LobbyPlayerInfo);
 			memcpy(&gameData->players[i], RecvPacket->data, RecvPacket->data_size);
 			GameManager::GetInst().PrintLobbyState();
 			S_LobbyInfoPacket SendPacket(*gameData);
