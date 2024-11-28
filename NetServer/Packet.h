@@ -2,19 +2,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #define DATA_SIZE 2048
 
-struct vector2
-{
-	float x = 0.f, y = 0.f;
-
-	vector2() { x = 0.f; y = 0.f; }
-	vector2(float _x, float _y) { x = _x; y = _y; }
-	vector2(const vector2& v) { x = v.x; y = v.y; }
-
-	vector2 operator+ (const vector2& v) const { return vector2(x + v.x, y + v.y); }
-	vector2 operator- (const vector2& v) const { return vector2(x - v.x, y - v.y); }
-	vector2 operator* (const vector2& v) const { return vector2(x * v.x, y * v.y); }
-};
-
 #pragma pack(push, 1)
 	
 enum PacketType
@@ -23,12 +10,12 @@ enum PacketType
 	LoginRequest,
 	
 	TileRequest,
-	Tiles,
+	TileResponse,
 
 	LobbyUpdateRequest,
-	GameUpdateRequest,
-
 	LobbyUpdateResponse,
+
+	GameUpdateRequest,
 	GameUpdateResponse,
 };
 
@@ -88,16 +75,11 @@ struct C_TileRequestPkt : public Packet
 		sprintf_s(data, "%s", std::string{"HI"});
 		data_size = strlen(data);
 	}
-
-	void deserialize()
-	{
-
-	}
 };
 
-struct C_TilesPkt : public Packet {
-	C_TilesPkt(int tileCount, const std::vector<int>& tileTypes, const std::vector<vector2>& tilePositions) {
-		type = Tiles; // 타입 설정
+struct S_TilesPkt : public Packet {
+	S_TilesPkt(int tileCount, const std::vector<int>& tileTypes, const std::vector<vector2>& tilePositions) {
+		type = TileResponse; // 타입 설정
 		
 		// 데이터를 문자열로 직렬화하여 data에 저장
 		char* write_ptr = data;

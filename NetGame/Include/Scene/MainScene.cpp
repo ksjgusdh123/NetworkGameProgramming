@@ -86,7 +86,11 @@ bool CMainScene::Init()
 
 void CMainScene::Update(float elapsedTime)
 {
+    m_inGameData->players[m_myid].prev_pos = vector2(player[m_myid]->GetPos().x, player[m_myid]->GetPos().y);
+
     CScene::Update(elapsedTime);
+
+    m_inGameData->players[m_myid].pos = vector2(player[m_myid]->GetPos().x, player[m_myid]->GetPos().y);
 
     if (IsPlayerInRicheAttackArea()){
         riche->Attack(player[m_myid]->GetPos());
@@ -111,9 +115,9 @@ void CMainScene::RecvGameData(const Packet& packet)
 {
     switch (packet.type)
     {
-    case Tiles:
+    case TileResponse:
     {
-        C_TilesPkt* cur = (C_TilesPkt*)&packet;
+        S_TilesPkt* cur = (S_TilesPkt*)&packet;
         cur->deserialize(m_tileNum, m_tileType, m_tilePosX, m_tilePosY);
         CreateStageOneMap();
         break;
@@ -123,7 +127,7 @@ void CMainScene::RecvGameData(const Packet& packet)
         S_GameInfoPacket* RecvPacket = (S_GameInfoPacket*)&packet;
         memcpy(m_inGameData, RecvPacket->data, RecvPacket->data_size);
         for (int i = 0; i < PLAYER_NUM; ++i)
-            player[i]->SetPos({ m_inGameData->players[i].x,m_inGameData->players[i].y });
+            player[i]->SetPos(m_inGameData->players[i].pos.x, m_inGameData->players[i].pos.y);
         break;
     }
     default:

@@ -76,6 +76,7 @@ void CPlayer::PlayerMoveLeft()
 
 	m_objectDir = EObject_Dir::Left;
 	m_pos.x -= m_velocity.x * 2 * ELAPSED_TIME;
+	
 }
 
 void CPlayer::PlayerLeftIdle()

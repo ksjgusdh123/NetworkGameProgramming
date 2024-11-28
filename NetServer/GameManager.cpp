@@ -33,7 +33,7 @@ void GameManager::PrintGameState()
         std::cout << "Player " << i
             << ": ID=" << player.id
             << ", Name=" <<player.name
-            << ", Pos=(" << player.x << "," << player.y << ")"
+            << ", Pos=(" << player.pos.x << "," << player.pos.y << ")"
             << ", HP=" << player.hp
             << ", Job=" << player.job << "\n";
     }

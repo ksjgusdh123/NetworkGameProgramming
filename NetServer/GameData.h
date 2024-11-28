@@ -7,6 +7,19 @@ constexpr int ITEM_NUM = 3;
 constexpr int NAME_LEN = 20;
 
 #pragma pack(push, 1)
+struct vector2
+{
+	float x = 0.f, y = 0.f;
+
+	vector2() { x = 0.f; y = 0.f; }
+	vector2(float _x, float _y) { x = _x; y = _y; }
+	vector2(const vector2& v) { x = v.x; y = v.y; }
+
+	vector2 operator+ (const vector2& v) const { return vector2(x + v.x, y + v.y); }
+	vector2 operator- (const vector2& v) const { return vector2(x - v.x, y - v.y); }
+	vector2 operator* (const vector2& v) const { return vector2(x * v.x, y * v.y); }
+};
+
 struct PlayerInfo {
 	int id = -1;
 	char name[NAME_LEN] = {};
@@ -31,22 +44,23 @@ struct LobbyPlayerInfo : public PlayerInfo {
 };
 
 struct GamePlayerInfo : public PlayerInfo {
-	float x = 0, y = 0;
+	vector2 prev_pos;
+	vector2 pos{ -930.f ,475.f };
 	short hp = 100;
 	short damage = 10;
 	char state = 0;
 
 	GamePlayerInfo() = default;
 
-	GamePlayerInfo(const PlayerInfo& base, float posX, float posY, short health, short dmg, char playerState)
-		: PlayerInfo(base), x(posX), y(posY), hp(health), damage(dmg), state(playerState) {}
+	GamePlayerInfo(const PlayerInfo& base, vector2 pos, short health, short dmg, char playerState)
+		: PlayerInfo(base), pos(pos), hp(health), damage(dmg), state(playerState) {}
 };
 
 struct MonsterInfo
 {
 	int id;
 	char type;
-	int x, y;
+	vector2 pos;
 	short hp;
 	short damage;
 	char direct;
@@ -56,13 +70,13 @@ struct MonsterInfo
 struct TileInfo
 {
 	short type;
-	int x, y;
+	vector2 pos;
 };
 
 struct ItemInfo
 {
 	char type;
-	int x, y;
+	vector2 pos;
 	short amount;
 };
 class GameData {};
