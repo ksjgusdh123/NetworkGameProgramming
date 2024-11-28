@@ -1,26 +1,30 @@
-#include "TCPServer.h"
 #include "ErrDisplay.h"
+#include "TCPServer.h"
+#include "GameManager.h"
 
 TCPServer* TCPServer::m_inst;
 CRITICAL_SECTION cs;
+HANDLE hRecvEvent, hWorkEvent[2];
 
-int g_id = 0;
 DWORD WINAPI RecvThread(LPVOID arg)
 {
 	cout << "Start RecvThread!\n";
 	SOCKET client_sock = (SOCKET)arg;
-	int client_id = g_id++;
+
+	Client client(client_sock);
+	TCPServer::GetInst()->clients.emplace_back(client);
+
+	int client_id = client.player.id;
 	int res = send(client_sock, (char*)&client_id, sizeof(int), 0);
 	if (res == SOCKET_ERROR) { err_display("send()"); return -1; }
 
-	Client client(client_sock, client_id, "");
-	TCPServer::GetInst()->clients.emplace_back(client);
-
 	while (true)
 	{
+		WaitForSingleObject(hRecvEvent, INFINITE);
+
 		int type;
 		int data_size;
-		char data[DATA_SIZE];
+		char data[BUFSIZ];
 		int res;
 
 		res = recv(client.socket, (char*)&type, sizeof(int), MSG_WAITALL);
@@ -34,6 +38,8 @@ DWORD WINAPI RecvThread(LPVOID arg)
 		EnterCriticalSection(&cs);
 		TCPServer::GetInst()->recvQ.push(p);
 		LeaveCriticalSection(&cs);
+
+		SetEvent(hWorkEvent[client_id]);
 	}
 
 	cout << "End RecvThread!\n";
@@ -45,62 +51,56 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 {
 	while (true)
 	{
+		WaitForMultipleObjects(2, hWorkEvent, TRUE, INFINITE);
+		ResetEvent(hRecvEvent);
 		EnterCriticalSection(&cs);
 		auto& recvQ = TCPServer::GetInst()->recvQ;
-		if (recvQ.empty())
+		while (!recvQ.empty())
 		{
+			Packet packet = recvQ.front();
+			recvQ.pop();
 			LeaveCriticalSection(&cs);
-			continue;
-		}
-		Packet packet = recvQ.front();
-		recvQ.pop();
-		LeaveCriticalSection(&cs);
 
-		switch (packet.type)
-		{
-		case LoginRequest:
-		{
-			C_LoginRequestPkt* cur = (C_LoginRequestPkt*)&packet;
-			cur->deserialize();
-			cout << "[LOGIN] " << cur->client_id << " Player Name = " << cur->data << endl;
-			auto& cur_client = TCPServer::GetInst()->clients[cur->client_id];
-			cur_client.name = cur->data;
-			TCPServer::GetInst()->SendPacket(packet);
-			break;
-		}
-		case PlayerMove:
-		{
-			cout << "!!!" << endl;
-			C_PlayerMovePkt* cur = (C_PlayerMovePkt*)&packet;
-			cur->deserialize();
-			cout << "[MOVE] " << cur->client_id << " Player moved to (" << cur->x << "," << cur->y << ")\n";
-			TCPServer::GetInst()->SendPacket(packet);
-			break;
-		}
-		case PlayerChoice:
-		{
-			C_PlayerChoicePkt* cur = (C_PlayerChoicePkt*)&packet;
-			cur->deserialize();
-			TCPServer::GetInst()->SendPacket(packet);
-			break;
-		}
-		case GameStartRequest:
-		{
-			C_GameStartRequestPkt* cur = (C_GameStartRequestPkt*)&packet;
-			cur->deserialize();
-			TCPServer::GetInst()->SendPacket(packet);
-			break;
-		}
-		case TileRequest:
-		{
-			cout << "[TileRequest] - 전송 받음" << endl;
-			TCPServer::GetInst()->CreateTilePacket();
-			break;
-		}
-		default:
-			break;
+			switch (packet.type)
+			{
+			case LoginRequest:
+			{
+				C_LoginRequestPkt* RecvPacket = (C_LoginRequestPkt*)&packet;
+				cout << "[LOGIN] " << RecvPacket->client_id << " Player Name = " << RecvPacket->data << endl;
+
+				auto client = TCPServer::GetInst()->clients[RecvPacket->client_id];
+				strncpy_s(client.player.name, RecvPacket->data, NAME_LEN);
+				GameManager::GetInst().AddLobbyPlayer(client);
+				break;
+			}
+			case LobbyUpdateRequest:
+			{
+				C_LobbyUpdateRequest* RecvPacket = (C_LobbyUpdateRequest*)&packet;
+				LobbyData* gameData = GameManager::GetInst().GetLobbyData();
+				const int i = RecvPacket->client_id;
+				memcpy(&gameData->players[i], RecvPacket->data, RecvPacket->data_size);
+				S_LobbyInfoPacket SendPacket(*gameData);
+				TCPServer::GetInst()->SendPacket(SendPacket);
+				break;
+			}
+			case GameUpdateRequest:
+			{
+				C_GameUpdateRequest* RecvPacket = (C_GameUpdateRequest*)&packet;
+				InGameData* gameData = GameManager::GetInst().GetInGameData();
+				const int i = RecvPacket->client_id;
+				memcpy(&gameData->players[i], RecvPacket->data, RecvPacket->data_size);
+				S_GameInfoPacket SendPacket(*gameData);
+				TCPServer::GetInst()->SendPacket(SendPacket);
+				break;
+			}
+			default:
+				break;
+			}
+
+			EnterCriticalSection(&cs);
 		}
 		LeaveCriticalSection(&cs);
+		SetEvent(hRecvEvent);
 	}
 }
 
@@ -120,6 +120,9 @@ void TCPServer::SendPacket(const Packet& packet)
 bool TCPServer::Init()
 {
 	cout << "Init()\n";
+	hRecvEvent = CreateEvent(NULL, TRUE, TRUE, NULL);	//두번째 인자 True로 설정시 수동
+	hWorkEvent[0] = CreateEvent(NULL, FALSE, FALSE, NULL);//자동으로 worker실행 후 다시 false
+	hWorkEvent[1] = CreateEvent(NULL, FALSE, FALSE, NULL);
 
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		return false;
@@ -174,187 +177,10 @@ void TCPServer::Run()
 
 void TCPServer::Cleanup()
 {
+	CloseHandle(hRecvEvent);
+	CloseHandle(hWorkEvent[0]);
+	CloseHandle(hWorkEvent[1]);
 	DeleteCriticalSection(&cs);
 	closesocket(server_sock);
 	WSACleanup();
 };
-
-
-
-void TCPServer::CreateTilePacket()
-{
-
-	// 타일 번호와 위치 정보를 담을 데이터
-	std::vector<int> tileNumbers;
-	std::vector<vector2> tilePositions;
-
-	// 타일 데이터 수집 (CreateMap에서 정의한 타일 정보를 기반으로)
-	float tilePosX = -930.f;
-	float tilePosY = 475.f;
-
-	// 첫 발판
-	tileNumbers.push_back(1);
-	tilePositions.push_back({ tilePosX, tilePosY });
-	tilePosX += 50.f;
-
-	for (int i = 0; i < 20; ++i) {
-		tileNumbers.push_back(2);
-		tilePositions.push_back({ tilePosX, 475.f });
-		tilePosX += 50.f;
-	}
-
-	tileNumbers.push_back(3);
-	tilePositions.push_back({ tilePosX, 475.f });
-	tilePosX += 150.f;
-
-	// 상자 계단
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -800.f, 425.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -750.f, 425.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -750.f, 375.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -700.f, 425.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -700.f, 375.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -700.f, 325.f });
-
-	// 상자 계단2
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -550.f, 425.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -500.f, 425.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -500.f, 375.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -500.f, 325.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -450.f, 425.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -450.f, 375.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -400.f, 425.f });
-
-	// 중간 발판
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ -380.f, 250.f });
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ -330.f, 250.f });
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ -280.f, 250.f });
-
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ -130.f, 200.f });
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ -80.f, 200.f });
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ -30.f, 200.f });
-
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ 70.f, 170.f });
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ 120.f, 170.f });
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ 170.f, 170.f });
-
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ -380.f, 100.f });
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ -330.f, 100.f });
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ -280.f, 100.f });
-
-	// 근접 몬스터 가두는 상자
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -250.f, 425.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ 50.f, 425.f });
-
-	// 두 번째 발판
-	tileNumbers.push_back(1);
-	tilePositions.push_back({ tilePosX, 475.f });
-	tilePosX += 50.f;
-
-	for (int i = 0; i < 6; ++i) {
-		tileNumbers.push_back(2);
-		tilePositions.push_back({ tilePosX, 475.f });
-		tilePosX += 50.f;
-	}
-
-	tileNumbers.push_back(3);
-	tilePositions.push_back({ tilePosX, 475.f });
-	tilePosX += 250.f;
-
-	// 점프맵 발판
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ tilePosX, 400.f });
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ tilePosX, 200.f });
-	tilePosX += 50.f;
-
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ tilePosX, 400.f });
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ tilePosX, 200.f });
-	tilePosX += 50.f;
-
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ tilePosX, 400.f });
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ tilePosX, 200.f });
-
-	tilePosX -= 400.f;
-
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ tilePosX, 300.f });
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ tilePosX, 100.f });
-	tilePosX += 50.f;
-
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ tilePosX, 300.f });
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ tilePosX, 100.f });
-	tilePosX += 50.f;
-
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ tilePosX, 300.f });
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ tilePosX, 100.f });
-
-	tilePosX -= 400.f;
-
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ tilePosX, 0.f });
-	tilePosX += 50.f;
-
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ tilePosX, 0.f });
-	tilePosX += 50.f;
-
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ tilePosX, 0.f });
-
-	tilePosX += 200.f;
-
-	// 포탈 발판
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ tilePosX, -100.f });
-	tilePosX += 50.f;
-
-	for (int i = 0; i < 4; ++i) {
-		tileNumbers.push_back(15);
-		tilePositions.push_back({ tilePosX, -100.f });
-		tilePosX += 50.f;
-	}
-
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ tilePosX, -100.f });
-
-	C_TilesPkt packet((int)tileNumbers.size(), tileNumbers, tilePositions);
-	TCPServer::GetInst()->SendPacket(packet);
-
-	
-}

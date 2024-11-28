@@ -1,6 +1,6 @@
 #pragma once
 #include "Define.h"
-#include <queue>
+#include "GameManager.h"
 
 class TCPServer
 {
@@ -23,7 +23,7 @@ public:
 	}
 public:
 	void SendPacket(const Packet& packet);
-
+	
 	bool Init();
 	void Connect();
 	void Run();

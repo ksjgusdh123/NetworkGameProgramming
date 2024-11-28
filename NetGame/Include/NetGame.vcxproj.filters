@@ -208,4 +208,9 @@
       <Filter>리소스 파일</Filter>
     </ResourceCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="DungGeunMo.ttf">
+      <Filter>리소스 파일</Filter>
+    </Font>
+  </ItemGroup>
 </Project>

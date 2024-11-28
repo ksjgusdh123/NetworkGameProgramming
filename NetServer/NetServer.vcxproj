@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="ServerMain.cpp" />
     <ClCompile Include="TCPServer.cpp" />
   </ItemGroup>
@@ -149,6 +150,7 @@
     <ClInclude Include="Define.h" />
     <ClInclude Include="ErrDisplay.h" />
     <ClInclude Include="GameData.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="TCPServer.h" />
   </ItemGroup>

@@ -76,7 +76,6 @@ void CPlayer::PlayerMoveLeft()
 
 	m_objectDir = EObject_Dir::Left;
 	m_pos.x -= m_velocity.x * 2 * ELAPSED_TIME;
-	SendMovePacket(m_pos);
 }
 
 void CPlayer::PlayerLeftIdle()
@@ -112,7 +111,6 @@ void CPlayer::PlayerMoveRight()
 
 	m_objectDir = EObject_Dir::Right;
 	m_pos.x += m_velocity.x * 2 * ELAPSED_TIME;
-	SendMovePacket(m_pos);
 }
 
 void CPlayer::PlayerRightIdle()
@@ -236,10 +234,4 @@ void CPlayer::CalculateJump(float elapsedTime)
 		}
 		m_bDoubleJump = false;
 	}
-}
-
-void CPlayer::SendMovePacket(const Vector2& pos)
-{
-	C_PlayerMovePkt p(pos.x, pos.y);
-	PacketManager::GetInst().EnqueueSendPacket(p);
 }

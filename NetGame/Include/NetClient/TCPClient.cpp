@@ -1,6 +1,8 @@
 #pragma once
 #include "TCPClient.h"
 #include "ErrDisplay.h"
+#include <Scene/SceneManager.h>
+#include <Scene/Scene.h>
 
 DWORD WINAPI RecvThread(LPVOID arg)
 {
@@ -21,7 +23,8 @@ DWORD WINAPI SendThread(LPVOID arg)
 	while (true)
 	{
 		PacketManager::GetInst().DequeueSendPacket();
-		//Sleep(1000 / 30);
+		CSceneManager::GetInst()->GetScene()->SendGameData();
+		Sleep(1000 / 30);
 	}
 	return true;
 }

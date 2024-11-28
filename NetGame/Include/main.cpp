@@ -14,5 +14,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     int ret = mgr.Run();
 
+
     return ret;
 }

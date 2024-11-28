@@ -6,28 +6,7 @@
 
 void PacketManager::ProcessPacket(const Packet& packet)
 {
-	switch (packet.type)
-	{
-	case LoginRequest:
-	case PlayerChoice:
-	case GameStartRequest:
-	case Tiles:
-	{
-		CSceneManager::GetInst()->GetScene()->PacketEvent(packet);
-		break;
-	}
-	case PlayerMove:
-	{
-		C_PlayerMovePkt* cur = (C_PlayerMovePkt*)&packet;
-		cur->deserialize();
-		if (cur->client_id == m_myID) break;
-		auto curScene = CSceneManager::GetInst()->GetScene();
-		curScene->GetPlayer()->SetPos({ cur->x,cur->y });
-		break;
-	}
-	default:
-		break;
-	}
+	CSceneManager::GetInst()->GetScene()->RecvGameData(packet);
 }
 
 void PacketManager::SendPacket(const Packet& packet)
@@ -42,7 +21,7 @@ Packet PacketManager::RecvPacket()
 	int client_id;
 	int packet_size;
 	int packet_type;
-	char recv_buf[DATA_SIZE];
+	char recv_buf[BUFSIZ];
 	recv(m_sock, (char*)&client_id, sizeof(int), MSG_WAITALL);
 	recv(m_sock, (char*)&packet_type, sizeof(int), MSG_WAITALL);
 	recv(m_sock, (char*)&packet_size, sizeof(int), MSG_WAITALL);
