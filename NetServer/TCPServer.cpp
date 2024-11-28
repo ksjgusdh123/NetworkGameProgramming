@@ -16,7 +16,7 @@ DWORD WINAPI RecvThread(LPVOID arg)
 	int client_id = client.player.id;
 	int res = send(client_sock, (char*)&client_id, sizeof(int), 0);
 	if (res == SOCKET_ERROR) { err_display("send()"); return -1; }
-
+	
 	while (true)
 	{
 		int type;
@@ -61,12 +61,24 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 		{
 		case LoginRequest:
 		{
-			C_LoginRequestPkt* cur = (C_LoginRequestPkt*)&packet;
-			cur->deserialize();
-			cout << "[LOGIN] " << cur->client_id << " Player Name = " << cur->data << endl;
-			auto& cur_client = TCPServer::GetInst()->clients[cur->client_id];
-			cur_client.player.name = cur->data;
-			TCPServer::GetInst()->SendPacket(packet);
+			C_LoginRequestPkt* RecvPacket = (C_LoginRequestPkt*)&packet;
+			cout << "[LOGIN] " << RecvPacket->client_id << " Player Name = " << RecvPacket->data << endl;
+
+			auto client = TCPServer::GetInst()->clients[RecvPacket->client_id];
+			//client.player.name = RecvPacket->data;
+			strncpy_s(client.player.name, RecvPacket->data, NAME_LEN);
+			GameManager::GetInst().AddLobbyPlayer(client);
+			break;
+		}
+		case LobbyUpdateRequest:
+		{
+			LobbyData* gameData = GameManager::GetInst().GetLobbyData();
+			S_LobbyInfoPacket* RecvPacket = (S_LobbyInfoPacket*)&packet;
+			const int i = RecvPacket->client_id;
+			memcpy(&gameData->players[i], RecvPacket->data, RecvPacket->data_size);
+			GameManager::GetInst().PrintLobbyState();
+			S_LobbyInfoPacket SendPacket(*gameData);
+			TCPServer::GetInst()->SendPacket(SendPacket);
 			break;
 		}
 		case PlayerMove:
@@ -81,7 +93,9 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 		{
 			C_PlayerChoicePkt* cur = (C_PlayerChoicePkt*)&packet;
 			cur->deserialize();
-			TCPServer::GetInst()->SendPacket(packet);
+			//
+			S_LobbyInfoPacket SendPacket(*GameManager::GetInst().GetLobbyData());
+			TCPServer::GetInst()->SendPacket(SendPacket);
 			break;
 		}
 		case GameStartRequest:
@@ -153,7 +167,7 @@ void TCPServer::Connect()
 			err_display("accept()");
 			continue;
 		}
-
+		
 		HANDLE hRecvThread = CreateThread(NULL, 0, RecvThread, (LPVOID)client_sock, 0, NULL);
 		if (hRecvThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hRecvThread); }

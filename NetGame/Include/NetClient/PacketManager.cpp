@@ -8,9 +8,7 @@ void PacketManager::ProcessPacket(const Packet& packet)
 {
 	switch (packet.type)
 	{
-	case LoginRequest:
-	case PlayerChoice:
-	case GameStartRequest:
+	case LobbyInfo:
 	{
 		CSceneManager::GetInst()->GetScene()->PacketEvent(packet);
 		break;

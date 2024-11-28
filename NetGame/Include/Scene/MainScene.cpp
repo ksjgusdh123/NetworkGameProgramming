@@ -10,10 +10,13 @@
 #include <Collision.h>
 #include <Engine.h>
 #include <Scene/Camera.h>
+#include "..\NetClient\TCPClient.h"
 
 bool CMainScene::Init()
 {
     CScene::Init();
+    m_inGameData = &PacketManager::GetInst().inGameData;
+	m_myid = PacketManager::GetInst().GetMyID();
 
     CGameObject* back = CreateObject<CGameObject>("Background");
     back->CreateTexture(1);

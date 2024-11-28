@@ -15,7 +15,7 @@
 bool CLobbyScene::Init()
 {
 	CScene::Init();
-
+	m_lobbyData = &PacketManager::GetInst().lobbyData;
 
 	CGameObject* back = CreateObject<CGameObject>("RoomBackground");
 	back->CreateTexture(1);
@@ -23,15 +23,15 @@ bool CLobbyScene::Init()
 	back->SetSize(960.f, 650.f);
 	back->SetPivot(0.f, 0.f);
 
-	m_LobbyData[0].player = CreateObject<CLobbyPlayer>("Player1");
-	m_LobbyData[0].player->SetSize(100.f, 200.f);
-	m_LobbyData[0].player->SetPos(270.f, 300.f);
-	m_LobbyData[0].player->SetEnable(true);
+	m_LobbyPlayer[0] = CreateObject<CLobbyPlayer>("Player1");
+	m_LobbyPlayer[0]->SetSize(100.f, 200.f);
+	m_LobbyPlayer[0]->SetPos(270.f, 300.f);
+	m_LobbyPlayer[0]->SetEnable(true);
 
-	m_LobbyData[1].player = CreateObject<CLobbyPlayer>("Player2");
-	m_LobbyData[1].player->SetSize(100.f, 200.f);
-	m_LobbyData[1].player->SetPos(680.f, 300.f);
-	m_LobbyData[1].player->SetEnable(true);
+	m_LobbyPlayer[1] = CreateObject<CLobbyPlayer>("Player2");
+	m_LobbyPlayer[1]->SetSize(100.f, 200.f);
+	m_LobbyPlayer[1]->SetPos(680.f, 300.f);
+	m_LobbyPlayer[1]->SetEnable(true);
 
 	HWND hwnd = CEngine::GetInst()->GetWindowHandle();
 	HINSTANCE hInst = CEngine::GetInst()->GetWindowInstance();
@@ -50,20 +50,20 @@ void CLobbyScene::Update(float elapsedTime)
 	switch (clientNum)
 	{
 	case 1:
-		if (!m_LobbyData[0].player->GetEnable())
-			m_LobbyData[0].player->SetEnable(true);
+		if (!m_LobbyPlayer[0]->GetEnable())
+			m_LobbyPlayer[0]->SetEnable(true);
 		break;
 	case 2:
-		if (!m_LobbyData[0].player->GetEnable())
-			m_LobbyData[0].player->SetEnable(true);
-		if (!m_LobbyData[1].player->GetEnable())
-			m_LobbyData[1].player->SetEnable(true);
+		if (!m_LobbyPlayer[0]->GetEnable())
+			m_LobbyPlayer[0]->SetEnable(true);
+		if (!m_LobbyPlayer[1]->GetEnable())
+			m_LobbyPlayer[1]->SetEnable(true);
 		break;
 	default:
 		break;
 	}
 
-	if (m_LobbyData[0].bReady && m_LobbyData[1].bReady)
+	if (m_lobbyData->players[0].bReady && m_lobbyData->players[1].bReady)
 	{
 		for (int i = 0; i < 3; ++i)
 		{
@@ -81,25 +81,21 @@ void CLobbyScene::KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	{
 	case IDC_BUTTON:
 	{
-		m_LobbyData[PacketManager::GetInst().GetMyID()].player->SetJob(EPlayer_Job::Sword);
-		C_PlayerChoicePkt packet((int)EPlayer_Job::Sword);
-		PacketManager::GetInst().EnqueueSendPacket(packet);
+		m_lobbyData->players[PacketManager::GetInst().GetMyID()].job = (int)(EPlayer_Job::Sword);
 		break;
 	}
 	case IDC_BUTTON2:
 	{
-		m_LobbyData[PacketManager::GetInst().GetMyID()].player->SetJob(EPlayer_Job::Archer);
-		C_PlayerChoicePkt packet((int)EPlayer_Job::Archer);
-		PacketManager::GetInst().EnqueueSendPacket(packet);
+		m_lobbyData->players[PacketManager::GetInst().GetMyID()].job = (int)(EPlayer_Job::Archer);
 		break;
 	}
 	case IDC_BUTTON3:
 	{
 		//m_LobbyData[0].bReady = !m_LobbyData[0].bReady;
 		//m_LobbyData[1].bReady = !m_LobbyData[1].bReady;
-		m_LobbyData[PacketManager::GetInst().GetMyID()].bReady = !m_LobbyData[PacketManager::GetInst().GetMyID()].bReady;
-		C_GameStartRequestPkt packet(m_LobbyData[PacketManager::GetInst().GetMyID()].bReady);
-		PacketManager::GetInst().EnqueueSendPacket(packet);
+		//m_LobbyData[PacketManager::GetInst().GetMyID()].bReady = !m_LobbyData[PacketManager::GetInst().GetMyID()].bReady;
+		//C_GameStartRequestPkt packet(m_LobbyData[PacketManager::GetInst().GetMyID()].bReady);
+		//PacketManager::GetInst().EnqueueSendPacket(packet);
 		break;
 	}
 	}
@@ -109,24 +105,15 @@ void CLobbyScene::PacketEvent(const Packet& packet)
 {
 	switch (packet.type)
 	{
-	case LoginRequest:
+	case LobbyInfo:
 	{
-		C_LoginRequestPkt* cur = (C_LoginRequestPkt*)&packet;
-		cur->deserialize();
-		break;
-	}
-	case PlayerChoice:
-	{
-		C_PlayerChoicePkt* cur = (C_PlayerChoicePkt*)&packet;
-		cur->deserialize();
-		m_LobbyData[cur->client_id].player->SetJob((EPlayer_Job)cur->j);
-		break;
-	}
-	case GameStartRequest:
-	{
-		C_GameStartRequestPkt* cur = (C_GameStartRequestPkt*)&packet;
-		cur->deserialize();
-		m_LobbyData[cur->client_id].bReady = cur->ready;
+		S_LobbyInfoPacket* RecvPacket = (S_LobbyInfoPacket*)&packet;
+		memcpy(m_lobbyData, RecvPacket->data, RecvPacket->data_size);
+
+		for (int i = 0; i < 2; ++i)
+		{
+			m_LobbyPlayer[i]->SetJob((EPlayer_Job)m_lobbyData->players[i].job);
+		}
 		break;
 	}
 	default:
@@ -134,10 +121,8 @@ void CLobbyScene::PacketEvent(const Packet& packet)
 	}
 }
 
-void CLobbyScene::SendLobbyData()
+void CLobbyScene::SendGameData()
 {
-}
-
-void CLobbyScene::ReceiveLobbyData()
-{
+	C_LobbyUpdateRequest sendPacket(m_lobbyData->players[m_myid]);
+	PacketManager::GetInst().SendPacket(sendPacket);
 }

@@ -13,6 +13,7 @@
 bool CLoginScene::Init()
 {
 	CScene::Init();
+	m_myid = PacketManager::GetInst().GetMyID();
 
 	CGameObject* back = CreateObject<CGameObject>("eawoi");
 	back->CreateTexture(1);
@@ -69,9 +70,11 @@ bool CLoginScene::SendLoginRequest(std::string name)
 	//if (name.length() <= 0)
 	//	return false;
 
+	char* myName = PacketManager::GetInst().lobbyData.players[m_myid].name;
+	memcpy(myName, name.c_str(), name.length());
+
 	C_LoginRequestPkt packet(name);
 	PacketManager::GetInst().EnqueueSendPacket(packet);
-
 	return true;
 }
 

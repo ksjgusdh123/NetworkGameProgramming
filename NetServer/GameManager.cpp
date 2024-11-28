@@ -1,8 +1,9 @@
 #include "GameManager.h"
 
-void GameManager::AddLobbyPlayer(const Client& client, int index)
+void GameManager::AddLobbyPlayer(const Client& client)
 {
-    lobbyData.players[index] = LobbyPlayerInfo(client.player);
+    int i = client.player.id;
+    lobbyData.players[i] = LobbyPlayerInfo(client.player);
 }
 
 void GameManager::InitGameData()
@@ -11,7 +12,7 @@ void GameManager::InitGameData()
     for (int i = 0; i < PLAYER_NUM; ++i) {
         const LobbyPlayerInfo& lobbyPlayer = lobbyData.players[i];
         gameData.players[i] = GamePlayerInfo(
-            lobbyPlayer, 0, 0, 100, 10, 0 // 초기 좌표, 체력, 데미지, 상태 설정
+            lobbyPlayer, 0, 0, 100, 10, 0
         );
     }
 
@@ -32,6 +33,19 @@ void GameManager::InitGameData()
 
 }
 
+void GameManager::PrintLobbyState()
+{
+    std::cout << "Game State:\n";
+
+    for (int i = 0; i < PLAYER_NUM; ++i) {
+        const auto& player = lobbyData.players[i];
+        std::cout << "Player " << i
+            << ": ID=" << player.id
+            << ", Name=" << player.name
+            << ", Job=" << player.job << "\n";
+    }
+}
+
 void GameManager::PrintGameState()
 {
     std::cout << "Game State:\n";
@@ -40,17 +54,18 @@ void GameManager::PrintGameState()
         const auto& player = gameData.players[i];
         std::cout << "Player " << i
             << ": ID=" << player.id
+            << ", Name=" <<player.name
             << ", Pos=(" << player.x << "," << player.y << ")"
             << ", HP=" << player.hp
             << ", Job=" << player.job << "\n";
     }
-
-    for (int i = 0; i < MONSTER_NUM; ++i) {
+    Sleep(1000);
+    /*for (int i = 0; i < MONSTER_NUM; ++i) {
         const auto& monster = gameData.monster[i];
         std::cout << "Monster " << i
             << ": Type=" << monster.type
             << ", Pos=(" << monster.x << "," << monster.y << ")"
             << ", HP=" << monster.hp
             << ", Damage=" << monster.damage << "\n";
-    }
+    }*/
 }

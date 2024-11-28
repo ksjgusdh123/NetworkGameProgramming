@@ -19,6 +19,7 @@ public:
 	virtual void Render(HDC hDC, float elapsedTime);
 	virtual void KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam) {}
 	virtual void PacketEvent(const class Packet& packet) {}
+	virtual void SendGameData() {};
 public:
 	template <typename T>
 	T* CreateObject(const std::string& name)
@@ -40,5 +41,6 @@ protected:
 	std::array<std::list<std::shared_ptr<class CGameObject>>, 4> m_objects;
 	class CGameObject* m_myPlayer;
 	class CGameObject* m_player;
+	int m_myid;
 };
 

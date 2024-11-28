@@ -21,7 +21,9 @@ public:
 
 	PacketManager();
 	~PacketManager();
-
+public:
+	LobbyData lobbyData;
+	InGameData inGameData;
 
 private:
 	queue<Packet> send_queue;
