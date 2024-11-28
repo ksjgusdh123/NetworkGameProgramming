@@ -19,14 +19,15 @@ public:
 	virtual void Update(float elapsedTime);
 	bool IsPlayerInRicheAttackArea();
 	void CreateMap();
+	void RecvGameData(const Packet& packet);
+	void SendGameData();
 
 private:
-	class CPlayer* player;
-	class CPlayer* myplayer;
+	InGameData* m_inGameData;
+	class CPlayer* player[2];
 	class CGameObject* monster;
 	CGhost* ghost;
 	CRiche* riche;
 	Vector2	m_cameraVelocity;
-	InGameData* m_inGameData;
 };
 

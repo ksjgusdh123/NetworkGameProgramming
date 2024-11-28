@@ -4,21 +4,24 @@
 
 TCPServer* TCPServer::m_inst;
 CRITICAL_SECTION cs;
+HANDLE hRecvEvent, hWorkEvent[2];
 
 DWORD WINAPI RecvThread(LPVOID arg)
 {
 	cout << "Start RecvThread!\n";
 	SOCKET client_sock = (SOCKET)arg;
-	
+
 	Client client(client_sock);
 	TCPServer::GetInst()->clients.emplace_back(client);
 
 	int client_id = client.player.id;
 	int res = send(client_sock, (char*)&client_id, sizeof(int), 0);
 	if (res == SOCKET_ERROR) { err_display("send()"); return -1; }
-	
+
 	while (true)
 	{
+		WaitForSingleObject(hRecvEvent, INFINITE);
+
 		int type;
 		int data_size;
 		char data[BUFSIZ];
@@ -35,6 +38,8 @@ DWORD WINAPI RecvThread(LPVOID arg)
 		EnterCriticalSection(&cs);
 		TCPServer::GetInst()->recvQ.push(p);
 		LeaveCriticalSection(&cs);
+
+		SetEvent(hWorkEvent[client_id]);
 	}
 
 	cout << "End RecvThread!\n";
@@ -46,71 +51,56 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 {
 	while (true)
 	{
+		WaitForMultipleObjects(2, hWorkEvent, TRUE, INFINITE);
+		ResetEvent(hRecvEvent);
 		EnterCriticalSection(&cs);
 		auto& recvQ = TCPServer::GetInst()->recvQ;
-		if (recvQ.empty())
+		while (!recvQ.empty())
 		{
+			Packet packet = recvQ.front();
+			recvQ.pop();
 			LeaveCriticalSection(&cs);
-			continue;
-		}
-		Packet packet = recvQ.front();
-		recvQ.pop();
-		LeaveCriticalSection(&cs);
 
-		switch (packet.type)
-		{
-		case LoginRequest:
-		{
-			C_LoginRequestPkt* RecvPacket = (C_LoginRequestPkt*)&packet;
-			cout << "[LOGIN] " << RecvPacket->client_id << " Player Name = " << RecvPacket->data << endl;
+			switch (packet.type)
+			{
+			case LoginRequest:
+			{
+				C_LoginRequestPkt* RecvPacket = (C_LoginRequestPkt*)&packet;
+				cout << "[LOGIN] " << RecvPacket->client_id << " Player Name = " << RecvPacket->data << endl;
 
-			auto client = TCPServer::GetInst()->clients[RecvPacket->client_id];
-			//client.player.name = RecvPacket->data;
-			strncpy_s(client.player.name, RecvPacket->data, NAME_LEN);
-			GameManager::GetInst().AddLobbyPlayer(client);
-			break;
-		}
-		case LobbyUpdateRequest:
-		{
-			LobbyData* gameData = GameManager::GetInst().GetLobbyData();
-			S_LobbyInfoPacket* RecvPacket = (S_LobbyInfoPacket*)&packet;
-			const int i = RecvPacket->client_id;
-			int size = sizeof(LobbyData);
-			int size2 = sizeof(LobbyPlayerInfo);
-			memcpy(&gameData->players[i], RecvPacket->data, RecvPacket->data_size);
-			GameManager::GetInst().PrintLobbyState();
-			S_LobbyInfoPacket SendPacket(*gameData);
-			TCPServer::GetInst()->SendPacket(SendPacket);
-			break;
-		}
-		case PlayerMove:
-		{
-			C_PlayerMovePkt* cur = (C_PlayerMovePkt*)&packet;
-			cur->deserialize();
-			cout << "[MOVE] " << cur->client_id << " Player moved to (" << cur->x << "," << cur->y << ")\n";
-			TCPServer::GetInst()->SendPacket(packet);
-			break;
-		}
-		case PlayerChoice:
-		{
-			C_PlayerChoicePkt* cur = (C_PlayerChoicePkt*)&packet;
-			cur->deserialize();
-			//
-			S_LobbyInfoPacket SendPacket(*GameManager::GetInst().GetLobbyData());
-			TCPServer::GetInst()->SendPacket(SendPacket);
-			break;
-		}
-		case GameStartRequest:
-		{
-			C_GameStartRequestPkt* cur = (C_GameStartRequestPkt*)&packet;
-			cur->deserialize();
-			TCPServer::GetInst()->SendPacket(packet);
-			break;
-		}
-		default:
-			break;
+				auto client = TCPServer::GetInst()->clients[RecvPacket->client_id];
+				strncpy_s(client.player.name, RecvPacket->data, NAME_LEN);
+				GameManager::GetInst().AddLobbyPlayer(client);
+				break;
+			}
+			case LobbyUpdateRequest:
+			{
+				S_LobbyInfoPacket* RecvPacket = (S_LobbyInfoPacket*)&packet;
+				LobbyData* gameData = GameManager::GetInst().GetLobbyData();
+				const int i = RecvPacket->client_id;
+				memcpy(&gameData->players[i], RecvPacket->data, RecvPacket->data_size);
+				S_LobbyInfoPacket SendPacket(*gameData);
+				TCPServer::GetInst()->SendPacket(SendPacket);
+				break;
+			}
+			case GameUpdateRequest:
+			{
+				S_GameInfoPacket* RecvPacket = (S_GameInfoPacket*)&packet;
+				LobbyData* gameData = GameManager::GetInst().GetLobbyData();
+				const int i = RecvPacket->client_id;
+				memcpy(&gameData->players[i], RecvPacket->data, RecvPacket->data_size);
+				S_LobbyInfoPacket SendPacket(*gameData);
+				TCPServer::GetInst()->SendPacket(SendPacket);
+				break;
+			}
+			default:
+				break;
+			}
+
+			EnterCriticalSection(&cs);
 		}
 		LeaveCriticalSection(&cs);
+		SetEvent(hRecvEvent);
 	}
 }
 
@@ -130,6 +120,9 @@ void TCPServer::SendPacket(const Packet& packet)
 bool TCPServer::Init()
 {
 	cout << "Init()\n";
+	hRecvEvent = CreateEvent(NULL, TRUE, TRUE, NULL);	//두번째 인자 True로 설정시 수동
+	hWorkEvent[0] = CreateEvent(NULL, FALSE, FALSE, NULL);//자동으로 worker실행 후 다시 false
+	hWorkEvent[1] = CreateEvent(NULL, FALSE, FALSE, NULL);
 
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		return false;
@@ -169,7 +162,7 @@ void TCPServer::Connect()
 			err_display("accept()");
 			continue;
 		}
-		
+
 		HANDLE hRecvThread = CreateThread(NULL, 0, RecvThread, (LPVOID)client_sock, 0, NULL);
 		if (hRecvThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hRecvThread); }
@@ -184,6 +177,9 @@ void TCPServer::Run()
 
 void TCPServer::Cleanup()
 {
+	CloseHandle(hRecvEvent);
+	CloseHandle(hWorkEvent[0]);
+	CloseHandle(hWorkEvent[1]);
 	DeleteCriticalSection(&cs);
 	closesocket(server_sock);
 	WSACleanup();

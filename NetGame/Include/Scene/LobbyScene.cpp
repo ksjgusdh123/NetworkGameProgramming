@@ -37,9 +37,28 @@ bool CLobbyScene::Init()
 	HWND hwnd = CEngine::GetInst()->GetWindowHandle();
 	HINSTANCE hInst = CEngine::GetInst()->GetWindowInstance();
 
-	m_hButton[0] = CreateWindow(L"button", L"전사", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 220, 450, 100, 100, hwnd, (HMENU)IDC_BUTTON, hInst, NULL);
-	m_hButton[1] = CreateWindow(L"button", L"궁수", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 420, 450, 100, 100, hwnd, (HMENU)IDC_BUTTON2, hInst, NULL);
-	m_hButton[2] = CreateWindow(L"button", L"준비완료", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 720, 450, 100, 100, hwnd, (HMENU)IDC_BUTTON3, hInst, NULL);
+	// 폰트 생성
+	HFONT hFont = CreateFont(
+		40, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
+		DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+		DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"UI/DungGeunMo.ttf"//글꼴 적용하고 싶은데.. 경로가 이게 아닌가?
+	);
+	m_hButton[0] = CreateWindow(L"button", L"전사", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 220, 450, 150, 80, hwnd, (HMENU)IDC_BUTTON, hInst, NULL);
+	m_hButton[1] = CreateWindow(L"button", L"궁수", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 420, 450, 150, 80, hwnd, (HMENU)IDC_BUTTON2, hInst, NULL);
+	m_hButton[2] = CreateWindow(L"button", L"준비완료", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 720, 450, 150, 100, hwnd, (HMENU)IDC_BUTTON3, hInst, NULL);
+	SendMessage(m_hButton[0], WM_SETFONT, (WPARAM)hFont, TRUE);
+	SendMessage(m_hButton[1], WM_SETFONT, (WPARAM)hFont, TRUE);
+	SendMessage(m_hButton[2], WM_SETFONT, (WPARAM)hFont, TRUE);
+
+	m_hPlayerName[0] = CreateWindow(L"STATIC", L"", WS_CHILD | WS_VISIBLE | SS_CENTER, 200, 100, 140, 50, hwnd, NULL, hInst, NULL);
+	LONG_PTR styles0 = GetWindowLongPtr(m_hPlayerName[0], GWL_EXSTYLE);
+	SetWindowLongPtr(m_hPlayerName[0], GWL_EXSTYLE, styles0 | WS_EX_TRANSPARENT);
+	SendMessage(m_hPlayerName[0], WM_SETFONT, (WPARAM)hFont, TRUE);
+
+	m_hPlayerName[1] = CreateWindow(L"STATIC", L"", WS_CHILD | WS_VISIBLE | SS_CENTER, 620, 100, 140, 50, hwnd, NULL, hInst, NULL);
+	LONG_PTR styles1 = GetWindowLongPtr(m_hPlayerName[1], GWL_EXSTYLE);
+	SetWindowLongPtr(m_hPlayerName[1], GWL_EXSTYLE, styles1 | WS_EX_TRANSPARENT);
+	SendMessage(m_hPlayerName[1], WM_SETFONT, (WPARAM)hFont, TRUE);
 
 	return true;
 }
@@ -48,20 +67,12 @@ void CLobbyScene::Update(float elapsedTime)
 {
 	CScene::Update(elapsedTime);
 
-	switch (clientNum)
-	{
-	case 1:
-		if (!m_LobbyPlayer[0]->GetEnable())
-			m_LobbyPlayer[0]->SetEnable(true);
-		break;
-	case 2:
-		if (!m_LobbyPlayer[0]->GetEnable())
-			m_LobbyPlayer[0]->SetEnable(true);
-		if (!m_LobbyPlayer[1]->GetEnable())
-			m_LobbyPlayer[1]->SetEnable(true);
-		break;
-	default:
-		break;
+	for (int i = 0; i < 2; ++i) {		//어느 위치가 적당한지 잘 모름.. 더블버퍼링 처리 좀 부탁
+		TCHAR tPlayerName[20];
+		auto playerName = m_lobbyData->players[i].name;
+		size_t convertedChars = 0;
+		mbstowcs_s(&convertedChars, tPlayerName, playerName, _TRUNCATE);
+		SetWindowText(m_hPlayerName[i], tPlayerName);
 	}
 
 	if (m_LobbyPlayer[0]->GetReady() && m_LobbyPlayer[1]->GetReady())
@@ -82,29 +93,27 @@ void CLobbyScene::KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	{
 	case IDC_BUTTON:
 	{
-		m_lobbyData->players[PacketManager::GetInst().GetMyID()].job = (int)(EPlayer_Job::Sword);
+		m_lobbyData->players[m_myid].job = (int)(EPlayer_Job::Sword);
 		break;
 	}
 	case IDC_BUTTON2:
 	{
-		m_lobbyData->players[PacketManager::GetInst().GetMyID()].job = (int)(EPlayer_Job::Archer);
+		m_lobbyData->players[m_myid].job = (int)(EPlayer_Job::Archer);
 		break;
 	}
 	case IDC_BUTTON3:
 	{
-		m_lobbyData->players[PacketManager::GetInst().GetMyID()].bReady = !m_lobbyData->players[PacketManager::GetInst().GetMyID()].bReady;
-		//m_LobbyData[0].bReady = !m_LobbyData[0].bReady;
-		//m_LobbyData[1].bReady = !m_LobbyData[1].bReady;
+		m_lobbyData->players[m_myid].bReady = !m_lobbyData->players[m_myid].bReady;
 		break;
 	}
 	}
 }
 
-void CLobbyScene::PacketEvent(const Packet& packet)
+void CLobbyScene::RecvGameData(const Packet& packet)
 {
 	switch (packet.type)
 	{
-	case LobbyInfo:
+	case LobbyUpdateResponse:
 	{
 		S_LobbyInfoPacket* RecvPacket = (S_LobbyInfoPacket*)&packet;
 		memcpy(m_lobbyData, RecvPacket->data, RecvPacket->data_size);

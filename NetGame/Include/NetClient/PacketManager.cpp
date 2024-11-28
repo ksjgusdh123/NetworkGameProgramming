@@ -8,18 +8,9 @@ void PacketManager::ProcessPacket(const Packet& packet)
 {
 	switch (packet.type)
 	{
-	case LobbyInfo:
+	case LobbyUpdateResponse:
 	{
-		CSceneManager::GetInst()->GetScene()->PacketEvent(packet);
-		break;
-	}
-	case PlayerMove:
-	{
-		C_PlayerMovePkt* cur = (C_PlayerMovePkt*)&packet;
-		cur->deserialize();
-		if (cur->client_id == m_myID) break;
-		auto curScene = CSceneManager::GetInst()->GetScene();
-		curScene->GetPlayer()->SetPos({ cur->x,cur->y });
+		CSceneManager::GetInst()->GetScene()->RecvGameData(packet);
 		break;
 	}
 	default:

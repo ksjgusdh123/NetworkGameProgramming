@@ -2,22 +2,12 @@
 #pragma pack(push, 1)
 enum PacketType
 {
-	//InputKey,
 	LoginRequest,
-	PlayerChoice,
-
 	LobbyUpdateRequest,
+	GameUpdateRequest,
 
-	GameStartRequest,
-	PlayerMove,
-	PlayerAttack,
-
-	LobbyInfo,
-	GameStartResponse,
-	GameState,
-	GameEndNotification,
-	PlayerInfoUpdate,
-	MonsterInfoUpdate,
+	LobbyUpdateResponse,
+	GameUpdateResponse,
 };
 
 class Packet
@@ -35,43 +25,6 @@ public:
 	}
 };
 
-struct S_GameInfoPacket :public Packet
-{
-	S_GameInfoPacket(const InGameData& GameData_)
-	{
-		type = GameState;
-		memcpy(data, &GameData_, sizeof(GameData_));
-	}
-};
-
-struct S_LobbyInfoPacket :public Packet
-{
-	S_LobbyInfoPacket(const LobbyData& lobbyData_)
-	{
-		type = LobbyInfo;
-		data_size = sizeof(lobbyData_);
-		memcpy(data, &lobbyData_, data_size);
-	}
-};
-
-struct C_PlayerMovePkt :public Packet
-{
-	float x = -1;
-	float y = -1;
-
-	C_PlayerMovePkt(float x_, float y_)
-	{
-		type = PlayerMove;
-		sprintf_s(data, "%f %f", x, y);
-		data_size = strlen(data);
-	}
-	void deserialize()
-	{
-		sscanf_s(data, "%f %f", &x, &y);
-	}
-};
-
-
 struct C_LoginRequestPkt : public Packet
 {
 	C_LoginRequestPkt(const std::string& player_name_)
@@ -83,48 +36,42 @@ struct C_LoginRequestPkt : public Packet
 
 };
 
-struct C_PlayerChoicePkt : public Packet
-{
-	int j;
-
-	C_PlayerChoicePkt(const int job_)
-	{
-		type = PlayerChoice;
-		sprintf_s(data, "%d", job_);
-		data_size = strlen(data);
-	}
-
-	void deserialize()
-	{
-		sscanf_s(data, "%d", &j);
-	}
-};
-
-struct C_GameStartRequestPkt : public Packet
-{
-	bool ready;
-
-	C_GameStartRequestPkt(const bool bReady)
-	{
-		type = GameStartRequest;
-		sprintf_s(data, "%d", bReady);
-		data_size = strlen(data);
-	}
-
-	void deserialize()
-	{
-		sscanf_s(data, "%d", &ready);
-	}
-};
-
 struct C_LobbyUpdateRequest : public Packet
 {
-	C_LobbyUpdateRequest(const LobbyPlayerInfo& lobbyData_)
+	C_LobbyUpdateRequest(const LobbyPlayerInfo& lobbyPlayer_)
 	{
 		type = LobbyUpdateRequest;
+		data_size = sizeof(lobbyPlayer_);
+		memcpy(data, &lobbyPlayer_, data_size);
+	}
+};
+
+struct C_GameUpdateRequest : public Packet
+{
+	C_GameUpdateRequest(const GamePlayerInfo& GamePlayer_)
+	{
+		type = GameUpdateRequest;
+		data_size = sizeof(GamePlayer_);
+		memcpy(data, &GamePlayer_, data_size);
+	}
+};
+
+struct S_LobbyInfoPacket :public Packet
+{
+	S_LobbyInfoPacket(const LobbyData& lobbyData_)
+	{
+		type = LobbyUpdateResponse;
 		data_size = sizeof(lobbyData_);
 		memcpy(data, &lobbyData_, data_size);
 	}
 };
 
+struct S_GameInfoPacket :public Packet
+{
+	S_GameInfoPacket(const InGameData& GameData_)
+	{
+		type = GameUpdateResponse;
+		memcpy(data, &GameData_, sizeof(GameData_));
+	}
+};
 #pragma pack(pop)

@@ -164,8 +164,16 @@ bool CEngine::Create()
 
 LRESULT CEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    static HBRUSH hBrush = (HBRUSH)GetStockObject(NULL_BRUSH);
     switch (message)
     {
+    case WM_CTLCOLORSTATIC:
+    {
+        HDC hdcStatic = (HDC)wParam;
+        SetBkMode(hdcStatic, TRANSPARENT);  // 배경 투명 설정
+        SetTextColor(hdcStatic, RGB(255, 255, 255));
+        return (LRESULT)hBrush;
+    }
     case WM_DESTROY:
         // 윈도우가 종료될때 들어오는 메세지이다.
         m_loop = false;

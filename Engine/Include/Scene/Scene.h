@@ -18,7 +18,7 @@ public:
 	virtual void PostUpdate(float elapsedTime);
 	virtual void Render(HDC hDC, float elapsedTime);
 	virtual void KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam) {}
-	virtual void PacketEvent(const class Packet& packet) {}
+	virtual void RecvGameData(const class Packet& packet) {}
 	virtual void SendGameData() {};
 public:
 	template <typename T>

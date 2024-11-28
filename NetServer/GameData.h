@@ -9,14 +9,11 @@ constexpr int NAME_LEN = 20;
 #pragma pack(push, 1)
 struct PlayerInfo {
 	int id = -1;
-	//std::string name;
 	char name[NAME_LEN] = {};
 	char job = 0;
 
 	PlayerInfo() = default;
 
-	/* PlayerInfo(int playerId, const std::string& playerName ="", char playerJob = 0)
-		 : id(playerId), name(playerName), job(playerJob) {}*/
 	PlayerInfo(int playerId, const char* playerName, char playerJob = 0)
 		: id(playerId), job(playerJob)
 	{
@@ -34,14 +31,14 @@ struct LobbyPlayerInfo : public PlayerInfo {
 };
 
 struct GamePlayerInfo : public PlayerInfo {
-	int x = 0, y = 0;
+	float x = 0, y = 0;
 	short hp = 100;
 	short damage = 10;
 	char state = 0;
 
 	GamePlayerInfo() = default;
 
-	GamePlayerInfo(const PlayerInfo& base, int posX, int posY, short health, short dmg, char playerState)
+	GamePlayerInfo(const PlayerInfo& base, float posX, float posY, short health, short dmg, char playerState)
 		: PlayerInfo(base), x(posX), y(posY), hp(health), damage(dmg), state(playerState) {}
 };
 
@@ -78,9 +75,9 @@ struct LobbyData:public GameData
 struct InGameData :public GameData
 {
 	std::array<GamePlayerInfo, PLAYER_NUM> players;
-	std::array<MonsterInfo, MONSTER_NUM> monster;
+	/*std::array<MonsterInfo, MONSTER_NUM> monster;
 	std::array<TileInfo, TILE_NUM> tile;
-	std::array<ItemInfo, ITEM_NUM> item;
+	std::array<ItemInfo, ITEM_NUM> item;*/
 };
 
 #pragma pack(pop)

@@ -9,14 +9,13 @@ public:
 	virtual bool Init() override;
 	virtual void Update(float elapsedTime);
 	virtual void KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam);
-	virtual void PacketEvent(const class Packet& packet);
+	virtual void RecvGameData(const class Packet& packet);
 	virtual void SendGameData();
 
 private:
-	HWND			m_hButton[3]{};
+	HWND m_hButton[3]{};
+	HWND m_hPlayerName[2];
 	class CLobbyPlayer* m_LobbyPlayer[2];
-	int clientNum = 0;
-	char name[2][20];
 	LobbyData* m_lobbyData;
 };
 
