@@ -6,7 +6,7 @@ class CLobbyScene : public CScene
 public:
 	virtual bool Init() override;
 	virtual void Update(float elapsedTime);
-	virtual void Render(HDC hDC, float elapsedTime);
+	//virtual void Render(HDC hDC, float elapsedTime);
 	virtual void KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam);
 	virtual void RecvGameData(const class Packet& packet);
 	virtual void SendGameData();

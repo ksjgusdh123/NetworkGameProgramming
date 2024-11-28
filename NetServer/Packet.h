@@ -15,34 +15,21 @@ struct vector2
 	vector2 operator* (const vector2& v) const { return vector2(x * v.x, y * v.y); }
 };
 
-struct Client {
-	SOCKET socket;
-	std::string name;
-	PlayerInfo player;
-	int& id = player.id;
-	Client(SOCKET sock, int clientId, const std::string& clientName)
-		: socket(sock), name(clientName)
-	{
-		id = clientId;
-	}
-};
-
+#pragma pack(push, 1)
 	
 enum PacketType
 {
 	//InputKey,
 	LoginRequest,
-	PlayerChoice,
-	GameStartRequest,
-	PlayerMove,
-	PlayerAttack,
-	GameStartResponse,
-	GameState,
-	GameEndNotification,
-	PlayerInfoUpdate,
-	MonsterInfoUpdate,
+	
 	TileRequest,
 	Tiles,
+
+	LobbyUpdateRequest,
+	GameUpdateRequest,
+
+	LobbyUpdateResponse,
+	GameUpdateResponse,
 };
 
 class Packet
@@ -61,25 +48,6 @@ public:
 	}
 };
 
-struct C_PlayerMovePkt :public Packet
-{
-	float x = -1;
-	float y = -1;
-
-	C_PlayerMovePkt(float x_, float y_)
-		: x(x_), y(y_)
-	{
-		type = PlayerMove;
-		sprintf_s(data, "%f %f", x, y);
-		data_size = strlen(data);
-	}
-	void deserialize()
-	{
-		sscanf_s(data, "%f %f", &x, &y);
-	}
-};
-
-
 struct C_LoginRequestPkt : public Packet
 {
 	C_LoginRequestPkt(const std::string& player_name_)
@@ -89,45 +57,28 @@ struct C_LoginRequestPkt : public Packet
 		data_size = strlen(data);
 	}
 
-	void deserialize()
-	{
-		
-	}
 };
 
-struct C_PlayerChoicePkt : public Packet
+struct C_LobbyUpdateRequest : public Packet
 {
-	int j;
-
-	C_PlayerChoicePkt(const int job_)
+	C_LobbyUpdateRequest(const LobbyPlayerInfo& lobbyPlayer_)
 	{
-		type = PlayerChoice;
-		sprintf_s(data, "%d", job_);
-		data_size = strlen(data);
-	}
-
-	void deserialize()
-	{
-		sscanf_s(data, "%d", &j);
+		type = LobbyUpdateRequest;
+		data_size = sizeof(lobbyPlayer_);
+		memcpy(data, &lobbyPlayer_, data_size);
 	}
 };
 
-struct C_GameStartRequestPkt : public Packet
+struct C_GameUpdateRequest : public Packet
 {
-	bool ready;
-
-	C_GameStartRequestPkt(const bool bReady)
+	C_GameUpdateRequest(const GamePlayerInfo& GamePlayer_)
 	{
-		type = GameStartRequest;
-		sprintf_s(data, "%d", bReady);
-		data_size = strlen(data);
-	}
-
-	void deserialize()
-	{
-		sscanf_s(data, "%d", &ready);
+		type = GameUpdateRequest;
+		data_size = sizeof(GamePlayer_);
+		memcpy(data, &GamePlayer_, data_size);
 	}
 };
+
 
 struct C_TileRequestPkt : public Packet
 {
@@ -204,82 +155,22 @@ struct C_TilesPkt : public Packet {
 	}
 };
 
-//
-//struct C_GameStartRequestPkt
-//{
-//	PacketHeader header;
-//};
-//
+struct S_LobbyInfoPacket :public Packet
+{
+	S_LobbyInfoPacket(const LobbyData& lobbyData_)
+	{
+		type = LobbyUpdateResponse;
+		data_size = sizeof(lobbyData_);
+		memcpy(data, &lobbyData_, data_size);
+	}
+};
 
-//
-//struct C_PlayerAttackPkt
-//{
-//	PacketHeader header;
-//};
-//
-//struct S_RoomDataPkt
-//{
-//	PacketHeader header;
-//	bool isReady1;
-//	bool isReady2;
-//	int PlayerRole1;
-//	int PlayerRole2;
-//	int PlayerName1;
-//	int PlayerName2;
-//};
-//
-//struct Vec2
-//{
-//	int x, y;
-//};
-//
-//#define PlayerNum 2
-//#define MonsterNum 10
-//#define TileNum 10
-//#define ItemNum 10
-//
-//struct S_GameStartDataPkt
-//{
-//	PacketHeader header;
-//	int Stage;
-//
-//	int PlayerType[PlayerNum];
-//	Vec2 PlayerPos[PlayerNum];
-//	int PlayerState[PlayerNum];
-//	int PlayerDir[PlayerNum];
-//
-//	int MonsterType[MonsterNum]; 
-//	Vec2 MonsterPos[MonsterNum];
-//	int MonsterState[MonsterNum];
-//	int MonsterDir[MonsterNum];
-//
-//	int TileType[TileNum];
-//	Vec2 TilePos[TileNum];
-//	
-//	int ItemType[ItemNum];
-//	Vec2 ItemPos[ItemNum];
-//};
-//
-//struct S_PlayerInfoUpdatePkt
-//{
-//	PacketHeader header;
-//	int PlayerID;
-//	Vec2 PlayerPos;
-//	int PlayerState;
-//	int PlayerDir;
-//};
-//
-//struct S_MonsterInfoUpdatePkt
-//{
-//	PacketHeader header;
-//	int MonsterID; //Monster[MonsterID]
-//	Vec2 MonsterPos;
-//	int MonsterState;
-//	int MonsterDir;
-//};
-//
-//struct S_GameEndDataPkt
-//{
-//	PacketHeader header;
-//	int TotalTime;
-//};
+struct S_GameInfoPacket :public Packet
+{
+	S_GameInfoPacket(const InGameData& GameData_)
+	{
+		type = GameUpdateResponse;
+		memcpy(data, &GameData_, sizeof(GameData_));
+	}
+};
+#pragma pack(pop)

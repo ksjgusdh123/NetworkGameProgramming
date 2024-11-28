@@ -21,7 +21,7 @@ Packet PacketManager::RecvPacket()
 	int client_id;
 	int packet_size;
 	int packet_type;
-	char recv_buf[BUFSIZ];
+	char recv_buf[DATA_SIZE];
 	recv(m_sock, (char*)&client_id, sizeof(int), MSG_WAITALL);
 	recv(m_sock, (char*)&packet_type, sizeof(int), MSG_WAITALL);
 	recv(m_sock, (char*)&packet_size, sizeof(int), MSG_WAITALL);

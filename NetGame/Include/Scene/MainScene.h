@@ -7,6 +7,7 @@
 #include "../GameObject/RicheAttack.h"
 #include "../GameObject/Boss.h"
 #include "../GameObject//Tile.h"
+#include "..\NetClient\TCPClient.h"
 // Warning: SceneManager에서 MainScene을 알 수 없기 때문에 씬이 제거될 때 MainScene으로 캐스팅 되지 않는다. (Scene 소멸자만 호출)
 //			때문에 할당된 객체는 모두 Scene 클래스에 등록해야 한다. ex) CScene::CreateObject()
 //			이거 안하면 메모리 누수.
@@ -22,16 +23,16 @@ public:
 	void CreateStageOneMap();
 	void ResourceInit();
 	void BossAttack();
-	virtual void PacketEvent(const class Packet& packet);
+	void RecvGameData(const Packet& packet);
+	void SendGameData();
 
 private:
-	class CPlayer* player;
-	class CPlayer* myplayer;
-	class CGameObject* monster;
+	InGameData* m_inGameData;
+	class CPlayer* player[2];
 	CGhost* ghost;
 	CRiche* riche;
 	CBoss* boss;
-	Vector2				m_cameraVelocity;
+	Vector2	m_cameraVelocity;
 	int m_tileNum{};
 	std::vector<int> m_tileType;
 	std::vector<float> m_tilePosX;

@@ -17,13 +17,14 @@ bool CMainScene::Init()
 {
     CScene::Init();
     ResourceInit();
+    m_myid = PacketManager::GetInst().GetMyID();
+    m_inGameData = &PacketManager::GetInst().inGameData;
 
     CGameObject* back = CreateObject<CGameObject>("Background");
     back->CreateTexture(1);
     back->SetTexture("Background", TEXT("Map/BG.bmp"), EObject_Dir::Right);
     back->SetSize(2000.f, 1000.f);
     back->SetPivot(0.5f, 0.5f);
-
 
     boss = CreateObject<CBoss>("boss");
     boss->SetPos(0.f, 0.f);
@@ -56,24 +57,15 @@ bool CMainScene::Init()
     GetCamera()->SetViewType(ECamera_Type::Target);
     m_cameraVelocity = Vector2(100.f, 100.f);
 
+    player[0] = CreateObject<CArcher>("player0");
+    player[1] = CreateObject<CArcher>("player1");
+    player[0]->SetPos(-100.f, 180.f);
+    player[1]->SetPos(-100.f, 180.f);
+    SetPlayer(player[abs(1 - m_myid)]);
 
-    player = CreateObject<CArcher>("player");
-    player->SetPos(-100.f, 180.f);
-    SetPlayer(player);
-
-    myplayer = CreateObject<CArcher>("myplayer");
-    myplayer->SetPos(0.f, 180.f);
-    myplayer->InitInput();
-    SetMyPlayer(myplayer);
-    GetCamera()->SetTarget(myplayer);
-
- /*   monster = CreateObject<CGameObject>("gus");
-    monster->CreateTexture(1);
-    monster->SetTexture("Plyer", TEXT("Player/Bazzi_Lobby.bmp"), EObject_Dir::Right);
-	monster->SetColorKey(255, 0, 255);
-    monster->SetSize(50.f, 60.f);
-    monster->SetPos(100.f, 200.f);*/
-
+    player[m_myid]->InitInput();
+    SetMyPlayer(player[m_myid]);
+    GetCamera()->SetTarget(player[m_myid]);
 
     ghost = CreateObject<CGhost>("fdkaj");
     ghost->SetPos(-100.f, 410.f);
@@ -89,8 +81,6 @@ bool CMainScene::Init()
     C_TileRequestPkt packet{};
     PacketManager::GetInst().EnqueueSendPacket(packet);
 
-   
-
     return true;
 }
 
@@ -99,7 +89,7 @@ void CMainScene::Update(float elapsedTime)
     CScene::Update(elapsedTime);
 
     if (IsPlayerInRicheAttackArea()){
-        riche->Attack(player->GetPos());
+        riche->Attack(player[m_myid]->GetPos());
     }
     m_timer += elapsedTime;
     if (m_timer > 2.0f) {
@@ -109,7 +99,7 @@ void CMainScene::Update(float elapsedTime)
     }
     for (auto& object : m_objects[2])
     {
-        if (player->GetCollision()->CheckCollision(object->GetCollision()))
+        if (player[m_myid]->GetCollision()->CheckCollision(object->GetCollision()))
         {
             object->Destroy();
             break;
@@ -117,40 +107,54 @@ void CMainScene::Update(float elapsedTime)
     }
 }
 
-bool CMainScene::IsPlayerInRicheAttackArea()
-{
-    EObject_State riche_state = riche->GetState();
-    if (riche_state == EObject_State::Attack_L || riche_state == EObject_State::Attack) return false;
-
-    float dx = player->GetPos().x - riche->GetPos().x;
-    float dy = player->GetPos().y - riche->GetPos().y;
-    float distance = sqrt(dx * dx + dy * dy);
-    if (distance < 400) return true;
-
-    return false;
-}
-
-void CMainScene::PacketEvent(const Packet& packet)
+void CMainScene::RecvGameData(const Packet& packet)
 {
     switch (packet.type)
     {
     case Tiles:
-    {	
+    {
         C_TilesPkt* cur = (C_TilesPkt*)&packet;
         cur->deserialize(m_tileNum, m_tileType, m_tilePosX, m_tilePosY);
         CreateStageOneMap();
+        break;
+    }
+    case GameUpdateResponse:
+    {
+        S_GameInfoPacket* RecvPacket = (S_GameInfoPacket*)&packet;
+        memcpy(m_inGameData, RecvPacket->data, RecvPacket->data_size);
+        for (int i = 0; i < PLAYER_NUM; ++i)
+            player[i]->SetPos({ m_inGameData->players[i].x,m_inGameData->players[i].y });
+        break;
     }
     default:
         break;
     }
 }
 
-void CMainScene::BossAttack()
+void CMainScene::SendGameData()
 {
-    boss->Attack(player->GetPos());
+    C_GameUpdateRequest sendPacket(m_inGameData->players[m_myid]);
+    PacketManager::GetInst().SendPacket(sendPacket);
 }
 
 
+bool CMainScene::IsPlayerInRicheAttackArea()
+{
+    EObject_State riche_state = riche->GetState();
+    if (riche_state == EObject_State::Attack_L || riche_state == EObject_State::Attack) return false;
+
+    float dx = player[m_myid]->GetPos().x - riche->GetPos().x;
+    float dy = player[m_myid]->GetPos().y - riche->GetPos().y;
+    float distance = sqrt(dx * dx + dy * dy);
+    if (distance < 400) return true;
+
+    return false;
+}
+
+void CMainScene::BossAttack()
+{
+    boss->Attack(player[m_myid]->GetPos());
+}
 
 void CMainScene::CreateMap()
 {
