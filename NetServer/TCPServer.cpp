@@ -4,7 +4,7 @@
 
 TCPServer* TCPServer::m_inst;
 CRITICAL_SECTION cs;
-HANDLE hRecvEvent, hWorkEvent[2];
+HANDLE hRecvEvent[2], hWorkEvent[2];
 
 DWORD WINAPI RecvThread(LPVOID arg)
 {
@@ -20,7 +20,7 @@ DWORD WINAPI RecvThread(LPVOID arg)
 
 	while (true)
 	{
-		WaitForSingleObject(hRecvEvent, INFINITE);
+		WaitForSingleObject(hRecvEvent[client_id], INFINITE);
 
 		int type;
 		int data_size;
@@ -31,7 +31,7 @@ DWORD WINAPI RecvThread(LPVOID arg)
 		if (res <= 0) break;
 		res = recv(client.socket, (char*)&data_size, sizeof(int), MSG_WAITALL);
 		if (res <= 0) break;
-		res = recv(client.socket, data, data_size, MSG_WAITALL);
+		res = recv(client.socket, data, data_size, MSG_WAITALL);	
 		if (res <= 0) break;
 
 		Packet p(client_id, type, data_size, data);
@@ -39,6 +39,7 @@ DWORD WINAPI RecvThread(LPVOID arg)
 		TCPServer::GetInst()->recvQ.push(p);
 		LeaveCriticalSection(&cs);
 
+		ResetEvent(hRecvEvent[client_id]);
 		SetEvent(hWorkEvent[client_id]);
 	}
 
@@ -52,14 +53,11 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 	while (true)
 	{
 		WaitForMultipleObjects(2, hWorkEvent, TRUE, INFINITE);
-		ResetEvent(hRecvEvent);
-		EnterCriticalSection(&cs);
-		auto& recvQ = TCPServer::GetInst()->recvQ;
-		while (!recvQ.empty())
+		for (int i = 0; i < 2; ++i)
 		{
+			auto& recvQ = TCPServer::GetInst()->recvQ;
 			Packet packet = recvQ.front();
 			recvQ.pop();
-			LeaveCriticalSection(&cs);
 
 			switch (packet.type)
 			{
@@ -100,15 +98,14 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 				TCPServer::GetInst()->CreateTilePacket();
 				break;
 			}
-
 			default:
 				break;
 			}
-
-			EnterCriticalSection(&cs);
 		}
-		LeaveCriticalSection(&cs);
-		SetEvent(hRecvEvent);
+		ResetEvent(hWorkEvent[0]);
+		ResetEvent(hWorkEvent[1]);
+		SetEvent(hRecvEvent[0]);
+		SetEvent(hRecvEvent[1]);
 	}
 }
 
@@ -128,7 +125,8 @@ void TCPServer::SendPacket(const Packet& packet)
 bool TCPServer::Init()
 {
 	cout << "Init()\n";
-	hRecvEvent = CreateEvent(NULL, TRUE, TRUE, NULL);	//두번째 인자 True로 설정시 수동
+	hRecvEvent[0] = CreateEvent(NULL, TRUE, TRUE, NULL);	//두번째 인자 True로 설정시 수동
+	hRecvEvent[1] = CreateEvent(NULL, TRUE, TRUE, NULL);	//두번째 인자 True로 설정시 수동
 	hWorkEvent[0] = CreateEvent(NULL, FALSE, FALSE, NULL);//자동으로 worker실행 후 다시 false
 	hWorkEvent[1] = CreateEvent(NULL, FALSE, FALSE, NULL);
 
@@ -185,7 +183,8 @@ void TCPServer::Run()
 
 void TCPServer::Cleanup()
 {
-	CloseHandle(hRecvEvent);
+	CloseHandle(hRecvEvent[0]);
+	CloseHandle(hRecvEvent[1]);
 	CloseHandle(hWorkEvent[0]);
 	CloseHandle(hWorkEvent[1]);
 	DeleteCriticalSection(&cs);
