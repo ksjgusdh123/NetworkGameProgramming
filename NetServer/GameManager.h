@@ -17,12 +17,15 @@ class GameManager {
 public:
     void AddLobbyPlayer(const Client& client);
     LobbyData* GetLobbyData() { return &lobbyData; };
-    InGameData* GetInGameData() { return &gameData; };
+    InGameData* GetInGameData() { return &inGameData; };
 
     void InitGameData();
     void PrintLobbyState();
     void PrintGameState();
 
+    void CreateTilePacket();
+    bool CollisionCheck(int clientID);
+    void ServerUpdate(int clientID);
 public:
     static GameManager& GetInst()
     {
@@ -32,5 +35,6 @@ public:
 
 private:
     LobbyData lobbyData;
-    InGameData gameData;
+    InGameData inGameData;
+    vector<TileInfo> tiles;
 };

@@ -77,13 +77,12 @@ bool CMainScene::Init()
     riche = CreateObject<CRiche>("riche");
     riche->SetPos(450.f, 380.f);
 
-    // 게임 시작 요청 패킷 전송
-    if (m_myid == 0)
-    {
-        C_TileRequestPkt packet{};
-        PacketManager::GetInst().EnqueueSendPacket(packet);
-    }
-
+    //// 게임 시작 요청 패킷 전송
+    //if (m_myid == 0)
+    //{
+    //    C_TileRequestPkt packet{};
+    //    PacketManager::GetInst().EnqueueSendPacket(packet);
+    //}
     return true;
 }
 

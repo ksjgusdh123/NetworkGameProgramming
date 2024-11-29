@@ -22,19 +22,17 @@ public:
 		}
 	}
 public:
+	void ProcessPacket(const Packet& packet);
 	void SendPacket(const Packet& packet);
 	
 	bool Init();
 	void Connect();
 	void Run();
 	void Cleanup();
-	void CreateTilePacket();
-	bool CollisionCheck(int clientID, InGameData* inGameData);
-	void ServerUpdate(int clientID, InGameData* inGameData);
+	
 public:
 	queue<Packet> recvQ;
 	vector<Client> clients;
-	vector<TileInfo> tiles;
 
 private:
 	static TCPServer* m_inst;
