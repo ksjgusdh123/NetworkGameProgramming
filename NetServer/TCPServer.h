@@ -29,9 +29,12 @@ public:
 	void Run();
 	void Cleanup();
 	void CreateTilePacket();
+	bool CollisionCheck(int clientID, InGameData* inGameData);
+	void ServerUpdate(int clientID, InGameData* inGameData);
 public:
 	queue<Packet> recvQ;
 	vector<Client> clients;
+	vector<TileInfo> tiles;
 
 private:
 	static TCPServer* m_inst;

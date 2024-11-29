@@ -20,6 +20,41 @@ struct vector2
 	vector2 operator* (const vector2& v) const { return vector2(x * v.x, y * v.y); }
 };
 
+struct CollisionBoxInfo
+{
+	vector2	LT;
+	vector2	RB;
+};
+
+class Collision
+{
+public:
+	void UpdateCollision(vector2& pos, vector2& size)
+	{
+		m_info.LT.x = pos.x - size.x / 2.f;
+		m_info.LT.y = pos.y - size.y / 2.f;
+		m_info.RB.x = pos.x + size.x / 2.f;
+		m_info.RB.y = pos.y + size.y / 2.f;
+	}
+
+	bool CheckCollision(Collision* box)
+	{
+		vector2 otherLT = box->m_info.LT;
+		vector2 otherRB = box->m_info.RB;
+
+		if (m_info.RB.x < otherLT.x || m_info.LT.x > otherRB.x)
+			return false; // X축에서 겹치지 않음
+
+		if (m_info.RB.y < otherLT.y || m_info.LT.y > otherRB.y)
+			return false; // Y축에서 겹치지 않음
+
+		return true;
+	}
+public:
+	CollisionBoxInfo m_info;
+
+};
+
 struct PlayerInfo {
 	int id = -1;
 	char name[NAME_LEN] = {};
@@ -49,11 +84,12 @@ struct GamePlayerInfo : public PlayerInfo {
 	short hp = 100;
 	short damage = 10;
 	char state = 0;
+	char dir = 0;
 
 	GamePlayerInfo() = default;
 
-	GamePlayerInfo(const PlayerInfo& base, vector2 pos, short health, short dmg, char playerState)
-		: PlayerInfo(base), pos(pos), hp(health), damage(dmg), state(playerState) {}
+	GamePlayerInfo(const PlayerInfo& base, vector2 pos, short health, short dmg, char playerState, char dir)
+		: PlayerInfo(base), pos(pos), hp(health), damage(dmg), state(playerState), dir(dir) {}
 };
 
 struct MonsterInfo
@@ -71,6 +107,7 @@ struct TileInfo
 {
 	short type;
 	vector2 pos;
+	Collision box;
 };
 
 struct ItemInfo

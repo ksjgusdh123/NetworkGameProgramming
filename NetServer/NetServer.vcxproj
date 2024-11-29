@@ -154,6 +154,11 @@
     <ClInclude Include="Packet.h" />
     <ClInclude Include="TCPServer.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Engine\Include\Engine.vcxproj">
+      <Project>{844b0ad2-a5f3-478f-a595-51d7cc6939dc}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -14,7 +14,8 @@ public:
 	virtual void Render(HDC hDC, float elapsedTime) override;
 	virtual void InitInput();
 
-protected:	
+	Vector2 GetPrevPos() { return m_prevPos; }
+protected:
 	void PlayerMoveLeft();
 	void PlayerLeftIdle();
 	void PlayerMoveRight();
@@ -39,5 +40,6 @@ protected:
 
 	Vector2 m_attackSize;
 	Vector2 m_attackPivot;
+	Vector2 m_prevPos;
 };	
 

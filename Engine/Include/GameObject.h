@@ -19,6 +19,7 @@ public:
 	Vector2 GetPivot() const { return m_pivot; }
 	Vector2 GetVelocity() const { return m_velocity; }
 	float GetAngle() const { return m_angle; }
+	EObject_Dir GetDir() const { return m_objectDir; }
 	EObject_State GetState() const { return m_objectState; }
 	class CCollision* GetCollision() const { return m_collisionBox.get(); }
 

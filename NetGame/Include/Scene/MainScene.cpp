@@ -57,10 +57,10 @@ bool CMainScene::Init()
     GetCamera()->SetViewType(ECamera_Type::Target);
     m_cameraVelocity = Vector2(100.f, 100.f);
 
-    player[0] = CreateObject<CArcher>("player0");
-    player[1] = CreateObject<CArcher>("player1");
-    player[0]->SetPos(-100.f, 180.f);
-    player[1]->SetPos(-100.f, 180.f);
+    player[0] = CreateObject<CSwordman>("player0");
+    player[1] = CreateObject<CSwordman>("player1");
+    player[0]->SetPos(-200.f, 180.f);
+    player[1]->SetPos(-200.f, 180.f);
     SetPlayer(player[abs(1 - m_myid)]);
 
     player[m_myid]->InitInput();
@@ -78,24 +78,34 @@ bool CMainScene::Init()
     riche->SetPos(450.f, 380.f);
 
     // 게임 시작 요청 패킷 전송
-    C_TileRequestPkt packet{};
-    PacketManager::GetInst().EnqueueSendPacket(packet);
+    if (m_myid == 0)
+    {
+        C_TileRequestPkt packet{};
+        PacketManager::GetInst().EnqueueSendPacket(packet);
+    }
 
     return true;
 }
 
 void CMainScene::Update(float elapsedTime)
 {
-    m_inGameData->players[m_myid].prev_pos = vector2(player[m_myid]->GetPos().x, player[m_myid]->GetPos().y);
+    if (m_inGameData->players[m_myid].prev_pos.x != player[m_myid]->GetPrevPos().x)
+    {
+        int a = 3;
+    }
+    m_inGameData->players[m_myid].prev_pos = vector2(player[m_myid]->GetPrevPos().x, player[m_myid]->GetPrevPos().y);
+
 
     CScene::Update(elapsedTime);
 
     m_inGameData->players[m_myid].pos = vector2(player[m_myid]->GetPos().x, player[m_myid]->GetPos().y);
+    m_inGameData->players[m_myid].state = (char)(EObject_State)(player[m_myid]->GetState());
+    m_inGameData->players[m_myid].dir = (char)(EObject_Dir)(player[m_myid]->GetDir());
 
     if (IsPlayerInRicheAttackArea()){
         riche->Attack(player[m_myid]->GetPos());
     }
-    m_timer += elapsedTime;
+    m_timer += elapsedTime; 
     if (m_timer > 2.0f) {
         if (boss->GetActive())
             BossAttack();
@@ -127,7 +137,11 @@ void CMainScene::RecvGameData(const Packet& packet)
         S_GameInfoPacket* RecvPacket = (S_GameInfoPacket*)&packet;
         memcpy(m_inGameData, RecvPacket->data, RecvPacket->data_size);
         for (int i = 0; i < PLAYER_NUM; ++i)
+        {
             player[i]->SetPos(m_inGameData->players[i].pos.x, m_inGameData->players[i].pos.y);
+            player[i]->SetState((EObject_State)(int)m_inGameData->players[i].state);
+            player[i]->SetDir((EObject_Dir)(int)m_inGameData->players[i].dir);
+        }
         break;
     }
     default:

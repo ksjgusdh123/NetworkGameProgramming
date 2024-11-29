@@ -10,7 +10,7 @@ public:
 	void Render(HDC hDC, float elapsedTime);
 
 	bool CheckCollision(CCollision* box);
-private:
+public:
 	BoxInfo m_info;
 
 };

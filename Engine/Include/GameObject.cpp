@@ -52,9 +52,7 @@ bool CGameObject::Init()
 
 void CGameObject::Update(float elapsedTime)
 {
-#ifdef DEBUG
 	m_collisionBox->UpdateCollision(m_pos, m_size);
-#endif
 }
 
 void CGameObject::PostUpdate(float elapsedTime)
