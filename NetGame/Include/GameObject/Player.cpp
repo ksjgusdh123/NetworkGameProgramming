@@ -24,6 +24,7 @@ void CPlayer::Update(float elapsedTime)
 	CGameObject::Update(elapsedTime);
 
 	m_prevPos = m_pos;
+	//m_pos.y += elapsedTime * 20;
 	if (m_bFrameCheck)
 	{
 		CheckFrame(elapsedTime);

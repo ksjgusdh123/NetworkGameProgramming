@@ -36,9 +36,7 @@ DWORD WINAPI RecvThread(LPVOID arg)
 
 		Packet packet(client_id, type, data_size, data);
 		TCPServer::GetInst()->ProcessPacket(packet);
-		/*EnterCriticalSection(&cs);
-		TCPServer::GetInst()->recvQ.push(packet);
-		LeaveCriticalSection(&cs);*/
+
 
 		SetEvent(hWorkEvent[client_id]);
 	}
@@ -47,12 +45,7 @@ DWORD WINAPI RecvThread(LPVOID arg)
 	closesocket(client.socket);
 	return 0;
 }
-enum SCENE_STATE
-{
-	LOGINSCENE,
-	LOBBYSCENE,
-	GAMESCENE,
-};
+
 int curScene = LOGINSCENE;
 
 DWORD WINAPI WorkerThread(LPVOID arg)
@@ -62,28 +55,19 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 		WaitForMultipleObjects(2, hWorkEvent, TRUE, INFINITE);
 		ResetEvent(hRecvEvent);
 
-		//for (int i = 0; i < 2; ++i)
-		/*auto& recvQ = TCPServer::GetInst()->recvQ;
-		while (!recvQ.empty())
-		{
-			Packet packet = recvQ.front();
-			recvQ.pop();
-
-			TCPServer::GetInst()->ProcessPacket(packet);
-		}*/
-
 		switch (curScene)
 		{
 		case LOBBYSCENE:
 		{
 			LobbyData* gameData = GameManager::GetInst().GetLobbyData();
-			S_LobbyInfoPacket SendPacket(*gameData);
-			TCPServer::GetInst()->SendPacket(SendPacket);
 			if (gameData->players[0].bReady && gameData->players[1].bReady)
 			{
-				GameManager::GetInst().CreateTilePacket();
+				gameData->scene = GAMESCENE;
 				curScene = GAMESCENE;
+				GameManager::GetInst().CreateTilePacket();
 			}
+			S_LobbyInfoPacket SendPacket(*gameData);
+			TCPServer::GetInst()->SendPacket(SendPacket);
 			break;
 		}
 		case GAMESCENE:
@@ -114,11 +98,11 @@ void TCPServer::ProcessPacket(const Packet& packet)
 		auto client = TCPServer::GetInst()->clients[RecvPacket->client_id];
 		strncpy_s(client.player.name, RecvPacket->data, NAME_LEN);
 		GameManager::GetInst().AddLobbyPlayer(client);
+		curScene = LOBBYSCENE;
 		break;
 	}
 	case LobbyUpdateRequest:
 	{
-		curScene = LOBBYSCENE;
 		C_LobbyUpdateRequest* RecvPacket = (C_LobbyUpdateRequest*)&packet;
 		LobbyData* gameData = GameManager::GetInst().GetLobbyData();
 		const int i = RecvPacket->client_id;

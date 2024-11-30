@@ -116,15 +116,24 @@ struct ItemInfo
 	vector2 pos;
 	short amount;
 };
+
+enum SCENE_STATE
+{
+	LOGINSCENE,
+	LOBBYSCENE,
+	GAMESCENE,
+};
 class GameData {};
 
 struct LobbyData:public GameData
 {
+	int scene = LOBBYSCENE;
 	std::array<LobbyPlayerInfo, PLAYER_NUM> players;
 };
 
 struct InGameData :public GameData
 {
+	int scene = GAMESCENE;
 	std::array<GamePlayerInfo, PLAYER_NUM> players;
 	/*std::array<MonsterInfo, MONSTER_NUM> monster;
 	std::array<TileInfo, TILE_NUM> tile;

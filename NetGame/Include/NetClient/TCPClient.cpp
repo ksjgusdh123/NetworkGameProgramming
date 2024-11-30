@@ -3,6 +3,8 @@
 #include "ErrDisplay.h"
 #include <Scene/SceneManager.h>
 #include <Scene/Scene.h>
+#include "..\Scene\LoginScene.h"
+HANDLE hRecvEvent, hSendEvent;
 
 DWORD WINAPI RecvThread(LPVOID arg)
 {
@@ -10,8 +12,11 @@ DWORD WINAPI RecvThread(LPVOID arg)
 	PacketManager::GetInst().Init(sock);
 	while (true)
 	{
+		WaitForSingleObject(hRecvEvent, INFINITE);
 		Packet packet = PacketManager::GetInst().RecvPacket();
 		PacketManager::GetInst().ProcessPacket(packet);
+		ResetEvent(hRecvEvent);
+		SetEvent(hSendEvent);
 	}
 	return true;
 }
@@ -22,9 +27,18 @@ DWORD WINAPI SendThread(LPVOID arg)
 
 	while (true)
 	{
+		if (CSceneManager::GetInst()->GetScene()->m_sceneType != LOGIN_SCENE)
+			break;
+	}
+
+	while (true)
+	{
+		WaitForSingleObject(hSendEvent, INFINITE);
+		Sleep(1000 / 30);
 		PacketManager::GetInst().DequeueSendPacket();
 		CSceneManager::GetInst()->GetScene()->SendGameData();
-		Sleep(1000 / 30);
+		ResetEvent(hSendEvent);
+		SetEvent(hRecvEvent);
 	}
 	return true;
 }
@@ -32,6 +46,8 @@ DWORD WINAPI SendThread(LPVOID arg)
 bool TCPClient::Init()
 {
 	cout << "Client Init()\n";
+	hRecvEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+	hSendEvent = CreateEvent(NULL, FALSE, TRUE, NULL);
 
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
@@ -70,6 +86,8 @@ void TCPClient::Cleanup() {
 		closesocket(sock);
 		sock = INVALID_SOCKET;
 	}
+	CloseHandle(hRecvEvent);
+	CloseHandle(hSendEvent);
 	WSACleanup();
 }
 

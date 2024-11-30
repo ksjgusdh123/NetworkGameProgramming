@@ -12,6 +12,7 @@
 #include <Scene/Camera.h>
 #include "..\NetClient\TCPClient.h"
 #include "Scene/SceneResource.h"
+#include <Scene/SceneManager.h>
 
 bool CMainScene::Init()
 {
@@ -19,6 +20,7 @@ bool CMainScene::Init()
     ResourceInit();
     m_myid = PacketManager::GetInst().GetMyID();
     m_inGameData = &PacketManager::GetInst().inGameData;
+    
 
     CGameObject* back = CreateObject<CGameObject>("Background");
     back->CreateTexture(1);
@@ -77,12 +79,24 @@ bool CMainScene::Init()
     riche = CreateObject<CRiche>("riche");
     riche->SetPos(450.f, 380.f);
 
+
+    CSceneManager* manager = CSceneManager::GetInst();
+    m_tileNum = manager->m_tileNum;
+    m_tileType = manager->m_tileType;
+    m_tilePosX = manager->m_tilePosX;
+    m_tilePosY = manager->m_tilePosY;
+    CreateStageOneMap();
+
     //// 게임 시작 요청 패킷 전송
     //if (m_myid == 0)
     //{
     //    C_TileRequestPkt packet{};
     //    PacketManager::GetInst().EnqueueSendPacket(packet);
     //}
+    {
+        Packet packet = PacketManager::GetInst().RecvPacket();
+        PacketManager::GetInst().ProcessPacket(packet);
+    }
     return true;
 }
 

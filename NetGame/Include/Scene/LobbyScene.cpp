@@ -105,6 +105,13 @@ void CLobbyScene::RecvGameData(const Packet& packet)
 	//EnterCriticalSection(&cs);
 	switch (packet.type)
 	{
+	case TileResponse:
+	{
+		S_TilesPkt* cur = (S_TilesPkt*)&packet;
+		CSceneManager* manager = CSceneManager::GetInst();
+		cur->deserialize(manager->m_tileNum, manager->m_tileType, manager->m_tilePosX, manager->m_tilePosY);
+		break;
+	}
 	case LobbyUpdateResponse:				
 	{
 		S_LobbyInfoPacket* RecvPacket = (S_LobbyInfoPacket*)&packet;
@@ -116,6 +123,7 @@ void CLobbyScene::RecvGameData(const Packet& packet)
 			m_LobbyPlayer[i]->SetReady(m_lobbyData->players[i].bReady);
 			m_LobbyPlayer[i]->SetName(m_lobbyData->players[i].name);
 		}
+
 
 		break;
 	}

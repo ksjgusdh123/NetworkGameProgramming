@@ -24,9 +24,13 @@ public:
 			m_scene = std::move(scene);
 		else
 			m_nextScene = std::move(scene);
-
+		ChangeScene();
 		return true;
 	}
+	int m_tileNum{};
+	std::vector<int> m_tileType;
+	std::vector<float> m_tilePosX;
+	std::vector<float> m_tilePosY;
 
 private:
 	bool ChangeScene();
