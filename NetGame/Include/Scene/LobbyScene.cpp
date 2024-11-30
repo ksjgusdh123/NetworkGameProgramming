@@ -38,12 +38,12 @@ bool CLobbyScene::Init()
 	HWND hwnd = CEngine::GetInst()->GetWindowHandle();
 	HINSTANCE hInst = CEngine::GetInst()->GetWindowInstance();
 
-	AddFontResourceEx(L"UI/DungGeunMo.ttf", FR_PRIVATE, nullptr);
+	AddFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, nullptr);
 	// 폰트 생성
 	HFONT hFont = CreateFont(
 		35, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
 		DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-		DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"DungGeunMo"//글꼴 적용하고 싶은데.. 경로가 이게 아닌가?
+		DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"DungGeunMo"
 	);
 
 	m_hButton[0] = CreateWindow(L"button", L"전사", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 220, 450, 150, 80, hwnd, (HMENU)IDC_BUTTON, hInst, NULL);
@@ -143,8 +143,7 @@ void CLobbyScene::SendGameData()
 
 void CLobbyScene::PrintName(HDC hDC)
 {
-
-	AddFontResourceEx(L"UI/DungGeunMo.ttf", FR_PRIVATE, nullptr);
+	AddFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, nullptr);
 	HFONT hFont = CreateFont(
 		40, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
 		DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
@@ -178,5 +177,5 @@ void CLobbyScene::PrintName(HDC hDC)
 	// 이전 폰트를 복원하고 새 폰트를 삭제
 	SelectObject(hDC, hOldFont);
 	DeleteObject(hFont);
-	RemoveFontResourceEx(L"UI/DungGeunMo.ttf", FR_PRIVATE, nullptr);
+	RemoveFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, nullptr);
 }
