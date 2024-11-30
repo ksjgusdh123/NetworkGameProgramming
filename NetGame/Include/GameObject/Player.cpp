@@ -22,6 +22,9 @@ bool CPlayer::Init()
 void CPlayer::Update(float elapsedTime)
 {
 	CGameObject::Update(elapsedTime);
+
+	m_prevPos = m_pos;
+	//m_pos.y += elapsedTime * 20;
 	if (m_bFrameCheck)
 	{
 		CheckFrame(elapsedTime);
@@ -30,6 +33,7 @@ void CPlayer::Update(float elapsedTime)
 	{
 		CalculateJump(elapsedTime);
 	}
+
 }
 
 void CPlayer::PostUpdate(float elapsedTime)
@@ -213,6 +217,12 @@ void CPlayer::JumpDown()
 void CPlayer::CalculateJump(float elapsedTime)
 {
 	// 임시적 수치와 종료 조건
+	if (m_objectState != EObject_State::Jump_Down && m_objectState != EObject_State::Jump_Down_L &&
+		m_objectState != EObject_State::Jump && m_objectState != EObject_State::Jump_L)
+	{
+		m_bJump = false;
+		return;
+	}
 
 	m_jumpTime += elapsedTime;
 	m_pos.y -= elapsedTime * 100 * m_multipleNum;

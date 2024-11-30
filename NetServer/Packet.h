@@ -152,6 +152,7 @@ struct S_GameInfoPacket :public Packet
 	S_GameInfoPacket(const InGameData& GameData_)
 	{
 		type = GameUpdateResponse;
+		data_size = sizeof(GameData_);
 		memcpy(data, &GameData_, sizeof(GameData_));
 	}
 };

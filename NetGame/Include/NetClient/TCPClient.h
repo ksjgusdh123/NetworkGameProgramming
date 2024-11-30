@@ -13,7 +13,6 @@ public:
 	bool Init();
 	void Connect();
 	void Cleanup();
-
 	static TCPClient& GetInst()
 	{
 		static TCPClient inst;

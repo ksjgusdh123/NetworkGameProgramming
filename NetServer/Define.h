@@ -22,3 +22,4 @@
 using namespace std;
 
 #define SERVERPORT 9000
+#define LOGIN_SCENE 1

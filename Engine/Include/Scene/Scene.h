@@ -35,6 +35,8 @@ public:
 		return obj.get();
 	}
 
+	int m_sceneType = 0;
+
 protected:
 	std::shared_ptr<class CSceneResource> m_resource;
 	std::shared_ptr<class CCamera> m_camera;

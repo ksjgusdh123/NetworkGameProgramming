@@ -22,13 +22,14 @@ public:
 		}
 	}
 public:
+	void ProcessPacket(const Packet& packet);
 	void SendPacket(const Packet& packet);
 	
 	bool Init();
 	void Connect();
 	void Run();
 	void Cleanup();
-	void CreateTilePacket();
+	
 public:
 	queue<Packet> recvQ;
 	vector<Client> clients;
