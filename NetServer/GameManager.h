@@ -39,7 +39,7 @@ public:
 		static GameManager inst;
 		return inst;
 	}
-	GameManager() { InitGameData(); };
+	
 private:
 	LobbyData lobbyData;
 	InGameData inGameData;

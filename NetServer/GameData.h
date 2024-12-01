@@ -85,6 +85,9 @@ struct GamePlayerInfo : public PlayerInfo {
 	short damage = 10;
 	char state = 0;
 	char dir = 0;
+	bool isLanded = false;
+	bool isJump = false;
+	bool isDoubleJump = false;
 
 	GamePlayerInfo() = default;
 

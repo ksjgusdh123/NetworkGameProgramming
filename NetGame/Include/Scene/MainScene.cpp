@@ -104,7 +104,6 @@ void CMainScene::Update(float elapsedTime)
 {
     CScene::Update(elapsedTime);
 
-    m_inGameData->elapedTime = elapsedTime;
     m_inGameData->players[m_myid].pos = vector2(player[m_myid]->GetPos().x, player[m_myid]->GetPos().y);
     m_inGameData->players[m_myid].state = (char)(EObject_State)(player[m_myid]->GetState());
     m_inGameData->players[m_myid].dir = (char)(EObject_Dir)(player[m_myid]->GetDir());

@@ -16,6 +16,7 @@ void GameManager::InitGameData()
 void GameManager::UpdateInGameData()
 {
 	inGameData.playtime = gameTimer.GetElapsedTime();
+	cout << "playertime: " << inGameData.playtime << endl;
 	ProcessCollsion();
 }
 
@@ -332,7 +333,7 @@ bool GameManager::CollisionCheck(GamePlayerInfo& player)
 		float playerBottom = playerPos.y + playerSize.y / 2;
 
 		// 여유 거리 설정
-		const float offset = 0.0f; // 2 픽셀 정도 여유를 둠
+		const float offset = 2.0f; // 2 픽셀 정도 여유를 둠
 
 		// 박스와 플레이어의 충돌 검사
 		if (playerRight > boxLT.x && playerLeft < boxRB.x &&
@@ -351,7 +352,10 @@ bool GameManager::CollisionCheck(GamePlayerInfo& player)
 				player.pos.x += (overlapRight + offset); // 오른쪽으로 밀어냄
 			}
 			else if (overlapTop < overlapLeft && overlapTop < overlapRight && overlapTop < overlapBottom) {
-				player.pos.y -= (overlapTop + offset); // 위쪽으로 밀어냄
+				player.pos.y -= (overlapTop - offset); // 위쪽으로 밀어냄
+				player.isLanded = true;
+				player.isJump = false;
+				player.isDoubleJump = false;
 				if (player.state == 12)
 				{
 					player.state = 1;
@@ -366,6 +370,14 @@ bool GameManager::CollisionCheck(GamePlayerInfo& player)
 			}
 			return true;
 		}
+	}
+	if (player.state == 2)
+	{
+		player.isLanded = false;
+	}
+	if (player.state == 3)
+	{
+		player.isLanded = false;
 	}
 	return false;
 }

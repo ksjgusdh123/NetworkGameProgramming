@@ -64,6 +64,7 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 			{
 				gameData->scene = GAMESCENE;
 				curScene = GAMESCENE;
+				GameManager::GetInst().InitGameData();
 				GameManager::GetInst().SendTilePacket();
 			}
 			GameManager::GetInst().SendLobbyGameData();

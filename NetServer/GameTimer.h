@@ -14,6 +14,8 @@ private:
 public:
 	GameTimer() : m_isRunning(false) {}
 
+	bool IsGameStart(){}
+
 	void Start()
 	{
 		m_startTime = high_resolution_clock::now();
