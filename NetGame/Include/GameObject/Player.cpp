@@ -11,7 +11,7 @@ bool CPlayer::Init()
 	CGameObject::Init();
 
 	SetPivot(0.5f, 0.5f);
-	SetVelocity(150.f, 300.f);
+	SetVelocity(150.f, 200.f);
 	CreateTexture(2);
 	SetTexture("Player_L", TEXT("Player/player_L.png"), EObject_Dir::Left, ETexture_Type::CIMAGE);
 	SetTexture("Player", TEXT("Player/player.png"), EObject_Dir::Right, ETexture_Type::CIMAGE);
@@ -23,8 +23,16 @@ void CPlayer::Update(float elapsedTime)
 {
 	CGameObject::Update(elapsedTime);
 
-	m_prevPos = m_pos;
-	//m_pos.y += elapsedTime * 20;
+	if (!m_bIsLanded && (m_objectState != EObject_State::Basic && m_objectState != EObject_State::Basic_L
+		&& m_objectState != EObject_State::Jump && m_objectState != EObject_State::Jump_L))
+	{
+		if (m_objectDir == EObject_Dir::Right)
+			m_objectState = EObject_State::Jump_Down;
+		else if (m_objectDir == EObject_Dir::Left)
+			m_objectState = EObject_State::Jump_Down_L;
+		m_pos.y += elapsedTime * (m_velocity.y);
+	}
+
 	if (m_bFrameCheck)
 	{
 		CheckFrame(elapsedTime);
@@ -152,10 +160,12 @@ void CPlayer::PlayerAttack()
 
 void CPlayer::PlayerJump()
 {
-	if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L || m_objectState == EObject_State::Jump || m_objectState == EObject_State::Jump_L)
+	if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L ||
+		m_objectState == EObject_State::Jump || m_objectState == EObject_State::Jump_L)
 		return;
 
-	if ((m_objectState == EObject_State::Jump_Down || m_objectState == EObject_State::Jump_Down_L) && !m_bDoubleJump)
+
+	if ((m_objectState == EObject_State::Jump_Down || m_objectState == EObject_State::Jump_Down_L) && m_bJump && !m_bDoubleJump)
 	{
 		m_bDoubleJump = true;
 	}
@@ -165,6 +175,9 @@ void CPlayer::PlayerJump()
 	}
 	else
 		m_prevHeight = m_pos.y;
+
+	m_pos.y -= 3.f;
+	m_bIsLanded = false;
 
 	m_multipleNum = 1;
 	m_jumpTime = 0;
@@ -224,25 +237,38 @@ void CPlayer::CalculateJump(float elapsedTime)
 		return;
 	}
 
-	m_jumpTime += elapsedTime;
-	m_pos.y -= elapsedTime * 100 * m_multipleNum;
-	if (m_jumpTime >= 1)
+	if (m_jumpTime >= 0.5)
 	{
-		JumpDown();
-	}
-
-	if (m_pos.y >= m_prevHeight)
-	{
-		m_pos.y = m_prevHeight;
-		m_bJump = false;
 		if (m_objectDir == EObject_Dir::Right)
 		{
-			m_objectState = EObject_State::Basic;
+			m_objectState = EObject_State::Jump_Down;
 		}
 		else
 		{
-			m_objectState = EObject_State::Basic_L;
+			m_objectState = EObject_State::Jump_Down_L;
 		}
-		m_bDoubleJump = false;
+		return;
+		//m_bJump = false;
+		//m_bDoubleJump = false;
 	}
+
+	m_jumpTime += elapsedTime;
+	m_pos.y -= elapsedTime * m_velocity.y * m_multipleNum;
+
+
+
+	//if (m_pos.y >= m_prevHeight)
+	//{
+	//	m_pos.y = m_prevHeight;
+	//	m_bJump = false;
+	//	if (m_objectDir == EObject_Dir::Right)
+	//	{
+	//		m_objectState = EObject_State::Basic;
+	//	}
+	//	else
+	//	{
+	//		m_objectState = EObject_State::Basic_L;
+	//	}
+	//	m_bDoubleJump = false;
+	//}
 }

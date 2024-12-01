@@ -43,7 +43,7 @@ bool CLobbyScene::Init()
 	HFONT hFont = CreateFont(
 		35, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
 		DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-		DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"DungGeunMo"
+		DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"DungGeunMo"//글꼴 적용하고 싶은데.. 경로가 이게 아닌가?
 	);
 
 	m_hButton[0] = CreateWindow(L"button", L"전사", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 220, 450, 150, 80, hwnd, (HMENU)IDC_BUTTON, hInst, NULL);
@@ -59,7 +59,7 @@ void CLobbyScene::Update(float elapsedTime)
 {
 	CScene::Update(elapsedTime);
 
-	if (m_LobbyPlayer[0]->GetReady() && m_LobbyPlayer[1]->GetReady())
+	if (m_lobbyData->players[0].bReady && m_lobbyData->players[1].bReady)
 	{
 		for (int i = 0; i < 3; ++i)
 		{
@@ -112,7 +112,7 @@ void CLobbyScene::RecvGameData(const Packet& packet)
 		cur->deserialize(manager->m_tileNum, manager->m_tileType, manager->m_tilePosX, manager->m_tilePosY);
 		break;
 	}
-	case LobbyUpdateResponse:				
+	case LobbyUpdateResponse:
 	{
 		S_LobbyInfoPacket* RecvPacket = (S_LobbyInfoPacket*)&packet;
 		memcpy(m_lobbyData, RecvPacket->data, RecvPacket->data_size);
@@ -120,7 +120,6 @@ void CLobbyScene::RecvGameData(const Packet& packet)
 		for (int i = 0; i < 2; ++i)
 		{
 			m_LobbyPlayer[i]->SetJob((EPlayer_Job)(int)m_lobbyData->players[i].job);
-			m_LobbyPlayer[i]->SetReady(m_lobbyData->players[i].bReady);
 			m_LobbyPlayer[i]->SetName(m_lobbyData->players[i].name);
 		}
 
@@ -137,12 +136,13 @@ void CLobbyScene::SendGameData()
 {
 	//EnterCriticalSection(&cs);
 	C_LobbyUpdateRequest sendPacket(m_lobbyData->players[m_myid]);
-	PacketManager::GetInst().SendPacket(sendPacket);	
+	PacketManager::GetInst().SendPacket(sendPacket);
 	//LeaveCriticalSection(&cs);
 }
 
 void CLobbyScene::PrintName(HDC hDC)
 {
+
 	AddFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, nullptr);
 	HFONT hFont = CreateFont(
 		40, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,

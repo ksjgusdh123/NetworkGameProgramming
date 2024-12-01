@@ -11,6 +11,7 @@ enum class EObject_Type
 	Monster,
 	Player,
 	Item,
+	WALL,
 	Max
 };
 

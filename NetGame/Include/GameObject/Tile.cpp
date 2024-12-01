@@ -15,7 +15,7 @@ bool CTile::Init()
 
 	SetPivot(0.5f, 0.5f);
 	SetSize(50.f, 50.f);
-	
+	SetObjectType(EObject_Type::WALL);
 	m_objectDir = EObject_Dir::Right;
 	return true;
 }

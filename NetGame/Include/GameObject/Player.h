@@ -15,6 +15,9 @@ public:
 	virtual void InitInput();
 
 	Vector2 GetPrevPos() { return m_prevPos; }
+	bool m_bIsLanded = false;
+	bool m_bJump = false;
+	bool m_bDoubleJump = false;
 protected:
 	void PlayerMoveLeft();
 	void PlayerLeftIdle();
@@ -34,8 +37,7 @@ protected:
 
 	float m_prevHeight = 0;
 	float m_jumpTime = 0;
-	bool m_bJump = false;
-	bool m_bDoubleJump = false;
+
 	int m_multipleNum = 1;
 
 	Vector2 m_attackSize;

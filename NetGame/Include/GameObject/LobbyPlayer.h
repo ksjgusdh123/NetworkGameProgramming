@@ -9,9 +9,7 @@ public:
 
 public:
 	void SetJob(EPlayer_Job job) { m_job = job; }
-	void SetReady(bool b) { m_bReady = b; }
 
-	bool GetReady() { return m_bReady; }
 public:
 	virtual bool Init() override;
 	virtual void Update(float elapsedTime) override;
@@ -22,6 +20,4 @@ public:
 
 private:
 	EPlayer_Job m_job = EPlayer_Job::Sword;
-	bool m_bReady = false;
 };
-

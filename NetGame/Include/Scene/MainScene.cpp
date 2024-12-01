@@ -102,19 +102,15 @@ bool CMainScene::Init()
 
 void CMainScene::Update(float elapsedTime)
 {
-    if (m_inGameData->players[m_myid].prev_pos.x != player[m_myid]->GetPrevPos().x)
-    {
-        int a = 3;
-    }
-    m_inGameData->players[m_myid].prev_pos = vector2(player[m_myid]->GetPrevPos().x, player[m_myid]->GetPrevPos().y);
-
-
     CScene::Update(elapsedTime);
 
+    m_inGameData->elapedTime = elapsedTime;
     m_inGameData->players[m_myid].pos = vector2(player[m_myid]->GetPos().x, player[m_myid]->GetPos().y);
     m_inGameData->players[m_myid].state = (char)(EObject_State)(player[m_myid]->GetState());
     m_inGameData->players[m_myid].dir = (char)(EObject_Dir)(player[m_myid]->GetDir());
-
+    m_inGameData->players[m_myid].isLanded = player[m_myid]->m_bIsLanded;
+    m_inGameData->players[m_myid].isJump = player[m_myid]->m_bJump;
+    m_inGameData->players[m_myid].isDoubleJump = player[m_myid]->m_bDoubleJump;
     if (IsPlayerInRicheAttackArea()){
         riche->Attack(player[m_myid]->GetPos());
     }
@@ -154,6 +150,9 @@ void CMainScene::RecvGameData(const Packet& packet)
             player[i]->SetPos(m_inGameData->players[i].pos.x, m_inGameData->players[i].pos.y);
             player[i]->SetState((EObject_State)(int)m_inGameData->players[i].state);
             player[i]->SetDir((EObject_Dir)(int)m_inGameData->players[i].dir);
+            player[i]->m_bIsLanded = m_inGameData->players[i].isLanded;
+            player[i]->m_bJump = m_inGameData->players[i].isJump;
+            player[i]->m_bDoubleJump = m_inGameData->players[i].isDoubleJump;
         }
         break;
     }
@@ -167,7 +166,6 @@ void CMainScene::SendGameData()
     C_GameUpdateRequest sendPacket(m_inGameData->players[m_myid]);
     PacketManager::GetInst().SendPacket(sendPacket);
 }
-
 
 bool CMainScene::IsPlayerInRicheAttackArea()
 {

@@ -294,9 +294,7 @@ void GameManager::CreateTilePacket()
 
 bool GameManager::CollisionCheck(int clientID)
 {
-	Collision box;
 	vector2 size = vector2(50, 60);
-	box.UpdateCollision(inGameData.players[clientID].pos, size);
 	for (TileInfo& tile : tiles)
 	{
 		vector2 playerPos = inGameData.players[clientID].pos;
@@ -311,7 +309,7 @@ bool GameManager::CollisionCheck(int clientID)
 		float playerBottom = playerPos.y + playerSize.y / 2;
 
 		// 여유 거리 설정
-		const float offset = 0.0f; // 2 픽셀 정도 여유를 둠
+		const float offset = 2.0f; // 2 픽셀 정도 여유를 둠
 
 		// 박스와 플레이어의 충돌 검사
 		if (playerRight > boxLT.x && playerLeft < boxRB.x &&
@@ -330,7 +328,10 @@ bool GameManager::CollisionCheck(int clientID)
 				inGameData.players[clientID].pos.x += (overlapRight + offset); // 오른쪽으로 밀어냄
 			}
 			else if (overlapTop < overlapLeft && overlapTop < overlapRight && overlapTop < overlapBottom) {
-				inGameData.players[clientID].pos.y -= (overlapTop + offset); // 위쪽으로 밀어냄
+				inGameData.players[clientID].pos.y -= (overlapTop - offset); // 위쪽으로 밀어냄
+				inGameData.players[clientID].isLanded = true;
+				inGameData.players[clientID].isJump = false;
+				inGameData.players[clientID].isDoubleJump = false;
 				if (inGameData.players[clientID].state == 12)
 				{
 					inGameData.players[clientID].state = 1;
@@ -346,6 +347,16 @@ bool GameManager::CollisionCheck(int clientID)
 			return true;
 		}
 	}
+
+	if (inGameData.players[clientID].state == 2)
+	{
+		inGameData.players[clientID].isLanded = false;
+	}
+	if (inGameData.players[clientID].state == 3)
+	{
+		inGameData.players[clientID].isLanded = false;
+	}
+
 	return false;
 }
 
@@ -353,6 +364,7 @@ void GameManager::ServerUpdate(int clientID)
 {
 	if (!CollisionCheck(clientID))
 	{
+		//inGameData.players[clientID].speed.y = 100;
 		//if(inGameData->players[clientID].dir == 0)
 		//	inGameData->players[clientID].state = 11;
 		//else

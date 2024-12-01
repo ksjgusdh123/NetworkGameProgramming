@@ -79,12 +79,14 @@ struct LobbyPlayerInfo : public PlayerInfo {
 };
 
 struct GamePlayerInfo : public PlayerInfo {
-	vector2 prev_pos;
 	vector2 pos{ -930.f ,475.f };
 	short hp = 100;
 	short damage = 10;
 	char state = 0;
 	char dir = 0;
+	bool isLanded = false;
+	bool isJump = false;
+	bool isDoubleJump = false;
 
 	GamePlayerInfo() = default;
 
@@ -134,6 +136,7 @@ struct LobbyData:public GameData
 struct InGameData :public GameData
 {
 	int scene = GAMESCENE;
+	float elapedTime;
 	std::array<GamePlayerInfo, PLAYER_NUM> players;
 	/*std::array<MonsterInfo, MONSTER_NUM> monster;
 	std::array<TileInfo, TILE_NUM> tile;
