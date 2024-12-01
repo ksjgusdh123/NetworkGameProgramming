@@ -16,7 +16,6 @@ void GameManager::InitGameData()
 void GameManager::UpdateInGameData()
 {
 	inGameData.playtime = gameTimer.GetElapsedTime();
-	cout << "playertime: " << inGameData.playtime << endl;
 	ProcessCollsion();
 }
 
