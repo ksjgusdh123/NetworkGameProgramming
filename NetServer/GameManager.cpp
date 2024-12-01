@@ -17,7 +17,6 @@ void GameManager::InitGameData()
 void GameManager::UpdateInGameData()
 {
 	inGameData.playtime = gameTimer.GetElapsedTime();
-	cout << "playertime: " << inGameData.playtime << endl;
 	ProcessCollsion();
 }
 
@@ -51,249 +50,125 @@ void GameManager::PrintGameState()
 
 void GameManager::CreateTile()
 {
-	// Å¸ÀÏ ¹øÈ£¿Í À§Ä¡ Á¤º¸¸¦ ´ãÀ» µ¥ÀÌÅÍ
+	// Å¸ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	//std::vector<int> tileNumbers;
 	//std::vector<vector2> tilePositions;
 	TileInfo info;
 	vector2 blockSize = vector2(50, 50);
 
-	// Å¸ÀÏ µ¥ÀÌÅÍ ¼öÁý (CreateMap¿¡¼­ Á¤ÀÇÇÑ Å¸ÀÏ Á¤º¸¸¦ ±â¹ÝÀ¸·Î)
+	// Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (CreateMapï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
 	float tilePosX = -930.f;
 	float tilePosY = 475.f;
 
-	// Ã¹ ¹ßÆÇ
-	tileNumbers.push_back(1);
-	tilePositions.push_back({ tilePosX, tilePosY });
-	info.pos = vector2(tilePosX, tilePosY);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
+	// Ã¹ ï¿½ï¿½ï¿½ï¿½
+	AddTile(info, blockSize, 1, tilePosX, tilePosY);
+
 	tilePosX += 50.f;
 
 	for (int i = 0; i < 20; ++i) {
-		tileNumbers.push_back(2);
-		tilePositions.push_back({ tilePosX, 475.f });
-		info.pos = vector2(tilePosX, tilePosY);
-		info.box.UpdateCollision(info.pos, blockSize);
-		tiles.push_back(info);
+		AddTile(info, blockSize, 2, tilePosX, tilePosY);
 		tilePosX += 50.f;
 	}
 
-	tileNumbers.push_back(3);
-	tilePositions.push_back({ tilePosX, 475.f });
-	info.pos = vector2(tilePosX, tilePosY);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
+	AddTile(info, blockSize, 3, tilePosX, tilePosY);
 	tilePosX += 150.f;
 
-	// »óÀÚ °è´Ü
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -800.f, 425.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -750.f, 425.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -750.f, 375.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -700.f, 425.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -700.f, 375.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -700.f, 325.f });
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+	AddTile(info, blockSize, 17, -800.f, 425.f);
+	AddTile(info, blockSize, 17, -750.f, 425.f);
+	AddTile(info, blockSize, 17, -750.f, 375.f);
+	AddTile(info, blockSize, 17, -700.f, 425.f);
+	AddTile(info, blockSize, 17, -700.f, 375.f);
+	AddTile(info, blockSize, 17, -700.f, 325.f);
 
-	// »óÀÚ °è´Ü2
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -550.f, 425.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -500.f, 425.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -500.f, 375.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -500.f, 325.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -450.f, 425.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -450.f, 375.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -400.f, 425.f });
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½2
+	AddTile(info, blockSize, 17, -550.f, 425.f);
+	AddTile(info, blockSize, 17, -500.f, 425.f);
+	AddTile(info, blockSize, 17, -500.f, 375.f);
+	AddTile(info, blockSize, 17, -500.f, 325.f);
+	AddTile(info, blockSize, 17, -450.f, 425.f);
+	AddTile(info, blockSize, 17, -450.f, 375.f);
+	AddTile(info, blockSize, 17, -400.f, 425.f);
 
-	// Áß°£ ¹ßÆÇ
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ -380.f, 250.f });
-	info.pos = vector2(-380.f, 250.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ -330.f, 250.f });
-	info.pos = vector2(-330.f, 250.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ -280.f, 250.f });
-	info.pos = vector2(-280.f, 250.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
+	// ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½
+	AddTile(info, blockSize, 14, -380.f, 250.f);
+	AddTile(info, blockSize, 15, -330.f, 250.f);
+	AddTile(info, blockSize, 16, -280.f, 250.f);
 
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ -130.f, 200.f });
-	info.pos = vector2(-130.f, 200.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ -80.f, 200.f });
-	info.pos = vector2(-80.f, 200.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ -30.f, 200.f });
-	info.pos = vector2(-30.f, 200.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
 
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ 70.f, 170.f });
-	info.pos = vector2(70.f, 170.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ 120.f, 170.f });
-	info.pos = vector2(120.f, 170.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ 170.f, 170.f });
-	info.pos = vector2(170.f, 170.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
+	AddTile(info, blockSize, 14, -130.f, 200.f);
+	AddTile(info, blockSize, 15, -80.f, 200.f);
+	AddTile(info, blockSize, 16, -30.f, 200.f);
 
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ -380.f, 100.f });
-	info.pos = vector2(-380.f, 100.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ -330.f, 100.f });
-	info.pos = vector2(-330.f, 100.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ -280.f, 100.f });
-	info.pos = vector2(-280.f, 100.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
+	AddTile(info, blockSize, 14, 70.f, 170.f);
+	AddTile(info, blockSize, 15, 120.f, 170.f);
+	AddTile(info, blockSize, 16, 170.f, 170.f);
 
-	// ±ÙÁ¢ ¸ó½ºÅÍ °¡µÎ´Â »óÀÚ
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -250.f, 425.f });
-	info.pos = vector2(-250.f, 425.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ 50.f, 425.f });
-	info.pos = vector2(50.f, 425.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
+	AddTile(info, blockSize, 14, -380.f, 100.f);
+	AddTile(info, blockSize, 15, -330.f, 100.f);
+	AddTile(info, blockSize, 16, -280.f, 100.f);
 
-	// µÎ ¹øÂ° ¹ßÆÇ
-	tileNumbers.push_back(1);
-	tilePositions.push_back({ tilePosX, 475.f });
-	info.pos = vector2(tilePosX, 475.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î´ï¿½ ï¿½ï¿½ï¿½ï¿½
+	AddTile(info, blockSize, 17, -250.f, 425.f);
+	AddTile(info, blockSize, 17, 50.f, 425.f);
+
+	// ï¿½ï¿½ ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½
+	AddTile(info, blockSize, 1, tilePosX, 475.f);
 
 	tilePosX += 50.f;
 
 	for (int i = 0; i < 6; ++i) {
-		tileNumbers.push_back(2);
-		tilePositions.push_back({ tilePosX, 475.f });
-		info.pos = vector2(tilePosX, 475.f);
-		info.box.UpdateCollision(info.pos, blockSize);
-		tiles.push_back(info);
+		AddTile(info, blockSize, 2, tilePosX, 475.f);
 		tilePosX += 50.f;
 	}
 
-	tileNumbers.push_back(3);
-	tilePositions.push_back({ tilePosX, 475.f });
-	info.pos = vector2(tilePosX, 475.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
+	AddTile(info, blockSize, 3, tilePosX, 475.f);
 	tilePosX += 250.f;
 
-	// Á¡ÇÁ¸Ê ¹ßÆÇ
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ tilePosX, 400.f });
-	info.pos = vector2(tilePosX, 400.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ tilePosX, 200.f });
-	info.pos = vector2(tilePosX, 200.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	AddTile(info, blockSize, 14, tilePosX, 400.f);
+	AddTile(info, blockSize, 14, tilePosX, 200.f);
 	tilePosX += 50.f;
 
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ tilePosX, 400.f });
-	info.pos = vector2(tilePosX, 400.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ tilePosX, 200.f });
-	info.pos = vector2(tilePosX, 200.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
+	AddTile(info, blockSize, 15, tilePosX, 400.f);
+	AddTile(info, blockSize, 15, tilePosX, 200.f);
 	tilePosX += 50.f;
 
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ tilePosX, 400.f });
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ tilePosX, 200.f });
-
+	AddTile(info, blockSize, 16, tilePosX, 400.f);
+	AddTile(info, blockSize, 16, tilePosX, 200.f);
 	tilePosX -= 400.f;
 
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ tilePosX, 300.f });
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ tilePosX, 100.f });
+	AddTile(info, blockSize, 14, tilePosX, 300.f);
+	AddTile(info, blockSize, 14, tilePosX, 100.f);
 	tilePosX += 50.f;
 
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ tilePosX, 300.f });
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ tilePosX, 100.f });
+	AddTile(info, blockSize, 15, tilePosX, 300.f);
+	AddTile(info, blockSize, 15, tilePosX, 100.f);
 	tilePosX += 50.f;
 
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ tilePosX, 300.f });
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ tilePosX, 100.f });
-
+	AddTile(info, blockSize, 16, tilePosX, 300.f);
+	AddTile(info, blockSize, 16, tilePosX, 100.f);
 	tilePosX -= 400.f;
 
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ tilePosX, 0.f });
+	AddTile(info, blockSize, 14, tilePosX, 0.f);
 	tilePosX += 50.f;
 
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ tilePosX, 0.f });
+	AddTile(info, blockSize, 15, tilePosX, 0.f);
 	tilePosX += 50.f;
 
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ tilePosX, 0.f });
-
+	AddTile(info, blockSize, 16, tilePosX, 0.f);
 	tilePosX += 200.f;
 
-	// Æ÷Å» ¹ßÆÇ
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ tilePosX, -100.f });
+	// ï¿½ï¿½Å» ï¿½ï¿½ï¿½ï¿½
+	AddTile(info, blockSize, 14, tilePosX, -100.f);
 	tilePosX += 50.f;
 
 	for (int i = 0; i < 4; ++i) {
-		tileNumbers.push_back(15);
-		tilePositions.push_back({ tilePosX, -100.f });
+		AddTile(info, blockSize, 15, tilePosX, -100.f);
 		tilePosX += 50.f;
 	}
 
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ tilePosX, -100.f });
+	AddTile(info, blockSize, 16, tilePosX, -100.f);
 
 }
 
@@ -319,6 +194,15 @@ void GameManager::CreateMonster()
 }
 
 
+void GameManager::AddTile(TileInfo& info, vector2 blockSize, int type, int x, int y)
+{
+	tileNumbers.push_back(type);
+	tilePositions.push_back(vector2(x, y));
+	info.pos = vector2(x, y);
+	info.box.UpdateCollision(info.pos, blockSize);
+	tiles.push_back(info);
+}
+
 void GameManager::SendTilePacket()
 {
 	S_TilesPkt packet((int)tileNumbers.size(), tileNumbers, tilePositions);
@@ -342,71 +226,65 @@ bool GameManager::CollisionCheck(GamePlayerInfo& player)
 	Collision box;
 	vector2 size = vector2(50, 60);
 	box.UpdateCollision(player.pos, size);
-	vector2 playerPos = player.pos;
-	vector2 playerSize = size; // size´Â ÇÃ·¹ÀÌ¾î Å©±â (50, 60)
-	// ÇÃ·¹ÀÌ¾îÀÇ °æ°è °è»ê
-	float playerLeft = playerPos.x - playerSize.x / 2;
-	float playerRight = playerPos.x + playerSize.x / 2;
-	float playerTop = playerPos.y - playerSize.y / 2;
-	float playerBottom = playerPos.y + playerSize.y / 2;
+	bool bCheck = false;
 	for (TileInfo& tile : tiles)
 	{
 		
-		vector2 boxLT = tile.box.m_info.LT; // Å¸ÀÏ ¹Ú½º ¿ÞÂÊ À§
-		vector2 boxRB = tile.box.m_info.RB; // Å¸ÀÏ ¹Ú½º ¿À¸¥ÂÊ ¾Æ·¡
+		vector2 boxLT = tile.box.m_info.LT; // Å¸ï¿½ï¿½ ï¿½Ú½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+		vector2 boxRB = tile.box.m_info.RB; // Å¸ï¿½ï¿½ ï¿½Ú½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ·ï¿½
 
 		
 
-		// ¿©À¯ °Å¸® ¼³Á¤
-		const float offset = 2.0f; // 2 ÇÈ¼¿ Á¤µµ ¿©À¯¸¦ µÒ
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½ï¿½
+		const float offset = 2.0f; // 2 ï¿½È¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 
-		// ¹Ú½º¿Í ÇÃ·¹ÀÌ¾îÀÇ Ãæµ¹ °Ë»ç
+		// ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½æµ¹ ï¿½Ë»ï¿½
 		if (playerRight > boxLT.x && playerLeft < boxRB.x &&
 			playerBottom > boxLT.y && playerTop < boxRB.y) {
-			// Ãæµ¹ ¹ß»ý ½Ã À§Ä¡ Á¶Á¤
-			float overlapLeft = playerRight - boxLT.x;   // ¿ÞÂÊ °ãÄ§
-			float overlapRight = boxRB.x - playerLeft;   // ¿À¸¥ÂÊ °ãÄ§
-			float overlapTop = playerBottom - boxLT.y;  // À§ÂÊ °ãÄ§
-			float overlapBottom = boxRB.y - playerTop;  // ¾Æ·¡ÂÊ °ãÄ§
+			// ï¿½æµ¹ ï¿½ß»ï¿½ ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
+			float overlapLeft = playerRight - boxLT.x;   // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä§
+			float overlapRight = boxRB.x - playerLeft;   // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä§
+			float overlapTop = playerBottom - boxLT.y;  // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä§
+			float overlapBottom = boxRB.y - playerTop;  // ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½Ä§
 
-			// °¡Àå ÀÛÀº °ãÄ§À» ±âÁØÀ¸·Î ¹Ð¾î³¿ (¿©À¯ °Å¸® Ãß°¡)
+			// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä§ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾î³¿ (ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ ï¿½ß°ï¿½)
 			if (overlapLeft < overlapRight && overlapLeft < overlapTop && overlapLeft < overlapBottom) {
-				player.pos.x -= (overlapLeft + offset); // ¿ÞÂÊÀ¸·Î ¹Ð¾î³¿
+				player.pos.x -= (overlapLeft); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾î³¿
 			}
 			else if (overlapRight < overlapLeft && overlapRight < overlapTop && overlapRight < overlapBottom) {
-				player.pos.x += (overlapRight + offset); // ¿À¸¥ÂÊÀ¸·Î ¹Ð¾î³¿
+				player.pos.x += (overlapRight); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾î³¿
 			}
-			else if (overlapTop < overlapLeft && overlapTop < overlapRight && overlapTop < overlapBottom) {
-				player.pos.y -= (overlapTop - offset); // À§ÂÊÀ¸·Î ¹Ð¾î³¿
+			else if (overlapTop <= overlapLeft && overlapTop <= overlapRight && overlapTop <= overlapBottom) {
+				player.pos.y -= (overlapTop - offset); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾î³¿
 				player.isLanded = true;
 				player.isJump = false;
 				player.isDoubleJump = false;
-				if (player.state == 12)
+				if (player.state == 12 || player.state == 10)
 				{
 					player.state = 1;
 				}
-				else if (player.state == 11)
+				else if (player.state == 11 || player.state == 9)
 				{
 					player.state = 0;
 				}
+				bCheck = true;
 			}
 			else {
-				player.pos.y += (overlapBottom + offset); // ¾Æ·¡ÂÊÀ¸·Î ¹Ð¾î³¿
+				player.pos.y += (overlapBottom + offset); // ï¿½Æ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾î³¿
+				if (player.dir == 1)
+				{
+					player.state = 12;
+				}
+				else if (player.dir == 0)
+				{
+					player.state = 11;
+				}
 			}
-			return true;
 		}
 	}
 
-	vector2 PortalLT = vector2(717.5f, -180.f); // Æ÷Å» ¿ÞÂÊ À§
-	vector2 PortalRB = vector2(742.5f, -120.f); // Æ÷Å» ¿À¸¥ÂÊ ¾Æ·¡
-	if (playerRight > PortalLT.x && playerLeft < PortalRB.x &&		// Æ÷Å» Ãæµ¹
-		playerBottom > PortalLT.y && playerTop < PortalRB.y) {
-		player.bReady = true;
-	}
-	else
-	{
-		player.bReady = false;
-	}
+	if (bCheck)
+		return true;
 
 	if (player.state == 2)
 	{
@@ -441,7 +319,7 @@ void GameManager::UpdateMonster()
 		case 0:
 		{
 			float range = 100.f;
-			// 0 -> ¿À¸¥ÂÊ, 1 -> ¿ÞÂÊ
+			// 0 -> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, 1 -> ï¿½ï¿½ï¿½ï¿½
 			if (m.direct == EObject_Dir::Right && m.pos.x >= m.original_pos.x + range)
 			{
 				m.direct = EObject_Dir::Left;
