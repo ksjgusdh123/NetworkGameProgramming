@@ -35,6 +35,8 @@ public:
 	void ProcessCollsion();
 	bool CollisionCheck(GamePlayerInfo& player);
 	
+	void UpdateMonster();
+
 public:
 	static GameManager& GetInst()
 	{
