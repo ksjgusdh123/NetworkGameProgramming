@@ -151,6 +151,7 @@
     <ClInclude Include="ErrDisplay.h" />
     <ClInclude Include="GameData.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="GameTimer.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="TCPServer.h" />
   </ItemGroup>

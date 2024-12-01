@@ -134,9 +134,9 @@ struct LobbyData:public GameData
 struct InGameData :public GameData
 {
 	int scene = GAMESCENE;
+	int playtime = -1;
 	std::array<GamePlayerInfo, PLAYER_NUM> players;
 	/*std::array<MonsterInfo, MONSTER_NUM> monster;
-	std::array<TileInfo, TILE_NUM> tile;
 	std::array<ItemInfo, ITEM_NUM> item;*/
 };
 

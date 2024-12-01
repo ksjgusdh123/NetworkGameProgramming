@@ -22,7 +22,7 @@ public:
 		}
 	}
 public:
-	void ProcessPacket(const Packet& packet);
+	void ProcessRecvPacket(const Packet& packet);
 	void SendPacket(const Packet& packet);
 	
 	bool Init();

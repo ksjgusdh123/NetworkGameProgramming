@@ -9,7 +9,14 @@ void GameManager::AddLobbyPlayer(const Client& client)
 
 void GameManager::InitGameData()
 {
+	CreateTile();
+	gameTimer.Start();
+}
 
+void GameManager::UpdateInGameData()
+{
+	inGameData.playtime = gameTimer.GetElapsedTime();
+	ProcessCollsion();
 }
 
 void GameManager::PrintLobbyState()
@@ -40,12 +47,11 @@ void GameManager::PrintGameState()
     }
 }
 
-void GameManager::CreateTilePacket()
+void GameManager::CreateTile()
 {
-
 	// 타일 번호와 위치 정보를 담을 데이터
-	std::vector<int> tileNumbers;
-	std::vector<vector2> tilePositions;
+	//std::vector<int> tileNumbers;
+	//std::vector<vector2> tilePositions;
 	TileInfo info;
 	vector2 blockSize = vector2(50, 50);
 
@@ -287,19 +293,34 @@ void GameManager::CreateTilePacket()
 	tileNumbers.push_back(16);
 	tilePositions.push_back({ tilePosX, -100.f });
 
-	S_TilesPkt packet((int)tileNumbers.size(), tileNumbers, tilePositions);
-	TCPServer::GetInst()->SendPacket(packet);
-
 }
 
-bool GameManager::CollisionCheck(int clientID)
+void GameManager::SendTilePacket()
+{
+	S_TilesPkt packet((int)tileNumbers.size(), tileNumbers, tilePositions);
+	TCPServer::GetInst()->SendPacket(packet);
+}
+
+void GameManager::SendLobbyGameData()
+{
+	S_LobbyInfoPacket SendPacket(lobbyData);
+	TCPServer::GetInst()->SendPacket(SendPacket);
+}
+
+void GameManager::SendInGameData()
+{
+	S_GameInfoPacket SendPacket(inGameData);
+	TCPServer::GetInst()->SendPacket(SendPacket);
+}
+
+bool GameManager::CollisionCheck(GamePlayerInfo& player)
 {
 	Collision box;
 	vector2 size = vector2(50, 60);
-	box.UpdateCollision(inGameData.players[clientID].pos, size);
+	box.UpdateCollision(player.pos, size);
 	for (TileInfo& tile : tiles)
 	{
-		vector2 playerPos = inGameData.players[clientID].pos;
+		vector2 playerPos = player.pos;
 		vector2 playerSize = size; // size는 플레이어 크기 (50, 60)
 		vector2 boxLT = tile.box.m_info.LT; // 타일 박스 왼쪽 위
 		vector2 boxRB = tile.box.m_info.RB; // 타일 박스 오른쪽 아래
@@ -324,24 +345,24 @@ bool GameManager::CollisionCheck(int clientID)
 
 			// 가장 작은 겹침을 기준으로 밀어냄 (여유 거리 추가)
 			if (overlapLeft < overlapRight && overlapLeft < overlapTop && overlapLeft < overlapBottom) {
-				inGameData.players[clientID].pos.x -= (overlapLeft + offset); // 왼쪽으로 밀어냄
+				player.pos.x -= (overlapLeft + offset); // 왼쪽으로 밀어냄
 			}
 			else if (overlapRight < overlapLeft && overlapRight < overlapTop && overlapRight < overlapBottom) {
-				inGameData.players[clientID].pos.x += (overlapRight + offset); // 오른쪽으로 밀어냄
+				player.pos.x += (overlapRight + offset); // 오른쪽으로 밀어냄
 			}
 			else if (overlapTop < overlapLeft && overlapTop < overlapRight && overlapTop < overlapBottom) {
-				inGameData.players[clientID].pos.y -= (overlapTop + offset); // 위쪽으로 밀어냄
-				if (inGameData.players[clientID].state == 12)
+				player.pos.y -= (overlapTop + offset); // 위쪽으로 밀어냄
+				if (player.state == 12)
 				{
-					inGameData.players[clientID].state = 1;
+					player.state = 1;
 				}
-				else if (inGameData.players[clientID].state == 11)
+				else if (player.state == 11)
 				{
-					inGameData.players[clientID].state = 0;
+					player.state = 0;
 				}
 			}
 			else {
-				inGameData.players[clientID].pos.y += (overlapBottom + offset); // 아래쪽으로 밀어냄
+				player.pos.y += (overlapBottom + offset); // 아래쪽으로 밀어냄
 			}
 			return true;
 		}
@@ -349,13 +370,16 @@ bool GameManager::CollisionCheck(int clientID)
 	return false;
 }
 
-void GameManager::ServerUpdate(int clientID)
+void GameManager::ProcessCollsion()
 {
-	if (!CollisionCheck(clientID))
+	for(auto& player: inGameData.players)
 	{
-		//if(inGameData->players[clientID].dir == 0)
-		//	inGameData->players[clientID].state = 11;
-		//else
-		//	inGameData->players[clientID].state = 12;
+		if (!CollisionCheck(player))
+		{
+			//if(inGameData->players[clientID].dir == 0)
+			//	inGameData->players[clientID].state = 11;
+			//else
+			//	inGameData->players[clientID].state = 12;
+		}
 	}
 }
