@@ -226,6 +226,13 @@ bool GameManager::CollisionCheck(GamePlayerInfo& player)
 	Collision box;
 	vector2 size = vector2(50, 60);
 	box.UpdateCollision(player.pos, size);
+
+	vector2 playerPos = player.pos;
+	vector2 playerSize = size; 
+	float playerLeft = playerPos.x - playerSize.x / 2;
+	float playerRight = playerPos.x + playerSize.x / 2;
+	float playerTop = playerPos.y - playerSize.y / 2;
+	float playerBottom = playerPos.y + playerSize.y / 2;
 	bool bCheck = false;
 	for (TileInfo& tile : tiles)
 	{
@@ -281,6 +288,17 @@ bool GameManager::CollisionCheck(GamePlayerInfo& player)
 				}
 			}
 		}
+	}
+
+	vector2 PortalLT = vector2(717.5f, -180.f); // ��Ż ���� ��
+	vector2 PortalRB = vector2(742.5f, -120.f); // ��Ż ������ �Ʒ�
+	if (playerRight > PortalLT.x && playerLeft < PortalRB.x &&		// ��Ż �浹
+		playerBottom > PortalLT.y && playerTop < PortalRB.y) {
+		player.bReady = true;
+	}
+	else
+	{
+		player.bReady = false;
 	}
 
 	if (bCheck)
