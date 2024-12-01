@@ -35,7 +35,7 @@ DWORD WINAPI RecvThread(LPVOID arg)
 		if (res <= 0) break;
 
 		Packet packet(client_id, type, data_size, data);
-		TCPServer::GetInst()->ProcessPacket(packet);
+		TCPServer::GetInst()->ProcessRecvPacket(packet);
 
 
 		SetEvent(hWorkEvent[client_id]);
@@ -64,17 +64,15 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 			{
 				gameData->scene = GAMESCENE;
 				curScene = GAMESCENE;
-				GameManager::GetInst().CreateTilePacket();
+				GameManager::GetInst().SendTilePacket();
 			}
-			S_LobbyInfoPacket SendPacket(*gameData);
-			TCPServer::GetInst()->SendPacket(SendPacket);
+			GameManager::GetInst().SendLobbyGameData();
 			break;
 		}
 		case GAMESCENE:
 		{
-			InGameData* gameData = GameManager::GetInst().GetInGameData();
-			S_GameInfoPacket SendPacket(*gameData);
-			TCPServer::GetInst()->SendPacket(SendPacket);
+			GameManager::GetInst().UpdateInGameData();
+			GameManager::GetInst().SendInGameData();
 			break;
 		}
 		default: break;
@@ -86,7 +84,7 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 	}
 }
 
-void TCPServer::ProcessPacket(const Packet& packet)
+void TCPServer::ProcessRecvPacket(const Packet& packet)
 {
 	switch (packet.type)
 	{
@@ -115,7 +113,6 @@ void TCPServer::ProcessPacket(const Packet& packet)
 		InGameData* gameData = GameManager::GetInst().GetInGameData();
 		const int i = RecvPacket->client_id;
 		memcpy(&gameData->players[i], RecvPacket->data, RecvPacket->data_size);
-		GameManager::GetInst().ServerUpdate(i);
 		break;
 	}
 	default:

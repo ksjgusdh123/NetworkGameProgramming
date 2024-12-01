@@ -47,5 +47,8 @@
     <ClInclude Include="GameManager.h">
       <Filter>소스 파일\Network</Filter>
     </ClInclude>
+    <ClInclude Include="GameTimer.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
