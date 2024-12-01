@@ -35,20 +35,20 @@ void CRiche::Update(float elapsedTime)
 {
 	CGameObject::Update(elapsedTime);
 
-	if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L) {
-		m_timer += elapsedTime;
+	//if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L) {
+	//	m_timer += elapsedTime;
 
-		if (m_timer >= 1.f) {
-			if (m_objectState == EObject_State::Attack)
-				m_objectState = EObject_State::Basic;
-			if (m_objectState == EObject_State::Attack_L)
-				m_objectState = EObject_State::Basic_L;
+	//	if (m_timer >= 1.f) {
+	//		if (m_objectState == EObject_State::Attack)
+	//			m_objectState = EObject_State::Basic;
+	//		if (m_objectState == EObject_State::Attack_L)
+	//			m_objectState = EObject_State::Basic_L;
 
-			CRicheAttack* ra = m_scene->CreateObject<CRicheAttack>("riche_attack");
-			ra->SetPos(m_pos);
-			ra->SetTarget(m_target);
-		}
-	}
+	//		CRicheAttack* ra = m_scene->CreateObject<CRicheAttack>("riche_attack");
+	//		ra->SetPos(m_pos);
+	//		ra->SetTarget(m_target);
+	//	}
+	//}
 
 }
 

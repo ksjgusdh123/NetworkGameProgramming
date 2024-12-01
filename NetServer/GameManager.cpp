@@ -7,6 +7,12 @@ void GameManager::AddLobbyPlayer(const Client& client)
     lobbyData.players[i] = LobbyPlayerInfo(client.player);
 }
 
+void GameManager::InitBossData()
+{
+	CreateBossTile();
+	CreateBossMonster();
+}
+
 void GameManager::InitGameData()
 {
 	CreateTile();
@@ -17,6 +23,8 @@ void GameManager::InitGameData()
 void GameManager::UpdateInGameData()
 {
 	inGameData.playtime = gameTimer.GetElapsedTime();
+	UpdateMonster();
+	PortalCollision();
 	ProcessCollsion();
 }
 
@@ -175,24 +183,66 @@ void GameManager::CreateTile()
 void GameManager::CreateMonster()
 {
 	MonsterInfo info;
-	info.type = 0;
+	info.type = '0';
 	info.pos = vector2(-100.f, 410.f);
 	info.original_pos = info.pos;
+	info.hp = 100;
+	info.direct = EObject_Dir::Right;
+	info.state = EObject_State::Walk;
+	info.is_alive = true;
+	info.velocity = 50.f;
 	inGameData.monster[0] = info;
 
-	info.type = 1;
+	info.type = '1';
 	info.pos = vector2(120.f, 80.f);
 	info.original_pos = info.pos;
-
+	info.hp = 100;
+	info.direct = EObject_Dir::Right;
+	info.state = EObject_State::Basic;
+	info.is_alive = true;
+	info.timer = 0.f;
 	inGameData.monster[1] = info;
-
-	info.type = 1;
-	info.pos = vector2(450.f, 380.f);
-	info.original_pos = info.pos;
-	inGameData.monster[2] = info;
 
 }
 
+void GameManager::CreateBossTile()
+{
+	tiles.clear();
+	tileNumbers.clear();
+	tilePositions.clear();
+
+	TileInfo info;
+	vector2 blockSize = vector2(50, 50);
+	
+	float tilePosX = -930.f;
+	float tilePosY = 475.f;
+
+	AddTile(info, blockSize, 1, tilePosX, tilePosY);
+
+	tilePosX += 50.f;
+
+	for (int i = 0; i < 37; ++i) {
+		AddTile(info, blockSize, 2, tilePosX, tilePosY);
+		tilePosX += 50.f;
+	}
+
+	AddTile(info, blockSize, 3, tilePosX, tilePosY);
+	tilePosX += 150.f;
+}
+
+void GameManager::CreateBossMonster()
+{
+	MonsterInfo info;
+	info.type = '2';
+	info.pos = vector2(-100.f, 410.f);
+	info.original_pos = info.pos;
+	info.hp = 100;
+	info.direct = EObject_Dir::Right;
+	info.state = EObject_State::Walk;
+	info.is_alive = true;
+	info.velocity = 50.f;
+	inGameData.monster[0] = info;
+}
 
 void GameManager::AddTile(TileInfo& info, vector2 blockSize, int type, int x, int y)
 {
@@ -290,17 +340,6 @@ bool GameManager::CollisionCheck(GamePlayerInfo& player)
 		}
 	}
 
-	vector2 PortalLT = vector2(717.5f, -180.f); // ��Ż ���� ��
-	vector2 PortalRB = vector2(742.5f, -120.f); // ��Ż ������ �Ʒ�
-	if (playerRight > PortalLT.x && playerLeft < PortalRB.x &&		// ��Ż �浹
-		playerBottom > PortalLT.y && playerTop < PortalRB.y) {
-		player.bReady = true;
-	}
-	else
-	{
-		player.bReady = false;
-	}
-
 	if (bCheck)
 		return true;
 
@@ -329,20 +368,42 @@ void GameManager::ProcessCollsion()
 	}
 }
 
+int GameManager::IsPlayerInRicheAttackArea()
+{
+	EObject_State riche_state = inGameData.monster[1].state;
+	if (riche_state == EObject_State::Attack_L || riche_state == EObject_State::Attack) return -1;
+
+	for (int i = 0; i < PLAYER_NUM; ++i) {
+		float dx = inGameData.players[i].pos.x - inGameData.monster[1].pos.x;
+		float dy = inGameData.players[i].pos.y - inGameData.monster[1].pos.y;
+		float distance = sqrt(dx * dx + dy * dy);
+		if (distance < 400) return i;
+	}
+
+	return -1;
+}
+
+
 void GameManager::UpdateMonster()
 {
-	for (MonsterInfo m : inGameData.monster)
+	
+
+
+	for (MonsterInfo& m : inGameData.monster)
 	{
+		if (!m.is_alive) 
+			continue;
+
 		switch (m.type) {
-		case 0:
+		case '0':
 		{
 			float range = 100.f;
-			// 0 -> ������, 1 -> ����
+
 			if (m.direct == EObject_Dir::Right && m.pos.x >= m.original_pos.x + range)
 			{
 				m.direct = EObject_Dir::Left;
 				m.state = EObject_State::Walk_L;
-				m.velocity = -50.f; 
+				m.velocity = -50.f;
 			}
 			else if (m.direct == EObject_Dir::Left && m.pos.x <= m.original_pos.x - range)
 			{
@@ -351,15 +412,71 @@ void GameManager::UpdateMonster()
 				m.velocity = 50.f;
 			}
 
-			//m.pos.x += m_velocity.x * 2 * ELAPSED_TIME;
+			m.pos.x += m.velocity * 0.1f;
 		}
-			break;
-		case 1:
+		break;
+		case '1':
+		{
+			int targetNum = IsPlayerInRicheAttackArea();
+			if (targetNum != -1) {
+				GamePlayerInfo p = inGameData.players[targetNum];
 
+				if (p.pos.x >= m.pos.x) {
+					m.state = EObject_State::Attack;
+					m.direct = EObject_Dir::Right;
+				}
+				else {
+					m.state = EObject_State::Attack_L;
+					m.direct = EObject_Dir::Left;
+				}
+				m.target = p.pos;
+				m.timer = 0.f;
+			}
+
+			if (m.state == EObject_State::Attack || m.state == EObject_State::Attack_L) {
+				m.timer += 0.05f;
+				
+				if (m.timer >= 1.f) {
+					if (m.state == EObject_State::Attack)
+						m.state = EObject_State::Basic;
+					if (m.state == EObject_State::Attack_L)
+						m.state = EObject_State::Basic_L;
+
+					//CRicheAttack* ra = m_scene->CreateObject<CRicheAttack>("riche_attack");
+					//ra->SetPos(m_pos);
+					//ra->SetTarget(m_target);
+				}
+			}
+		}
 			break;
 		default:
 
 			break;
+		}
+	}
+}
+
+
+void GameManager::PortalCollision()
+{
+	for (auto& player : inGameData.players) {
+		vector2 size = vector2(50, 60);
+		vector2 playerPos = player.pos;
+		vector2 playerSize = size;
+		float playerLeft = playerPos.x - playerSize.x / 2;
+		float playerRight = playerPos.x + playerSize.x / 2;
+		float playerTop = playerPos.y - playerSize.y / 2;
+		float playerBottom = playerPos.y + playerSize.y / 2;
+
+		vector2 PortalLT = vector2(717.5f, -180.f); 
+		vector2 PortalRB = vector2(742.5f, -120.f); 
+		if (playerRight > PortalLT.x && playerLeft < PortalRB.x &&		
+			playerBottom > PortalLT.y && playerTop < PortalRB.y) {
+			player.bReady = true;
+		}
+		else
+		{
+			player.bReady = false;
 		}
 	}
 }
