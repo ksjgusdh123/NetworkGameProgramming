@@ -132,6 +132,7 @@ enum SCENE_STATE
 	LOGINSCENE,
 	LOBBYSCENE,
 	GAMESCENE,
+	BOSSSCENE,
 };
 class GameData {};
 

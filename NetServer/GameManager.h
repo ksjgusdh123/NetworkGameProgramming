@@ -20,12 +20,16 @@ public:
 	LobbyData* GetLobbyData() { return &lobbyData; };
 	InGameData* GetInGameData() { return &inGameData; };
 
+	void InitBossData();
 	void InitGameData();
 	void PrintLobbyState();
 	void PrintGameState();
 
 	void CreateTile();
 	void CreateMonster();
+
+	void CreateBossTile();
+	void CreateBossMonster();
 
 	void AddTile(TileInfo& info, vector2 blockSize, int type, int x, int y);
 	void SendTilePacket();
@@ -35,7 +39,9 @@ public:
 	void UpdateInGameData();
 	void ProcessCollsion();
 	bool CollisionCheck(GamePlayerInfo& player);
-	
+	void PortalCollision();
+
+
 	void UpdateMonster();
 	int IsPlayerInRicheAttackArea();
 	

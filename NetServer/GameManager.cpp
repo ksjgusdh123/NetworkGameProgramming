@@ -7,6 +7,12 @@ void GameManager::AddLobbyPlayer(const Client& client)
     lobbyData.players[i] = LobbyPlayerInfo(client.player);
 }
 
+void GameManager::InitBossData()
+{
+	CreateBossTile();
+	CreateBossMonster();
+}
+
 void GameManager::InitGameData()
 {
 	CreateTile();
@@ -18,8 +24,7 @@ void GameManager::UpdateInGameData()
 {
 	inGameData.playtime = gameTimer.GetElapsedTime();
 	UpdateMonster();
-
-
+	PortalCollision();
 	ProcessCollsion();
 }
 
@@ -200,6 +205,44 @@ void GameManager::CreateMonster()
 
 }
 
+void GameManager::CreateBossTile()
+{
+	tiles.clear();
+	tileNumbers.clear();
+	tilePositions.clear();
+
+	TileInfo info;
+	vector2 blockSize = vector2(50, 50);
+	
+	float tilePosX = -930.f;
+	float tilePosY = 475.f;
+
+	AddTile(info, blockSize, 1, tilePosX, tilePosY);
+
+	tilePosX += 50.f;
+
+	for (int i = 0; i < 37; ++i) {
+		AddTile(info, blockSize, 2, tilePosX, tilePosY);
+		tilePosX += 50.f;
+	}
+
+	AddTile(info, blockSize, 3, tilePosX, tilePosY);
+	tilePosX += 150.f;
+}
+
+void GameManager::CreateBossMonster()
+{
+	MonsterInfo info;
+	info.type = '2';
+	info.pos = vector2(-100.f, 410.f);
+	info.original_pos = info.pos;
+	info.hp = 100;
+	info.direct = EObject_Dir::Right;
+	info.state = EObject_State::Walk;
+	info.is_alive = true;
+	info.velocity = 50.f;
+	inGameData.monster[0] = info;
+}
 
 void GameManager::AddTile(TileInfo& info, vector2 blockSize, int type, int x, int y)
 {
@@ -295,17 +338,6 @@ bool GameManager::CollisionCheck(GamePlayerInfo& player)
 				}
 			}
 		}
-	}
-
-	vector2 PortalLT = vector2(717.5f, -180.f); // ��Ż ���� ��
-	vector2 PortalRB = vector2(742.5f, -120.f); // ��Ż ������ �Ʒ�
-	if (playerRight > PortalLT.x && playerLeft < PortalRB.x &&		// ��Ż �浹
-		playerBottom > PortalLT.y && playerTop < PortalRB.y) {
-		player.bReady = true;
-	}
-	else
-	{
-		player.bReady = false;
 	}
 
 	if (bCheck)
@@ -425,3 +457,26 @@ void GameManager::UpdateMonster()
 }
 
 
+void GameManager::PortalCollision()
+{
+	for (auto& player : inGameData.players) {
+		vector2 size = vector2(50, 60);
+		vector2 playerPos = player.pos;
+		vector2 playerSize = size;
+		float playerLeft = playerPos.x - playerSize.x / 2;
+		float playerRight = playerPos.x + playerSize.x / 2;
+		float playerTop = playerPos.y - playerSize.y / 2;
+		float playerBottom = playerPos.y + playerSize.y / 2;
+
+		vector2 PortalLT = vector2(717.5f, -180.f); 
+		vector2 PortalRB = vector2(742.5f, -120.f); 
+		if (playerRight > PortalLT.x && playerLeft < PortalRB.x &&		
+			playerBottom > PortalLT.y && playerTop < PortalRB.y) {
+			player.bReady = true;
+		}
+		else
+		{
+			player.bReady = false;
+		}
+	}
+}
