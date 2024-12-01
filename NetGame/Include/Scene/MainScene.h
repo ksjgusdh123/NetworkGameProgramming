@@ -26,6 +26,7 @@ public:
 	void RecvGameData(const Packet& packet);
 	void SendGameData();
 
+	bool m_bDieCheck = false;
 private:
 	InGameData* m_inGameData;
 	class CPlayer* player[2];

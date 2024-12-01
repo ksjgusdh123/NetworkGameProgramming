@@ -24,6 +24,12 @@ void CPlayer::Update(float elapsedTime)
 {
 	CGameObject::Update(elapsedTime);
 
+	if (m_hp <= 0 || m_pos.y >= 600)
+	{
+		m_hp = 0;
+		DieEvent();
+	}
+
 	if (!m_bIsLanded && (m_objectState != EObject_State::Basic && m_objectState != EObject_State::Basic_L
 		&& m_objectState != EObject_State::Jump && m_objectState != EObject_State::Jump_L))
 	{
@@ -67,7 +73,8 @@ void CPlayer::InitInput()
 
 void CPlayer::PlayerMoveLeft()
 {
-
+	if (m_hp <= 0)
+		return;
 	switch (m_objectState)
 	{
 	case EObject_State::Basic:
@@ -94,6 +101,8 @@ void CPlayer::PlayerMoveLeft()
 
 void CPlayer::PlayerLeftIdle()
 {
+	if (m_hp <= 0)
+		return;
 	if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L || m_objectState == EObject_State::Jump ||
 		m_objectState == EObject_State::Jump_L || m_objectState == EObject_State::Jump_Down_L || m_objectState == EObject_State::Jump_Down)
 		return;
@@ -104,6 +113,8 @@ void CPlayer::PlayerLeftIdle()
 
 void CPlayer::PlayerMoveRight()
 {
+	if (m_hp <= 0)
+		return;
 	switch (m_objectState)
 	{
 	case EObject_State::Basic:
@@ -129,6 +140,8 @@ void CPlayer::PlayerMoveRight()
 
 void CPlayer::PlayerRightIdle()
 {
+	if (m_hp <= 0)
+		return;
 	if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L || m_objectState == EObject_State::Jump ||
 		m_objectState == EObject_State::Jump_L || m_objectState == EObject_State::Jump_Down || m_objectState == EObject_State::Jump_Down_L)
 		return;
@@ -139,6 +152,8 @@ void CPlayer::PlayerRightIdle()
 
 void CPlayer::PlayerAttack()
 {
+	if (m_hp <= 0)
+		return;
 	if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L || m_objectState == EObject_State::Jump ||
 		m_objectState == EObject_State::Jump_L || m_objectState == EObject_State::Jump_Down || m_objectState == EObject_State::Jump_Down_L)
 		return;
@@ -161,6 +176,9 @@ void CPlayer::PlayerAttack()
 
 void CPlayer::PlayerJump()
 {
+	if (m_hp <= 0)
+		return;
+
 	if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L ||
 		m_objectState == EObject_State::Jump || m_objectState == EObject_State::Jump_L)
 		return;
@@ -272,4 +290,19 @@ void CPlayer::CalculateJump(float elapsedTime)
 	//	}
 	//	m_bDoubleJump = false;
 	//}
+}
+
+void CPlayer::DieEvent()
+{
+	if (m_objectState != EObject_State::Die || m_objectState != EObject_State::Die_L)
+	{
+		if (m_objectDir == EObject_Dir::Right)
+		{
+			m_objectState = EObject_State::Die;
+		}
+		else
+		{
+			m_objectState = EObject_State::Die_L;
+		}
+	}
 }

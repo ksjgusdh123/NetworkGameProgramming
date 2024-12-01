@@ -37,6 +37,7 @@ public:
 	bool CollisionCheck(GamePlayerInfo& player);
 	
 	void UpdateMonster();
+	void UpdatePlayer();
 
 public:
 	static GameManager& GetInst()

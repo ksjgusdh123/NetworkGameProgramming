@@ -112,6 +112,17 @@ void CMainScene::Update(float elapsedTime)
     m_inGameData->players[m_myid].isJump = player[m_myid]->m_bJump;
     m_inGameData->players[m_myid].isDoubleJump = player[m_myid]->m_bDoubleJump;
 
+
+    if (((CPlayer*)m_myPlayer)->m_hp <= 0)
+    {
+        if (!m_bDieCheck)
+        {
+            GetCamera()->SetTarget(m_player);
+            m_bDieCheck = true;
+        }
+        return;
+    }
+
     if (IsPlayerInRicheAttackArea()){
         riche->Attack(player[m_myid]->GetPos());
     }

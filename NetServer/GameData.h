@@ -79,7 +79,6 @@ struct LobbyPlayerInfo : public PlayerInfo {
 };
 
 struct GamePlayerInfo : public PlayerInfo {
-	vector2 prev_pos;
 	vector2 pos{ -930.f ,475.f };
 	short hp = 100;
 	short damage = 10;
