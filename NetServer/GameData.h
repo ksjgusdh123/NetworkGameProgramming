@@ -88,6 +88,7 @@ struct GamePlayerInfo : public PlayerInfo {
 	bool isLanded = false;
 	bool isJump = false;
 	bool isDoubleJump = false;
+	bool bReady = false;
 
 	GamePlayerInfo() = default;
 

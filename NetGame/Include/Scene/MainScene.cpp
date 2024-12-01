@@ -51,7 +51,7 @@ bool CMainScene::Init()
 
     CPortal* portal = CreateObject<CPortal>("portal");
     portal->SetPos(730.f, -150.f);
-    
+        
     Vector2 resolution = { (float)CEngine::GetInst()->GetResolution().width,
     (float)CEngine::GetInst()->GetResolution().height };
     GetCamera()->SetResolution(resolution);
