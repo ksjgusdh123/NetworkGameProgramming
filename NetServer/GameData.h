@@ -108,6 +108,7 @@ struct MonsterInfo
 	char attack_type;
 	float velocity;
 	vector2 original_pos;
+	bool is_alive;
 };
 
 struct TileInfo

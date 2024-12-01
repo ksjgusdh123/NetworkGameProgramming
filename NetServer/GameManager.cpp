@@ -17,6 +17,7 @@ void GameManager::InitGameData()
 void GameManager::UpdateInGameData()
 {
 	inGameData.playtime = gameTimer.GetElapsedTime();
+	UpdateMonster();
 	ProcessCollsion();
 }
 
@@ -175,18 +176,23 @@ void GameManager::CreateTile()
 void GameManager::CreateMonster()
 {
 	MonsterInfo info;
-	info.type = 0;
+	info.type = '0';
 	info.pos = vector2(-100.f, 410.f);
 	info.original_pos = info.pos;
+	info.hp = 100;
+	info.direct = EObject_Dir::Right;
+	info.state = EObject_State::Walk;
+	info.is_alive = true;
+	info.velocity = 50.f;
 	inGameData.monster[0] = info;
 
-	info.type = 1;
+	info.type = '1';
 	info.pos = vector2(120.f, 80.f);
 	info.original_pos = info.pos;
 
 	inGameData.monster[1] = info;
 
-	info.type = 1;
+	info.type = '1';
 	info.pos = vector2(450.f, 380.f);
 	info.original_pos = info.pos;
 	inGameData.monster[2] = info;
@@ -331,13 +337,16 @@ void GameManager::ProcessCollsion()
 
 void GameManager::UpdateMonster()
 {
-	for (MonsterInfo m : inGameData.monster)
+	for (MonsterInfo& m : inGameData.monster)
 	{
+		if (!m.is_alive) 
+			continue;
+
 		switch (m.type) {
-		case 0:
+		case '0':
 		{
 			float range = 100.f;
-			// 0 -> ������, 1 -> ����
+			
 			if (m.direct == EObject_Dir::Right && m.pos.x >= m.original_pos.x + range)
 			{
 				m.direct = EObject_Dir::Left;
@@ -351,10 +360,10 @@ void GameManager::UpdateMonster()
 				m.velocity = 50.f;
 			}
 
-			//m.pos.x += m_velocity.x * 2 * ELAPSED_TIME;
+			m.pos.x += m.velocity * 0.1f;
 		}
 			break;
-		case 1:
+		case '1':
 
 			break;
 		default:

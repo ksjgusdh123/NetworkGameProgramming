@@ -112,6 +112,8 @@ void CMainScene::Update(float elapsedTime)
     m_inGameData->players[m_myid].isJump = player[m_myid]->m_bJump;
     m_inGameData->players[m_myid].isDoubleJump = player[m_myid]->m_bDoubleJump;
 
+
+
     if (IsPlayerInRicheAttackArea()){
         riche->Attack(player[m_myid]->GetPos());
     }
@@ -155,6 +157,28 @@ void CMainScene::RecvGameData(const Packet& packet)
             player[i]->m_bJump = m_inGameData->players[i].isJump;
             player[i]->m_bDoubleJump = m_inGameData->players[i].isDoubleJump;
         }
+
+        for (MonsterInfo m : m_inGameData->monster)
+        {
+            switch (m.type) {
+            case '0':
+            {
+                ghost->SetPos(m.pos.x, m.pos.y);
+                ghost->SetState(m.state);
+                ghost->SetDir(m.direct);
+                ghost->m_bIsAlive = m.is_alive;
+                ghost->m_hp = m.hp;
+            }
+                break;
+            case '1':
+                break;
+            case '2':
+                break;
+            default:
+                break;
+            }
+        }
+
         break;
     }
     default:
