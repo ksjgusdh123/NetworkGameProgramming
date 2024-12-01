@@ -10,7 +10,7 @@ void GameManager::AddLobbyPlayer(const Client& client)
 void GameManager::InitGameData()
 {
 	CreateTile();
-	// 몬스터 정보 생성();
+	CreateMonster();
 	gameTimer.Start();
 }
 
@@ -297,6 +297,28 @@ void GameManager::CreateTile()
 
 }
 
+void GameManager::CreateMonster()
+{
+	MonsterInfo info;
+	info.type = 0;
+	info.pos = vector2(-100.f, 410.f);
+	info.original_pos = info.pos;
+	inGameData.monster[0] = info;
+
+	info.type = 1;
+	info.pos = vector2(120.f, 80.f);
+	info.original_pos = info.pos;
+
+	inGameData.monster[1] = info;
+
+	info.type = 1;
+	info.pos = vector2(450.f, 380.f);
+	info.original_pos = info.pos;
+	inGameData.monster[2] = info;
+
+}
+
+
 void GameManager::SendTilePacket()
 {
 	S_TilesPkt packet((int)tileNumbers.size(), tileNumbers, tilePositions);
@@ -407,6 +429,41 @@ void GameManager::ProcessCollsion()
 			//	inGameData->players[clientID].state = 11;
 			//else
 			//	inGameData->players[clientID].state = 12;
+		}
+	}
+}
+
+void GameManager::UpdateMonster()
+{
+	for (MonsterInfo m : inGameData.monster)
+	{
+		switch (m.type) {
+		case 0:
+		{
+			float range = 100.f;
+			// 0 -> 오른쪽, 1 -> 왼쪽
+			if (m.direct == EObject_Dir::Right && m.pos.x >= m.original_pos.x + range)
+			{
+				m.direct = EObject_Dir::Left;
+				m.state = EObject_State::Walk_L;
+				m.velocity = -50.f; 
+			}
+			else if (m.direct == EObject_Dir::Left && m.pos.x <= m.original_pos.x - range)
+			{
+				m.direct = EObject_Dir::Right;
+				m.state = EObject_State::Walk;
+				m.velocity = 50.f;
+			}
+
+			//m.pos.x += m_velocity.x * 2 * ELAPSED_TIME;
+		}
+			break;
+		case 1:
+
+			break;
+		default:
+
+			break;
 		}
 	}
 }

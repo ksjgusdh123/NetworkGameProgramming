@@ -1,7 +1,7 @@
 #pragma once
-
+#include "../Engine/Include/Flag.h"
 constexpr int PLAYER_NUM = 2;
-constexpr int MONSTER_NUM = 5;
+constexpr int MONSTER_NUM = 3;
 constexpr int TILE_NUM = 10;
 constexpr int ITEM_NUM = 3;
 constexpr int NAME_LEN = 20;
@@ -103,8 +103,11 @@ struct MonsterInfo
 	vector2 pos;
 	short hp;
 	short damage;
-	char direct;
+	EObject_State state;
+	EObject_Dir direct;
 	char attack_type;
+	float velocity;
+	vector2 original_pos;
 };
 
 struct TileInfo
@@ -140,8 +143,8 @@ struct InGameData :public GameData
 	int scene = GAMESCENE;
 	int playtime = -1;
 	std::array<GamePlayerInfo, PLAYER_NUM> players;
-	/*std::array<MonsterInfo, MONSTER_NUM> monster;
-	std::array<ItemInfo, ITEM_NUM> item;*/
+	std::array<MonsterInfo, MONSTER_NUM> monster;
+	//std::array<ItemInfo, ITEM_NUM> item;
 };
 
 #pragma pack(pop)

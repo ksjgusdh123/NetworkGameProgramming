@@ -69,6 +69,7 @@ bool CMainScene::Init()
     SetMyPlayer(player[m_myid]);
     GetCamera()->SetTarget(player[m_myid]);
 
+
     ghost = CreateObject<CGhost>("fdkaj");
     ghost->SetPos(-100.f, 410.f);
     ghost->m_originalPosX = ghost->GetPos().x;
@@ -110,6 +111,7 @@ void CMainScene::Update(float elapsedTime)
     m_inGameData->players[m_myid].isLanded = player[m_myid]->m_bIsLanded;
     m_inGameData->players[m_myid].isJump = player[m_myid]->m_bJump;
     m_inGameData->players[m_myid].isDoubleJump = player[m_myid]->m_bDoubleJump;
+
     if (IsPlayerInRicheAttackArea()){
         riche->Attack(player[m_myid]->GetPos());
     }
