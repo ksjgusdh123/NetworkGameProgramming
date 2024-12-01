@@ -231,10 +231,10 @@ bool GameManager::CollisionCheck(GamePlayerInfo& player)
 
 			// 가장 작은 겹침을 기준으로 밀어냄 (여유 거리 추가)
 			if (overlapLeft < overlapRight && overlapLeft < overlapTop && overlapLeft < overlapBottom) {
-				player.pos.x -= (overlapLeft + offset); // 왼쪽으로 밀어냄
+				player.pos.x -= (overlapLeft); // 왼쪽으로 밀어냄
 			}
 			else if (overlapRight < overlapLeft && overlapRight < overlapTop && overlapRight < overlapBottom) {
-				player.pos.x += (overlapRight + offset); // 오른쪽으로 밀어냄
+				player.pos.x += (overlapRight); // 오른쪽으로 밀어냄
 			}
 			else if (overlapTop <= overlapLeft && overlapTop <= overlapRight && overlapTop <= overlapBottom) {
 				player.pos.y -= (overlapTop - offset); // 위쪽으로 밀어냄
@@ -253,6 +253,14 @@ bool GameManager::CollisionCheck(GamePlayerInfo& player)
 			}
 			else {
 				player.pos.y += (overlapBottom + offset); // 아래쪽으로 밀어냄
+				if (player.dir == 1)
+				{
+					player.state = 12;
+				}
+				else if (player.dir == 0)
+				{
+					player.state = 11;
+				}
 			}
 		}
 	}

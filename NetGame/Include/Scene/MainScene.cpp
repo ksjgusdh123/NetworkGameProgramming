@@ -61,8 +61,8 @@ bool CMainScene::Init()
 
     player[0] = CreateObject<CSwordman>("player0");
     player[1] = CreateObject<CSwordman>("player1");
-    player[0]->SetPos(-200.f, 180.f);
-    player[1]->SetPos(-200.f, 180.f);
+    player[0]->SetPos(-930.f, 400.f);
+    player[1]->SetPos(-930.f, 400.f);
     SetPlayer(player[abs(1 - m_myid)]);
 
     player[m_myid]->InitInput();

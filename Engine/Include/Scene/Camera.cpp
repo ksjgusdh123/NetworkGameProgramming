@@ -17,8 +17,17 @@ void CCamera::Update(float elapsedTime)
 			Vector2 targetPos = m_target->GetPos();
 			if (targetPos.x > -480.f && targetPos.x < 520.f)
 				m_pos.x = targetPos.x - m_targetPivot.x * m_resolution.x + m_targetOffset.x;
-			if (targetPos.y <= 180.f)
+			else if(targetPos.x <= -480.f)
+				m_pos.x = -480.f - m_targetPivot.x * m_resolution.x + m_targetOffset.x;
+			else 
+				m_pos.x = 520.f - m_targetPivot.x * m_resolution.x + m_targetOffset.x;
+
+			if (targetPos.y <= 180.f && targetPos.y > 0.f)
 				m_pos.y = targetPos.y - m_targetPivot.y * m_resolution.y + m_targetOffset.y;
+			else if(targetPos.y > 180.f)
+				m_pos.y = 180.f - m_targetPivot.y * m_resolution.y + m_targetOffset.y;
+			else
+				m_pos.y = 0.f - m_targetPivot.y * m_resolution.y + m_targetOffset.y;
 		}
 	}
 

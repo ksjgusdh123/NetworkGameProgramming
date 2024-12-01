@@ -16,6 +16,7 @@ bool CPlayer::Init()
 	SetTexture("Player_L", TEXT("Player/player_L.png"), EObject_Dir::Left, ETexture_Type::CIMAGE);
 	SetTexture("Player", TEXT("Player/player.png"), EObject_Dir::Right, ETexture_Type::CIMAGE);
 	SetSize(50.f, 60.f);
+	m_objectState = EObject_State::Jump_Down;
 	return true;
 }
 
@@ -88,7 +89,7 @@ void CPlayer::PlayerMoveLeft()
 
 	m_objectDir = EObject_Dir::Left;
 	m_pos.x -= m_velocity.x * 2 * ELAPSED_TIME;
-	
+		
 }
 
 void CPlayer::PlayerLeftIdle()
