@@ -37,6 +37,8 @@ public:
 	bool CollisionCheck(GamePlayerInfo& player);
 	
 	void UpdateMonster();
+	int IsPlayerInRicheAttackArea();
+	
 
 public:
 	static GameManager& GetInst()

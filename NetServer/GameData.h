@@ -1,7 +1,7 @@
 #pragma once
 #include "../Engine/Include/Flag.h"
 constexpr int PLAYER_NUM = 2;
-constexpr int MONSTER_NUM = 3;
+constexpr int MONSTER_NUM = 2;
 constexpr int TILE_NUM = 10;
 constexpr int ITEM_NUM = 3;
 constexpr int NAME_LEN = 20;
@@ -98,17 +98,19 @@ struct GamePlayerInfo : public PlayerInfo {
 
 struct MonsterInfo
 {
-	int id;
-	char type;
-	vector2 pos;
-	short hp;
-	short damage;
-	EObject_State state;
-	EObject_Dir direct;
+	int id = 0;
+	char type = '0';
+	vector2 pos = vector2(0.f,0.f);
+	short hp = 100;
+	short damage = 10;
+	EObject_State state = EObject_State::Basic;
+	EObject_Dir direct = EObject_Dir::Right;
 	char attack_type;
-	float velocity;
-	vector2 original_pos;
-	bool is_alive;
+	float velocity = 50.f;
+	vector2 original_pos= vector2(0.f,0.f);
+	bool is_alive = true;
+	float timer = 0.f;
+	vector2 target;
 };
 
 struct TileInfo

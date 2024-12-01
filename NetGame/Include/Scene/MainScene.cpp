@@ -77,10 +77,7 @@ bool CMainScene::Init()
     riche = CreateObject<CRiche>("riche");
     riche->SetPos(120.f, 80.f);
     
-    riche = CreateObject<CRiche>("riche");
-    riche->SetPos(450.f, 380.f);
-
-
+    
     CSceneManager* manager = CSceneManager::GetInst();
     m_tileNum = manager->m_tileNum;
     m_tileType = manager->m_tileType;
@@ -112,11 +109,6 @@ void CMainScene::Update(float elapsedTime)
     m_inGameData->players[m_myid].isJump = player[m_myid]->m_bJump;
     m_inGameData->players[m_myid].isDoubleJump = player[m_myid]->m_bDoubleJump;
 
-
-
-    if (IsPlayerInRicheAttackArea()){
-        riche->Attack(player[m_myid]->GetPos());
-    }
     m_timer += elapsedTime; 
     if (m_timer > 2.0f) {
         if (boss->GetActive())
@@ -171,6 +163,13 @@ void CMainScene::RecvGameData(const Packet& packet)
             }
                 break;
             case '1':
+            {
+                riche->SetState(m.state);
+                riche->SetDir(m.direct);
+                riche->m_bIsAlive = m.is_alive;
+                riche->m_hp = m.hp;
+                riche->m_target = Vector2(m.target.x, m.target.y);
+            }
                 break;
             case '2':
                 break;
@@ -194,6 +193,7 @@ void CMainScene::SendGameData()
 
 bool CMainScene::IsPlayerInRicheAttackArea()
 {
+
     EObject_State riche_state = riche->GetState();
     if (riche_state == EObject_State::Attack_L || riche_state == EObject_State::Attack) return false;
 
@@ -201,6 +201,7 @@ bool CMainScene::IsPlayerInRicheAttackArea()
     float dy = player[m_myid]->GetPos().y - riche->GetPos().y;
     float distance = sqrt(dx * dx + dy * dy);
     if (distance < 400) return true;
+
 
     return false;
 }
