@@ -10,6 +10,7 @@ void GameManager::AddLobbyPlayer(const Client& client)
 void GameManager::InitGameData()
 {
 	CreateTile();
+	CreateMonster();
 	gameTimer.Start();
 }
 
@@ -296,6 +297,28 @@ void GameManager::CreateTile()
 
 }
 
+void GameManager::CreateMonster()
+{
+	MonsterInfo info;
+	info.type = 0;
+	info.pos = vector2(-100.f, 410.f);
+	info.original_pos = info.pos;
+	inGameData.monster[0] = info;
+
+	info.type = 1;
+	info.pos = vector2(120.f, 80.f);
+	info.original_pos = info.pos;
+
+	inGameData.monster[1] = info;
+
+	info.type = 1;
+	info.pos = vector2(450.f, 380.f);
+	info.original_pos = info.pos;
+	inGameData.monster[2] = info;
+
+}
+
+
 void GameManager::SendTilePacket()
 {
 	S_TilesPkt packet((int)tileNumbers.size(), tileNumbers, tilePositions);
@@ -319,18 +342,20 @@ bool GameManager::CollisionCheck(GamePlayerInfo& player)
 	Collision box;
 	vector2 size = vector2(50, 60);
 	box.UpdateCollision(player.pos, size);
+	vector2 playerPos = player.pos;
+	vector2 playerSize = size; // size는 플레이어 크기 (50, 60)
+	// 플레이어의 경계 계산
+	float playerLeft = playerPos.x - playerSize.x / 2;
+	float playerRight = playerPos.x + playerSize.x / 2;
+	float playerTop = playerPos.y - playerSize.y / 2;
+	float playerBottom = playerPos.y + playerSize.y / 2;
 	for (TileInfo& tile : tiles)
 	{
-		vector2 playerPos = player.pos;
-		vector2 playerSize = size; // size는 플레이어 크기 (50, 60)
+		
 		vector2 boxLT = tile.box.m_info.LT; // 타일 박스 왼쪽 위
 		vector2 boxRB = tile.box.m_info.RB; // 타일 박스 오른쪽 아래
 
-		// 플레이어의 경계 계산
-		float playerLeft = playerPos.x - playerSize.x / 2;
-		float playerRight = playerPos.x + playerSize.x / 2;
-		float playerTop = playerPos.y - playerSize.y / 2;
-		float playerBottom = playerPos.y + playerSize.y / 2;
+		
 
 		// 여유 거리 설정
 		const float offset = 2.0f; // 2 픽셀 정도 여유를 둠
@@ -371,6 +396,18 @@ bool GameManager::CollisionCheck(GamePlayerInfo& player)
 			return true;
 		}
 	}
+
+	vector2 PortalLT = vector2(717.5f, -180.f); // 포탈 왼쪽 위
+	vector2 PortalRB = vector2(742.5f, -120.f); // 포탈 오른쪽 아래
+	if (playerRight > PortalLT.x && playerLeft < PortalRB.x &&		// 포탈 충돌
+		playerBottom > PortalLT.y && playerTop < PortalRB.y) {
+		player.bReady = true;
+	}
+	else
+	{
+		player.bReady = false;
+	}
+
 	if (player.state == 2)
 	{
 		player.isLanded = false;
@@ -392,6 +429,41 @@ void GameManager::ProcessCollsion()
 			//	inGameData->players[clientID].state = 11;
 			//else
 			//	inGameData->players[clientID].state = 12;
+		}
+	}
+}
+
+void GameManager::UpdateMonster()
+{
+	for (MonsterInfo m : inGameData.monster)
+	{
+		switch (m.type) {
+		case 0:
+		{
+			float range = 100.f;
+			// 0 -> 오른쪽, 1 -> 왼쪽
+			if (m.direct == EObject_Dir::Right && m.pos.x >= m.original_pos.x + range)
+			{
+				m.direct = EObject_Dir::Left;
+				m.state = EObject_State::Walk_L;
+				m.velocity = -50.f; 
+			}
+			else if (m.direct == EObject_Dir::Left && m.pos.x <= m.original_pos.x - range)
+			{
+				m.direct = EObject_Dir::Right;
+				m.state = EObject_State::Walk;
+				m.velocity = 50.f;
+			}
+
+			//m.pos.x += m_velocity.x * 2 * ELAPSED_TIME;
+		}
+			break;
+		case 1:
+
+			break;
+		default:
+
+			break;
 		}
 	}
 }

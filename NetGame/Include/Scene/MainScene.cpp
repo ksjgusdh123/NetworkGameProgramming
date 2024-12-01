@@ -51,7 +51,7 @@ bool CMainScene::Init()
 
     CPortal* portal = CreateObject<CPortal>("portal");
     portal->SetPos(730.f, -150.f);
-    
+        
     Vector2 resolution = { (float)CEngine::GetInst()->GetResolution().width,
     (float)CEngine::GetInst()->GetResolution().height };
     GetCamera()->SetResolution(resolution);
@@ -68,6 +68,7 @@ bool CMainScene::Init()
     player[m_myid]->InitInput();
     SetMyPlayer(player[m_myid]);
     GetCamera()->SetTarget(player[m_myid]);
+
 
     ghost = CreateObject<CGhost>("fdkaj");
     ghost->SetPos(-100.f, 410.f);
@@ -110,6 +111,7 @@ void CMainScene::Update(float elapsedTime)
     m_inGameData->players[m_myid].isLanded = player[m_myid]->m_bIsLanded;
     m_inGameData->players[m_myid].isJump = player[m_myid]->m_bJump;
     m_inGameData->players[m_myid].isDoubleJump = player[m_myid]->m_bDoubleJump;
+
     if (IsPlayerInRicheAttackArea()){
         riche->Attack(player[m_myid]->GetPos());
     }

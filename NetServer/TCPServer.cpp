@@ -66,13 +66,21 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 				curScene = GAMESCENE;
 				GameManager::GetInst().InitGameData();
 				GameManager::GetInst().SendTilePacket();
+				// 초기 몬스터 정보 전송
 			}
 			GameManager::GetInst().SendLobbyGameData();
 			break;
 		}
 		case GAMESCENE:
 		{
+			
 			GameManager::GetInst().UpdateInGameData();
+			InGameData* gameData = GameManager::GetInst().GetInGameData();
+			if (gameData->players[0].bReady && gameData->players[1].bReady)
+			{
+				//cout << "포탈 충돌중" << endl;
+				// 둘다 포탈 위에 있으면 보스 씬으로 이동
+			}
 			GameManager::GetInst().SendInGameData();
 			break;
 		}

@@ -25,6 +25,8 @@ public:
 	void PrintGameState();
 
 	void CreateTile();
+	void CreateMonster();
+
 	void SendTilePacket();
 	void SendLobbyGameData();
 	void SendInGameData();
