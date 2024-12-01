@@ -16,7 +16,6 @@ void GameManager::InitGameData()
 void GameManager::UpdateInGameData()
 {
 	inGameData.playtime = gameTimer.GetElapsedTime();
-	cout << "playertime: " << inGameData.playtime << endl;
 	ProcessCollsion();
 }
 
@@ -61,239 +60,124 @@ void GameManager::CreateTile()
 	float tilePosY = 475.f;
 
 	// 첫 발판
-	tileNumbers.push_back(1);
-	tilePositions.push_back({ tilePosX, tilePosY });
-	info.pos = vector2(tilePosX, tilePosY);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
+	AddTile(info, blockSize, 1, tilePosX, tilePosY);
+
 	tilePosX += 50.f;
 
 	for (int i = 0; i < 20; ++i) {
-		tileNumbers.push_back(2);
-		tilePositions.push_back({ tilePosX, 475.f });
-		info.pos = vector2(tilePosX, tilePosY);
-		info.box.UpdateCollision(info.pos, blockSize);
-		tiles.push_back(info);
+		AddTile(info, blockSize, 2, tilePosX, tilePosY);
 		tilePosX += 50.f;
 	}
 
-	tileNumbers.push_back(3);
-	tilePositions.push_back({ tilePosX, 475.f });
-	info.pos = vector2(tilePosX, tilePosY);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
+	AddTile(info, blockSize, 3, tilePosX, tilePosY);
 	tilePosX += 150.f;
 
 	// 상자 계단
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -800.f, 425.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -750.f, 425.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -750.f, 375.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -700.f, 425.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -700.f, 375.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -700.f, 325.f });
+	AddTile(info, blockSize, 17, -800.f, 425.f);
+	AddTile(info, blockSize, 17, -750.f, 425.f);
+	AddTile(info, blockSize, 17, -750.f, 375.f);
+	AddTile(info, blockSize, 17, -700.f, 425.f);
+	AddTile(info, blockSize, 17, -700.f, 375.f);
+	AddTile(info, blockSize, 17, -700.f, 325.f);
 
 	// 상자 계단2
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -550.f, 425.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -500.f, 425.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -500.f, 375.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -500.f, 325.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -450.f, 425.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -450.f, 375.f });
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -400.f, 425.f });
+	AddTile(info, blockSize, 17, -550.f, 425.f);
+	AddTile(info, blockSize, 17, -500.f, 425.f);
+	AddTile(info, blockSize, 17, -500.f, 375.f);
+	AddTile(info, blockSize, 17, -500.f, 325.f);
+	AddTile(info, blockSize, 17, -450.f, 425.f);
+	AddTile(info, blockSize, 17, -450.f, 375.f);
+	AddTile(info, blockSize, 17, -400.f, 425.f);
 
 	// 중간 발판
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ -380.f, 250.f });
-	info.pos = vector2(-380.f, 250.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ -330.f, 250.f });
-	info.pos = vector2(-330.f, 250.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ -280.f, 250.f });
-	info.pos = vector2(-280.f, 250.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
+	AddTile(info, blockSize, 14, -380.f, 250.f);
+	AddTile(info, blockSize, 15, -330.f, 250.f);
+	AddTile(info, blockSize, 16, -280.f, 250.f);
 
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ -130.f, 200.f });
-	info.pos = vector2(-130.f, 200.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ -80.f, 200.f });
-	info.pos = vector2(-80.f, 200.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ -30.f, 200.f });
-	info.pos = vector2(-30.f, 200.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
 
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ 70.f, 170.f });
-	info.pos = vector2(70.f, 170.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ 120.f, 170.f });
-	info.pos = vector2(120.f, 170.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ 170.f, 170.f });
-	info.pos = vector2(170.f, 170.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
+	AddTile(info, blockSize, 14, -130.f, 200.f);
+	AddTile(info, blockSize, 15, -80.f, 200.f);
+	AddTile(info, blockSize, 16, -30.f, 200.f);
 
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ -380.f, 100.f });
-	info.pos = vector2(-380.f, 100.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ -330.f, 100.f });
-	info.pos = vector2(-330.f, 100.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ -280.f, 100.f });
-	info.pos = vector2(-280.f, 100.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
+	AddTile(info, blockSize, 14, 70.f, 170.f);
+	AddTile(info, blockSize, 15, 120.f, 170.f);
+	AddTile(info, blockSize, 16, 170.f, 170.f);
+
+	AddTile(info, blockSize, 14, -380.f, 100.f);
+	AddTile(info, blockSize, 15, -330.f, 100.f);
+	AddTile(info, blockSize, 16, -280.f, 100.f);
 
 	// 근접 몬스터 가두는 상자
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ -250.f, 425.f });
-	info.pos = vector2(-250.f, 425.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
-	tileNumbers.push_back(17);
-	tilePositions.push_back({ 50.f, 425.f });
-	info.pos = vector2(50.f, 425.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
+	AddTile(info, blockSize, 17, -250.f, 425.f);
+	AddTile(info, blockSize, 17, 50.f, 425.f);
 
 	// 두 번째 발판
-	tileNumbers.push_back(1);
-	tilePositions.push_back({ tilePosX, 475.f });
-	info.pos = vector2(tilePosX, 475.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
+	AddTile(info, blockSize, 1, tilePosX, 475.f);
 
 	tilePosX += 50.f;
 
 	for (int i = 0; i < 6; ++i) {
-		tileNumbers.push_back(2);
-		tilePositions.push_back({ tilePosX, 475.f });
-		info.pos = vector2(tilePosX, 475.f);
-		info.box.UpdateCollision(info.pos, blockSize);
-		tiles.push_back(info);
+		AddTile(info, blockSize, 2, tilePosX, 475.f);
 		tilePosX += 50.f;
 	}
 
-	tileNumbers.push_back(3);
-	tilePositions.push_back({ tilePosX, 475.f });
-	info.pos = vector2(tilePosX, 475.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
+	AddTile(info, blockSize, 3, tilePosX, 475.f);
 	tilePosX += 250.f;
 
 	// 점프맵 발판
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ tilePosX, 400.f });
-	info.pos = vector2(tilePosX, 400.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ tilePosX, 200.f });
-	info.pos = vector2(tilePosX, 200.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
+	AddTile(info, blockSize, 14, tilePosX, 400.f);
+	AddTile(info, blockSize, 14, tilePosX, 200.f);
 	tilePosX += 50.f;
 
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ tilePosX, 400.f });
-	info.pos = vector2(tilePosX, 400.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ tilePosX, 200.f });
-	info.pos = vector2(tilePosX, 200.f);
-	info.box.UpdateCollision(info.pos, blockSize);
-	tiles.push_back(info);
+	AddTile(info, blockSize, 15, tilePosX, 400.f);
+	AddTile(info, blockSize, 15, tilePosX, 200.f);
 	tilePosX += 50.f;
 
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ tilePosX, 400.f });
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ tilePosX, 200.f });
-
+	AddTile(info, blockSize, 16, tilePosX, 400.f);
+	AddTile(info, blockSize, 16, tilePosX, 200.f);
 	tilePosX -= 400.f;
 
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ tilePosX, 300.f });
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ tilePosX, 100.f });
+	AddTile(info, blockSize, 14, tilePosX, 300.f);
+	AddTile(info, blockSize, 14, tilePosX, 100.f);
 	tilePosX += 50.f;
 
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ tilePosX, 300.f });
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ tilePosX, 100.f });
+	AddTile(info, blockSize, 15, tilePosX, 300.f);
+	AddTile(info, blockSize, 15, tilePosX, 100.f);
 	tilePosX += 50.f;
 
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ tilePosX, 300.f });
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ tilePosX, 100.f });
-
+	AddTile(info, blockSize, 16, tilePosX, 300.f);
+	AddTile(info, blockSize, 16, tilePosX, 100.f);
 	tilePosX -= 400.f;
 
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ tilePosX, 0.f });
+	AddTile(info, blockSize, 14, tilePosX, 0.f);
 	tilePosX += 50.f;
 
-	tileNumbers.push_back(15);
-	tilePositions.push_back({ tilePosX, 0.f });
+	AddTile(info, blockSize, 15, tilePosX, 0.f);
 	tilePosX += 50.f;
 
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ tilePosX, 0.f });
-
+	AddTile(info, blockSize, 16, tilePosX, 0.f);
 	tilePosX += 200.f;
 
 	// 포탈 발판
-	tileNumbers.push_back(14);
-	tilePositions.push_back({ tilePosX, -100.f });
+	AddTile(info, blockSize, 14, tilePosX, -100.f);
 	tilePosX += 50.f;
 
 	for (int i = 0; i < 4; ++i) {
-		tileNumbers.push_back(15);
-		tilePositions.push_back({ tilePosX, -100.f });
+		AddTile(info, blockSize, 15, tilePosX, -100.f);
 		tilePosX += 50.f;
 	}
 
-	tileNumbers.push_back(16);
-	tilePositions.push_back({ tilePosX, -100.f });
+	AddTile(info, blockSize, 16, tilePosX, -100.f);
 
+}
+
+void GameManager::AddTile(TileInfo& info, vector2 blockSize, int type, int x, int y)
+{
+	tileNumbers.push_back(type);
+	tilePositions.push_back(vector2(x, y));
+	info.pos = vector2(x, y);
+	info.box.UpdateCollision(info.pos, blockSize);
+	tiles.push_back(info);
 }
 
 void GameManager::SendTilePacket()
@@ -319,6 +203,7 @@ bool GameManager::CollisionCheck(GamePlayerInfo& player)
 	Collision box;
 	vector2 size = vector2(50, 60);
 	box.UpdateCollision(player.pos, size);
+	bool bCheck = false;
 	for (TileInfo& tile : tiles)
 	{
 		vector2 playerPos = player.pos;
@@ -351,26 +236,30 @@ bool GameManager::CollisionCheck(GamePlayerInfo& player)
 			else if (overlapRight < overlapLeft && overlapRight < overlapTop && overlapRight < overlapBottom) {
 				player.pos.x += (overlapRight + offset); // 오른쪽으로 밀어냄
 			}
-			else if (overlapTop < overlapLeft && overlapTop < overlapRight && overlapTop < overlapBottom) {
+			else if (overlapTop <= overlapLeft && overlapTop <= overlapRight && overlapTop <= overlapBottom) {
 				player.pos.y -= (overlapTop - offset); // 위쪽으로 밀어냄
 				player.isLanded = true;
 				player.isJump = false;
 				player.isDoubleJump = false;
-				if (player.state == 12)
+				if (player.state == 12 || player.state == 10)
 				{
 					player.state = 1;
 				}
-				else if (player.state == 11)
+				else if (player.state == 11 || player.state == 9)
 				{
 					player.state = 0;
 				}
+				bCheck = true;
 			}
 			else {
 				player.pos.y += (overlapBottom + offset); // 아래쪽으로 밀어냄
 			}
-			return true;
 		}
 	}
+
+	if (bCheck)
+		return true;
+
 	if (player.state == 2)
 	{
 		player.isLanded = false;

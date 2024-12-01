@@ -77,7 +77,7 @@ void CTile::Render(HDC hDC, float elapsedTime)
 			{
 				int size{ 128 };
 				if ((int)m_objectNum == 17) 
-					size = 106;
+					//size = 106;
 			
 
 				TransparentBlt(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y,

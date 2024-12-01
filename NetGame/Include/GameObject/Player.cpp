@@ -11,7 +11,7 @@ bool CPlayer::Init()
 	CGameObject::Init();
 
 	SetPivot(0.5f, 0.5f);
-	SetVelocity(150.f, 200.f);
+	SetVelocity(150.f, 150.f);
 	CreateTexture(2);
 	SetTexture("Player_L", TEXT("Player/player_L.png"), EObject_Dir::Left, ETexture_Type::CIMAGE);
 	SetTexture("Player", TEXT("Player/player.png"), EObject_Dir::Right, ETexture_Type::CIMAGE);
