@@ -16,6 +16,7 @@ void GameManager::InitBossData()
 void GameManager::InitGameData()
 {
 	CreateTile();
+	CreateMonster();
 	gameTimer.Start();
 }
 
