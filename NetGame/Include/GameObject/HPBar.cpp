@@ -1,43 +1,62 @@
 #include "HPBar.h"
 #include "..\ObjectAnimation.h"
+#include <Scene/SceneManager.h>
+#include <Scene/Scene.h>
+#include <Scene/Camera.h>
 bool CHPBar::Init()
 {
-	CGameObject::Init();
-	/*CreateTexture(1);
-	SetTexture("hpBar", TEXT("UI/hp_bar.png"), EObject_Dir::Right, ETexture_Type::CIMAGE);
-	SetAnimation(&m_rect, 1, EObject_State::Basic);*/
-	return true;
+    CGameObject::Init();
+    return true;
 }
 
 void CHPBar::Update(float elapsedTime)
 {
-	CGameObject::Update(elapsedTime);
+    CGameObject::Update(elapsedTime);
     SetPos(m_owner->GetPos().x, (m_owner->GetPos().y - m_owner->GetSize().y / 2) - 10);
 }
 
 void CHPBar::Render(HDC hDC, float elapsedTime)
 {
-	//CGameObject::Render(hDC, elapsedTime);
-	static const int maxHP = 100;
-	static const float w = 80;
-	static const float h = 10;
+    static const int maxHP = 100;
 
-	int hpPercentage = m_owner->m_hp / maxHP;
-	//RECT hpBarRect;
+    Vector2 pos;
+    Vector2 cameraPos;
+    Vector2 resolution;
 
-	RECT hpBarRect;
-	hpBarRect.left = m_pos.x - w / 2;
-	hpBarRect.top = m_pos.y - h / 2;
-	//hpBarRect.right = static_cast<LONG>(m_pos.x + (w * hpPercentage));
-	hpBarRect.right = m_pos.x + w / 2;
-	hpBarRect.bottom = m_pos.y + h / 2;
+    CScene* scene = CSceneManager::GetInst()->GetScene();
+    cameraPos = scene->GetCamera()->GetPos();
+    resolution = scene->GetCamera()->GetResolution();
+    pos = m_pos - cameraPos;
 
+    float currentHP = static_cast<float>(m_owner->m_hp);
+    float hpPercentage = currentHP / static_cast<float>(maxHP);
+    //float hpPercentage = 50 / static_cast<float>(maxHP);
 
-	HBRUSH brush = CreateSolidBrush(RGB(255, 0, 0));
-	HBRUSH oldBrush = (HBRUSH)SelectObject(hDC, brush);
+    Vector2 renderLT = pos - m_pivot * m_size;
 
-	Rectangle(hDC, hpBarRect.left, hpBarRect.top, hpBarRect.right, hpBarRect.bottom);
+    RECT backgroundRect;
+    backgroundRect.left = static_cast<LONG>(renderLT.x - m_w / 2);
+    backgroundRect.top = static_cast<LONG>(renderLT.y - m_h / 2);
+    backgroundRect.right = static_cast<LONG>(renderLT.x + m_w / 2);
+    backgroundRect.bottom = static_cast<LONG>(renderLT.y + m_h / 2);
 
-	SelectObject(hDC, oldBrush);
-	DeleteObject(brush);
+    RECT foregroundRect;
+    foregroundRect.left = backgroundRect.left;
+    foregroundRect.top = backgroundRect.top;
+    foregroundRect.right = static_cast<LONG>(backgroundRect.left + (m_w * hpPercentage));
+    foregroundRect.bottom = backgroundRect.bottom;
+
+    HBRUSH greenBrush = CreateSolidBrush(RGB(0, 50, 0));
+    FillRect(hDC, &backgroundRect, greenBrush);
+    DeleteObject(greenBrush);
+
+    HBRUSH redBrush = CreateSolidBrush(RGB(255, 0, 0));
+    FillRect(hDC, &foregroundRect, redBrush);
+    DeleteObject(redBrush);
+}
+
+void CHPBar::SetBarSize(float w, float h)
+{
+    m_w = w;
+    m_h = h;
 }

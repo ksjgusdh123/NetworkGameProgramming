@@ -1,6 +1,5 @@
 #pragma once
 #include "GameObject.h"
-#include "Player.h"
 
 class CHPBar : public CGameObject
 {
@@ -10,8 +9,9 @@ public:
 	virtual void Render(HDC hDC, float elapsedTime) override;
 
 	void SetOwner(const CGameObject* owner) { m_owner = owner; }
+	void SetBarSize(float w, float h);
 private:
 	const CGameObject* m_owner;
-	RECT m_rect = { 0, 0, 80, 8 };
+	float m_w = 70, m_h = 5;
 };
 

@@ -23,7 +23,6 @@ void GameManager::UpdateInGameData()
 {
 	inGameData.playtime = gameTimer.GetElapsedTime();
 	UpdateMonster();
-	PortalCollision();
 	ProcessCollsion();
 }
 
@@ -366,14 +365,10 @@ void GameManager::ProcessCollsion()
 {
 	for (auto& player : inGameData.players)
 	{
-		if (!CollisionCheck(player))
-		{
-			//if(inGameData->players[clientID].dir == 0)
-			//	inGameData->players[clientID].state = 11;
-			//else
-			//	inGameData->players[clientID].state = 12;
-		}
+		CollisionCheck(player);
 	}
+	PortalCollision();
+
 }
 
 int GameManager::IsPlayerInRicheAttackArea()

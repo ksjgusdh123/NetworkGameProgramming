@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "Flag.h"
+#include "HPBar.h"
 
 class CBoss : public CGameObject
 {
@@ -15,10 +16,12 @@ public:
 	virtual void Render(HDC hDC, float elapsedTime) override;
 
 	void Attack(Vector2 target);
+	void CreateHPBar(CScene* scene);
 
 	int m_hp;
 	bool m_bIsAlive;
 	Vector2 m_target;
 	float m_timer;
+	CHPBar* m_hpBar;
 };
 

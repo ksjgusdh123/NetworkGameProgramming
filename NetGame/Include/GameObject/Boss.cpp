@@ -208,3 +208,9 @@ void CBoss::Render(HDC hDC, float elapsedTime)
 		}
 	}
 }
+
+void CBoss::CreateHPBar(CScene* scene)
+{
+	m_hpBar = scene->CreateObject<CHPBar>("hpBar");
+	m_hpBar->SetOwner((CGameObject*)this);
+}

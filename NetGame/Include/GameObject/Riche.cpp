@@ -76,3 +76,9 @@ void CRiche::Attack(Vector2 target)
 	m_target = target;
 	m_timer = 0.f;
 }
+
+void CRiche::CreateHPBar(CScene* scene)
+{
+	m_hpBar = scene->CreateObject<CHPBar>("hpBar");
+	m_hpBar->SetOwner((CGameObject*)this);
+}
