@@ -11,7 +11,7 @@ bool CResultScene::Init()
 
 	CGameObject* back = CreateObject<CGameObject>("RoomBackground");
 	back->CreateTexture(1);
-	back->SetTexture("LobbyBackground", TEXT("Map/RoomBackground.bmp"), EObject_Dir::Right);
+	back->SetTexture("img_result", TEXT("Map/img_result.bmp"), EObject_Dir::Right);
 	back->SetSize(960.f, 650.f);
 	back->SetPivot(0.f, 0.f);
 
