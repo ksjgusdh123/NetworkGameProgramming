@@ -41,8 +41,9 @@ private:
 	std::unique_ptr<class CTimer>	m_timer;
 	float		m_elapsedTime = 0.f;
 
+	DECLARE_SINGLE(CEngine)
+public:
 	static bool	m_loop;
 
-	DECLARE_SINGLE(CEngine)
 };
 

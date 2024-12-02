@@ -67,6 +67,9 @@
     <ClCompile Include="GameObject\BossAttack.cpp">
       <Filter>03. GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\ResultScene.cpp">
+      <Filter>02. Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene\MainScene.h">
@@ -161,6 +164,9 @@
     </ClInclude>
     <ClInclude Include="GameObject\BossAttack.h">
       <Filter>03. GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\ResultScene.h">
+      <Filter>02. Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

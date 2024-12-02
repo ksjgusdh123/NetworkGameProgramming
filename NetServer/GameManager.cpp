@@ -94,7 +94,6 @@ void GameManager::CreateTile()
 	AddTile(info, blockSize, 15, -330.f, 250.f);
 	AddTile(info, blockSize, 16, -280.f, 250.f);
 
-
 	AddTile(info, blockSize, 14, -130.f, 200.f);
 	AddTile(info, blockSize, 15, -80.f, 200.f);
 	AddTile(info, blockSize, 16, -30.f, 200.f);
@@ -171,6 +170,12 @@ void GameManager::CreateTile()
 
 }
 
+void GameManager::CacluateResult(bool bWin)
+{
+	resultData.bWin = bWin;
+	resultData.playTime = inGameData.playtime;
+}
+
 void GameManager::AddTile(TileInfo& info, vector2 blockSize, int type, int x, int y)
 {
 	tileNumbers.push_back(type);
@@ -195,6 +200,12 @@ void GameManager::SendLobbyGameData()
 void GameManager::SendInGameData()
 {
 	S_GameInfoPacket SendPacket(inGameData);
+	TCPServer::GetInst()->SendPacket(SendPacket);
+}
+
+void GameManager::SendResultData()
+{
+	S_GameEndNotificationPacket SendPacket(resultData);
 	TCPServer::GetInst()->SendPacket(SendPacket);
 }
 

@@ -128,6 +128,7 @@ enum SCENE_STATE
 	LOGINSCENE,
 	LOBBYSCENE,
 	GAMESCENE,
+	RESULTSCENE,
 };
 class GameData {};
 
@@ -144,6 +145,13 @@ struct InGameData :public GameData
 	std::array<GamePlayerInfo, PLAYER_NUM> players;
 	std::array<MonsterInfo, MONSTER_NUM> monster;
 	//std::array<ItemInfo, ITEM_NUM> item;
+};
+
+struct ResultData : public GameData
+{
+	int scene = RESULTSCENE;
+	float playTime = -1;
+	bool bWin = false;
 };
 
 #pragma pack(pop)

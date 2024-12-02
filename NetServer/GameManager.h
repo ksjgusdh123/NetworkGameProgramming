@@ -19,6 +19,7 @@ public:
 	void AddLobbyPlayer(const Client& client);
 	LobbyData* GetLobbyData() { return &lobbyData; };
 	InGameData* GetInGameData() { return &inGameData; };
+	ResultData* GetResultData() { return &resultData; };
 
 	void InitGameData();
 	void PrintLobbyState();
@@ -26,11 +27,13 @@ public:
 
 	void CreateTile();
 	void CreateMonster();
+	void CacluateResult(bool bWin);
 
 	void AddTile(TileInfo& info, vector2 blockSize, int type, int x, int y);
 	void SendTilePacket();
 	void SendLobbyGameData();
 	void SendInGameData();
+	void SendResultData();
 
 	void UpdateInGameData();
 	void ProcessCollsion();
@@ -49,6 +52,7 @@ public:
 private:
 	LobbyData lobbyData;
 	InGameData inGameData;
+	ResultData resultData;
 	GameTimer gameTimer;
 
 	vector<TileInfo> tiles;
