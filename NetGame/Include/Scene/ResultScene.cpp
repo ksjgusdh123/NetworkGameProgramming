@@ -23,19 +23,10 @@ bool CResultScene::Init()
 	m_resultData->bWin = manager->m_bWin;
 	m_resultData->playTime = manager->m_playTime;
 
-
-	AddFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, nullptr);
-	// 폰트 생성
-	HFONT hFont = CreateFont(
-		35, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
-		DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-		DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"DungGeunMo"//글꼴 적용하고 싶은데.. 경로가 이게 아닌가?
-	);
-
 	HWND hwnd = CEngine::GetInst()->GetWindowHandle();
 	HINSTANCE hInst = CEngine::GetInst()->GetWindowInstance();
 	m_hButton = CreateWindow(L"button", L"종료", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 720, 450, 150, 100, hwnd, (HMENU)IDC_BUTTON, hInst, NULL);
-	SendMessage(m_hButton, WM_SETFONT, (WPARAM)hFont, TRUE);
+	SendMessage(m_hButton, WM_SETFONT, (WPARAM)m_hFont, TRUE);
 	return true;
 }
 
@@ -47,37 +38,32 @@ void CResultScene::Update(float elapsedTime)
 void CResultScene::Render(HDC hDC, float elapsedTime)
 {
 	CScene::Render(hDC, elapsedTime);
-	AddFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, nullptr);
-	HFONT hFont = CreateFont(
-		40, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
-		DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-		DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"DungGeunMo");
-	HFONT hOldFont = (HFONT)SelectObject(hDC, hFont);
 
-	SetTextColor(hDC, RGB(255, 0, 0));   // 텍스트 색상 (흰색)
-	SetBkColor(hDC, RGB(0, 0, 0));         // 배경색 (파란색)
-	SetBkMode(hDC, TRANSPARENT);
-	
+	HFONT hFont = CreateFontWithSize(m_hFont, 80);
+	Vector2 ResultPos = Vector2(480, 250);
 	if (m_resultData->bWin)
 	{
 		wchar_t win[] = L"WIN!!";
-		TextOut(hDC, 430, 100, win, wcslen(win));
+		DrawCenteredText(hDC, win, ResultPos, hFont, RGB(100, 100, 255));
 	}
 	else
 	{
 		wchar_t lose[] = L"LOSE!!";
-		TextOut(hDC, 430, 100, lose, wcslen(lose));
+		DrawCenteredText(hDC, lose, ResultPos, hFont, RGB(255, 100, 100));
 	}
 
-	wchar_t buffer[50];
-	swprintf(buffer, 50, L"play time: %.3f", m_resultData->playTime);
-	std::wstring time = buffer;
-	TextOut(hDC, 330, 400, time.c_str(), (int)time.size());
+	hFont = CreateFontWithSize(m_hFont, 50);
+	Vector2 timePos = Vector2(480, 320);
 
+	int totalSeconds = m_resultData->playTime;
+	int hours = totalSeconds / 3600;
+	int minutes = (totalSeconds % 3600) / 60;
+	int seconds = totalSeconds % 60;
+	wchar_t timeText[64];
+	swprintf_s(timeText, L"Play Time %02d:%02d:%02d", hours, minutes, seconds);
+	DrawCenteredText(hDC, timeText, timePos, hFont, RGB(255, 255, 255));
 
-	SelectObject(hDC, hOldFont);
 	DeleteObject(hFont);
-	RemoveFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, nullptr);
 }
 
 void CResultScene::KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam)

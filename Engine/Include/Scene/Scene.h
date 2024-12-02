@@ -12,6 +12,7 @@ public:
 	void SetMyPlayer(class CGameObject* player) { m_myPlayer = player; }
 	void SetPlayer(class CGameObject* player) { m_player = player; }
 
+	void DrawCenteredText(HDC hDC, const wchar_t* text, Vector2 pos, HFONT hFont, COLORREF textColor = RGB(255, 255, 255));
 	HFONT CreateFontWithSize(HFONT originalFont, int newFontSize);
 public:
 	virtual bool Init();

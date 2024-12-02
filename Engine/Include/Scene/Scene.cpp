@@ -3,6 +3,20 @@
 #include "Camera.h"
 #include "SceneResource.h"
 
+void CScene::DrawCenteredText(HDC hDC, const wchar_t* text, Vector2 pos, HFONT hFont, COLORREF textColor)
+{
+    HFONT oldFont = (HFONT)SelectObject(hDC, hFont);
+    SIZE textSize;
+    GetTextExtentPoint32(hDC, text, wcslen(text), &textSize);
+    SetTextColor(hDC, textColor);
+    SetBkMode(hDC, TRANSPARENT);
+    int x = static_cast<int>(pos.x - (textSize.cx / 2));
+    int y = static_cast<int>(pos.y - (textSize.cy / 2));
+    TextOut(hDC, x, y, text, wcslen(text));
+    SelectObject(hDC, oldFont);
+}
+
+
 HFONT CScene::CreateFontWithSize(HFONT originalFont, int newFontSize)
 {
     LOGFONT logFont;
@@ -17,7 +31,7 @@ bool CScene::Init()
     m_camera = std::make_shared<CCamera>();
     AddFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, nullptr);
     m_hFont = CreateFont(
-        40, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
+        30, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
         DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
         DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"DungGeunMo");
     return true;

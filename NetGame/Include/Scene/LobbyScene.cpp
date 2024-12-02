@@ -38,20 +38,12 @@ bool CLobbyScene::Init()
 	HWND hwnd = CEngine::GetInst()->GetWindowHandle();
 	HINSTANCE hInst = CEngine::GetInst()->GetWindowInstance();
 
-	AddFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, nullptr);
-	// 폰트 생성
-	HFONT hFont = CreateFont(
-		35, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
-		DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-		DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"DungGeunMo"//글꼴 적용하고 싶은데.. 경로가 이게 아닌가?
-	);
-
 	m_hButton[0] = CreateWindow(L"button", L"전사", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 220, 450, 150, 80, hwnd, (HMENU)IDC_BUTTON, hInst, NULL);
 	m_hButton[1] = CreateWindow(L"button", L"궁수", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 420, 450, 150, 80, hwnd, (HMENU)IDC_BUTTON2, hInst, NULL);
 	m_hButton[2] = CreateWindow(L"button", L"준비완료", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 720, 450, 150, 100, hwnd, (HMENU)IDC_BUTTON3, hInst, NULL);
-	SendMessage(m_hButton[0], WM_SETFONT, (WPARAM)hFont, TRUE);
-	SendMessage(m_hButton[1], WM_SETFONT, (WPARAM)hFont, TRUE);
-	SendMessage(m_hButton[2], WM_SETFONT, (WPARAM)hFont, TRUE);
+	SendMessage(m_hButton[0], WM_SETFONT, (WPARAM)m_hFont, TRUE);
+	SendMessage(m_hButton[1], WM_SETFONT, (WPARAM)m_hFont, TRUE);
+	SendMessage(m_hButton[2], WM_SETFONT, (WPARAM)m_hFont, TRUE);
 	return true;
 }
 
@@ -145,30 +137,27 @@ void CLobbyScene::SendGameData()
 void CLobbyScene::PrintName(HDC hDC)
 {
 	HFONT hFont = CreateFontWithSize(m_hFont, 40);
-	HFONT hOldFont = (HFONT)SelectObject(hDC, hFont);
 
 	for (int i = 0; i < 2; ++i)
 	{
 		wchar_t wideName[NAME_LEN] = {};
 		MultiByteToWideChar(CP_ACP, 0, m_lobbyData->players[i].name, -1, wideName, NAME_LEN);
 
-		SetTextColor(hDC, RGB(255, 255, 255));   // 텍스트 색상 (흰색)
-		SetBkMode(hDC, TRANSPARENT);
-
 		wchar_t ready[] = L"Ready!";
-		if (i == 0)
+
+		Vector2 namePos = m_LobbyPlayer[i]->GetPos();
+		namePos.y -= m_LobbyPlayer[i]->GetSize().y / 2 + 80;
+		Vector2 readyPos = m_LobbyPlayer[i]->GetPos();
+		readyPos.y += m_LobbyPlayer[i]->GetSize().y / 2 + 10;
+
+		DrawCenteredText(hDC, wideName, namePos, hFont, RGB(255, 255, 255));
+
+		if (m_lobbyData->players[i].bReady)
 		{
-			TextOut(hDC, 230, 100, wideName, wcslen(wideName));
-			if (m_lobbyData->players[i].bReady)
-				TextOut(hDC, 210, 400, ready, wcslen(ready));
-		}
-		else
-		{
-			TextOut(hDC, 630, 100, wideName, wcslen(wideName));
-			if (m_lobbyData->players[i].bReady)
-				TextOut(hDC, 610, 400, ready, wcslen(ready));
+			DrawCenteredText(hDC, ready, readyPos, hFont, RGB(0, 255, 0)); // Ready 상태는 녹색으로 표시
 		}
 	}
-	SelectObject(hDC, hOldFont);
+
 	DeleteObject(hFont);
 }
+
