@@ -52,6 +52,10 @@ public:
 	virtual void Render(HDC hDC, float elapsedTime);
 
 	void CreateTexture(int num);
+
+public:
+	int m_hp = 100;
+
 protected:
 	EObject_Type   m_objectType = EObject_Type::Monster;
 	ERender_Type	m_renderType = ERender_Type::Elipse;
@@ -74,5 +78,6 @@ protected:
 	int m_idx = 0;
 
 	std::shared_ptr<class CCollision> m_collisionBox;
+
 };
 

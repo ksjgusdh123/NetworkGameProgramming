@@ -31,7 +31,8 @@ public:
 	std::vector<int> m_tileType;
 	std::vector<float> m_tilePosX;
 	std::vector<float> m_tilePosY;
-
+	bool m_bWin = false;
+	float m_playTime = 0;
 private:
 	bool ChangeScene();
 	

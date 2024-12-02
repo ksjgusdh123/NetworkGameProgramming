@@ -18,6 +18,10 @@ bool CSwordman::Init()
 	SetAnimation(SWORD_Jump_Down_L, 2, EObject_State::Jump_Down_L);
 	SetAnimation(ATTACK_R, 10, EObject_State::Attack);
 	SetAnimation(ATTACK_L, 10, EObject_State::Attack_L);
+	SetAnimation(DAMAGE_SWORD_R, 9, EObject_State::Damaged);
+	SetAnimation(DAMAGE_SWORD_L, 9, EObject_State::Damaged_L);
+	SetAnimation(DIE_SWORD_R, 5, EObject_State::Die);
+	SetAnimation(DIE_SWORD_L, 5, EObject_State::Die_L);
 
 	return true;
 }

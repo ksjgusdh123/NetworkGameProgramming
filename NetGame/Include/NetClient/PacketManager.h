@@ -24,6 +24,7 @@ public:
 public:
 	LobbyData lobbyData;
 	InGameData inGameData;
+	ResultData resultData;
 
 private:
 	queue<Packet> send_queue;

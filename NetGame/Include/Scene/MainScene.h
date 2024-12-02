@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Scene/Scene.h"
+#include "Scene/Scene.h"	
 #include "Flag.h"
 #include "../GameObject/Ghost.h"
 #include "../GameObject/Riche.h"
@@ -19,13 +19,15 @@ public:
 	virtual bool Init() override;
 	virtual void Update(float elapsedTime);
 	bool IsPlayerInRicheAttackArea();
-	void CreateMap();
 	void CreateStageOneMap();
 	void ResourceInit();
 	void BossAttack();
 	void RecvGameData(const Packet& packet);
 	void SendGameData();
+	void GameDataCopy();
+	void GameStateCheck(float elapsedTime);
 
+	bool m_bDieCheck = false;
 private:
 	InGameData* m_inGameData;
 	class CPlayer* player[2];
@@ -38,5 +40,7 @@ private:
 	std::vector<float> m_tilePosX;
 	std::vector<float> m_tilePosY;
 	float m_timer = 0.f;
+	float m_deathTime = 0.f;
+	bool m_bEnd = false;
 };
 

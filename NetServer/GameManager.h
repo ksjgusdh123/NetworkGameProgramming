@@ -19,6 +19,7 @@ public:
 	void AddLobbyPlayer(const Client& client);
 	LobbyData* GetLobbyData() { return &lobbyData; };
 	InGameData* GetInGameData() { return &inGameData; };
+	ResultData* GetResultData() { return &resultData; };
 
 	void InitBossData();
 	void InitGameData();
@@ -27,6 +28,7 @@ public:
 
 	void CreateTile();
 	void CreateMonster();
+	void CacluateResult(bool bWin);
 
 	void CreateBossTile();
 	void CreateBossMonster();
@@ -35,6 +37,7 @@ public:
 	void SendTilePacket();
 	void SendLobbyGameData();
 	void SendInGameData();
+	void SendResultData();
 
 	void UpdateInGameData();
 	void ProcessCollsion();
@@ -45,6 +48,7 @@ public:
 	void UpdateMonster();
 	int IsPlayerInRicheAttackArea();
 	
+	void UpdatePlayer();
 
 public:
 	static GameManager& GetInst()
@@ -56,6 +60,7 @@ public:
 private:
 	LobbyData lobbyData;
 	InGameData inGameData;
+	ResultData resultData;
 	GameTimer gameTimer;
 
 	vector<TileInfo> tiles;

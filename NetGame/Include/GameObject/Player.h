@@ -14,7 +14,6 @@ public:
 	virtual void Render(HDC hDC, float elapsedTime) override;
 	virtual void InitInput();
 
-	Vector2 GetPrevPos() { return m_prevPos; }
 	bool m_bIsLanded = false;
 	bool m_bJump = false;
 	bool m_bDoubleJump = false;
@@ -29,7 +28,7 @@ protected:
 	virtual void CheckFrame(float elapsedTime);
 	void JumpDown();
 	void CalculateJump(float elapsedTime);
-
+	void DieEvent();
 protected:
 	int m_frame = 0;
 	float m_nowFrame = 0;
@@ -42,6 +41,5 @@ protected:
 
 	Vector2 m_attackSize;
 	Vector2 m_attackPivot;
-	Vector2 m_prevPos;
 };	
 

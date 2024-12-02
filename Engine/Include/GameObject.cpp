@@ -101,25 +101,34 @@ void CGameObject::Render(HDC hDC, float elapsedTime)
 			return;
 
 		
-
-		if (m_texture[(int)m_objectDir]->GetTextureType() == ETexture_Type::Sprite)
+		if (m_objectState != EObject_State::Die && m_objectState != EObject_State::Die_L)
 		{
-			if (m_texture[(int)m_objectDir]->GetEnableColorKey())
+			if (m_texture[(int)m_objectDir]->GetTextureType() == ETexture_Type::Sprite)
 			{
-				TransparentBlt(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y,
-					m_texture[(int)m_objectDir]->GetDC(), 0, 0, (int)m_size.x, (int)m_size.y, m_texture[(int)m_objectDir]->GetColorKey());
+				if (m_texture[(int)m_objectDir]->GetEnableColorKey())
+				{
+					TransparentBlt(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y,
+						m_texture[(int)m_objectDir]->GetDC(), 0, 0, (int)m_size.x, (int)m_size.y, m_texture[(int)m_objectDir]->GetColorKey());
+				}
+				else
+				{
+					BitBlt(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y,
+						m_texture[(int)m_objectDir]->GetDC(), 0, 0, SRCCOPY);
+				}
 			}
-			else
+			else if (m_texture[(int)m_objectDir]->GetTextureType() == ETexture_Type::CIMAGE)
 			{
-				BitBlt(hDC, (int)renderLT.x, (int)renderLT.y, (int)m_size.x, (int)m_size.y,
-					m_texture[(int)m_objectDir]->GetDC(), 0, 0, SRCCOPY);
+				m_time += elapsedTime;
+				m_idx = (((int)(m_time * m_animationBox[(int)m_objectState].size())) % m_animationBox[(int)m_objectState].size());
+				Vector2 size{ (float)m_animationBox[(int)m_objectState][m_idx].right, (float)m_animationBox[(int)m_objectState][m_idx].bottom };
+				renderLT = pos - m_pivot * size;
+				m_texture[(int)m_objectDir]->GetCImage().Draw(hDC, (int)renderLT.x, (int)renderLT.y, m_animationBox[(int)m_objectState][m_idx].right, m_animationBox[(int)m_objectState][m_idx].bottom, m_animationBox[(int)m_objectState][m_idx].left, m_animationBox[(int)m_objectState][m_idx].top, m_animationBox[(int)m_objectState][m_idx].right, m_animationBox[(int)m_objectState][m_idx].bottom);
 			}
 		}
-		else if (m_texture[(int)m_objectDir]->GetTextureType() == ETexture_Type::CIMAGE)
+		else
 		{
-
 			m_time += elapsedTime;
-			m_idx = (((int)(m_time * m_animationBox[(int)m_objectState].size())) % m_animationBox[(int)m_objectState].size());
+			m_idx = min(((int)(m_time * m_animationBox[(int)m_objectState].size())), 4);
 			Vector2 size{ (float)m_animationBox[(int)m_objectState][m_idx].right, (float)m_animationBox[(int)m_objectState][m_idx].bottom };
 			renderLT = pos - m_pivot * size;
 			m_texture[(int)m_objectDir]->GetCImage().Draw(hDC, (int)renderLT.x, (int)renderLT.y, m_animationBox[(int)m_objectState][m_idx].right, m_animationBox[(int)m_objectState][m_idx].bottom, m_animationBox[(int)m_objectState][m_idx].left, m_animationBox[(int)m_objectState][m_idx].top, m_animationBox[(int)m_objectState][m_idx].right, m_animationBox[(int)m_objectState][m_idx].bottom);

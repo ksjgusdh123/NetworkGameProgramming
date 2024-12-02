@@ -72,7 +72,6 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 		}
 		case GAMESCENE:
 		{
-			
 			GameManager::GetInst().UpdateInGameData();
 			InGameData* gameData = GameManager::GetInst().GetInGameData();
 			if (gameData->players[0].bReady && gameData->players[1].bReady)
@@ -81,6 +80,14 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 				curScene = BOSSSCENE;
 				GameManager::GetInst().InitBossData();
 				GameManager::GetInst().SendTilePacket();
+			}
+			if (gameData->players[0].hp <= 0 && gameData->players[1].hp <= 0)
+			{
+				// 둘다 체력 없으면 결과창으로 이동
+				gameData->scene = RESULTSCENE;
+				curScene = RESULTSCENE;
+				GameManager::GetInst().CacluateResult(false);
+				GameManager::GetInst().SendResultData();
 			}
 			GameManager::GetInst().SendInGameData();
 			break;

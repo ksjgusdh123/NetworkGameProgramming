@@ -54,6 +54,10 @@ enum class EObject_State
 	Jump_Down_L,
 	Telpo,
 	Telpo_L,
+	Damaged,
+	Damaged_L,
+	Die,
+	Die_L,
 	Max
 };
 

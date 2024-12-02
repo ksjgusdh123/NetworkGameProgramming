@@ -43,10 +43,10 @@ public:
 		vector2 otherRB = box->m_info.RB;
 
 		if (m_info.RB.x < otherLT.x || m_info.LT.x > otherRB.x)
-			return false; // XÃà¿¡¼­ °ãÄ¡Áö ¾ÊÀ½
+			return false; // Xï¿½à¿¡ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 		if (m_info.RB.y < otherLT.y || m_info.LT.y > otherRB.y)
-			return false; // YÃà¿¡¼­ °ãÄ¡Áö ¾ÊÀ½
+			return false; // Yï¿½à¿¡ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 		return true;
 	}
@@ -79,7 +79,6 @@ struct LobbyPlayerInfo : public PlayerInfo {
 };
 
 struct GamePlayerInfo : public PlayerInfo {
-	vector2 prev_pos;
 	vector2 pos{ -930.f ,475.f };
 	short hp = 100;
 	short damage = 10;
@@ -133,6 +132,7 @@ enum SCENE_STATE
 	LOBBYSCENE,
 	GAMESCENE,
 	BOSSSCENE,
+	RESULTSCENE,
 };
 class GameData {};
 
@@ -149,6 +149,13 @@ struct InGameData :public GameData
 	std::array<GamePlayerInfo, PLAYER_NUM> players;
 	std::array<MonsterInfo, MONSTER_NUM> monster;
 	//std::array<ItemInfo, ITEM_NUM> item;
+};
+
+struct ResultData : public GameData
+{
+	int scene = RESULTSCENE;
+	float playTime = -1;
+	bool bWin = false;
 };
 
 #pragma pack(pop)

@@ -158,17 +158,15 @@ void CLobbyScene::PrintName(HDC hDC)
 		SetBkColor(hDC, RGB(0, 0, 0));         // 배경색 (파란색)
 		SetBkMode(hDC, TRANSPARENT);
 
+		wchar_t ready[] = L"Ready!";
 		if (i == 0)
 		{
-			wchar_t ready[] = L"Ready!";
-
 			TextOut(hDC, 230, 100, wideName, wcslen(wideName));
 			if (m_lobbyData->players[i].bReady)
 				TextOut(hDC, 210, 400, ready, wcslen(ready));
 		}
 		else
 		{
-			wchar_t ready[] = L"Ready!";
 			TextOut(hDC, 630, 100, wideName, wcslen(wideName));
 			if (m_lobbyData->players[i].bReady)
 				TextOut(hDC, 610, 400, ready, wcslen(ready));

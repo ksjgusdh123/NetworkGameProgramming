@@ -17,6 +17,9 @@ enum PacketType
 
 	GameUpdateRequest,
 	GameUpdateResponse,
+
+	GameEndRequest,
+	GameEndNotification
 };
 
 class Packet
@@ -65,6 +68,16 @@ struct C_GameUpdateRequest : public Packet
 		memcpy(data, &GamePlayer_, data_size);
 	}
 };
+
+//struct C_GameEndRequest : public Packet
+//{
+//	C_GameEndRequest(const GamePlayerInfo& GamePlayer_)
+//	{
+//		type = GameEndRequest;
+//		data_size = sizeof(GamePlayer_);
+//		memcpy(data, &GamePlayer_, data_size);
+//	}
+//};
 
 
 struct C_TileRequestPkt : public Packet
@@ -155,5 +168,21 @@ struct S_GameInfoPacket :public Packet
 		data_size = sizeof(GameData_);
 		memcpy(data, &GameData_, sizeof(GameData_));
 	}
+};
+
+struct S_GameEndNotificationPacket :public Packet
+{
+	S_GameEndNotificationPacket(const ResultData& resultData_)
+	{
+		type = GameEndNotification;
+		data_size = sizeof(resultData_);
+		//memcpy(data, &resultData_, sizeof(resultData_));
+		sprintf_s(data, "%f %d", resultData_.playTime, resultData_.bWin);
+	}
+	void deserialize(bool& bWin, float& playTime)
+	{
+		sscanf_s(data, "%f %d", &playTime, &bWin);
+	}
+
 };
 #pragma pack(pop)

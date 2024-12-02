@@ -12,6 +12,7 @@
 #include <Scene/Camera.h>
 #include "..\NetClient\TCPClient.h"
 #include "Scene/SceneResource.h"
+#include "ResultScene.h"
 #include <Scene/SceneManager.h>
 
 bool CMainScene::Init()
@@ -61,8 +62,8 @@ bool CMainScene::Init()
 
     player[0] = CreateObject<CSwordman>("player0");
     player[1] = CreateObject<CSwordman>("player1");
-    player[0]->SetPos(-930.f, 400.f);
-    player[1]->SetPos(-930.f, 400.f);
+    player[0]->SetPos(-930.f, 300.f);
+    player[1]->SetPos(-930.f, 300.f);
     SetPlayer(player[abs(1 - m_myid)]);
 
     player[m_myid]->InitInput();
@@ -102,12 +103,8 @@ void CMainScene::Update(float elapsedTime)
 {
     CScene::Update(elapsedTime);
 
-    m_inGameData->players[m_myid].pos = vector2(player[m_myid]->GetPos().x, player[m_myid]->GetPos().y);
-    m_inGameData->players[m_myid].state = (char)(EObject_State)(player[m_myid]->GetState());
-    m_inGameData->players[m_myid].dir = (char)(EObject_Dir)(player[m_myid]->GetDir());
-    m_inGameData->players[m_myid].isLanded = player[m_myid]->m_bIsLanded;
-    m_inGameData->players[m_myid].isJump = player[m_myid]->m_bJump;
-    m_inGameData->players[m_myid].isDoubleJump = player[m_myid]->m_bDoubleJump;
+    GameDataCopy();
+
 
     m_timer += elapsedTime; 
     if (m_timer > 2.0f) {
@@ -115,6 +112,7 @@ void CMainScene::Update(float elapsedTime)
             BossAttack();
         m_timer = 0.f;
     }
+
     for (auto& object : m_objects[2])
     {
         if (player[m_myid]->GetCollision()->CheckCollision(object->GetCollision()))
@@ -123,6 +121,9 @@ void CMainScene::Update(float elapsedTime)
             break;
         }
     }
+
+    GameStateCheck(elapsedTime);
+
 }
 
 void CMainScene::RecvGameData(const Packet& packet)
@@ -140,7 +141,7 @@ void CMainScene::RecvGameData(const Packet& packet)
     {
         S_GameInfoPacket* RecvPacket = (S_GameInfoPacket*)&packet;
         memcpy(m_inGameData, RecvPacket->data, RecvPacket->data_size);
-        for (int i = 0; i < PLAYER_NUM; ++i)
+        for (int i = 0; i < PLAYER_NUM; ++i)    
         {
             player[i]->SetPos(m_inGameData->players[i].pos.x, m_inGameData->players[i].pos.y);
             player[i]->SetState((EObject_State)(int)m_inGameData->players[i].state);
@@ -148,6 +149,7 @@ void CMainScene::RecvGameData(const Packet& packet)
             player[i]->m_bIsLanded = m_inGameData->players[i].isLanded;
             player[i]->m_bJump = m_inGameData->players[i].isJump;
             player[i]->m_bDoubleJump = m_inGameData->players[i].isDoubleJump;
+            player[i]->m_hp = m_inGameData->players[i].hp;
         }
 
         for (MonsterInfo m : m_inGameData->monster)
@@ -180,6 +182,14 @@ void CMainScene::RecvGameData(const Packet& packet)
 
         break;
     }
+    case GameEndNotification:
+    {
+        S_GameEndNotificationPacket* RecvPacket = (S_GameEndNotificationPacket*)&packet;
+        CSceneManager* manager = CSceneManager::GetInst();
+        RecvPacket->deserialize(manager->m_bWin, manager->m_playTime);
+        m_bEnd = true;
+        break;
+    }
     default:
         break;
     }
@@ -189,6 +199,35 @@ void CMainScene::SendGameData()
 {
     C_GameUpdateRequest sendPacket(m_inGameData->players[m_myid]);
     PacketManager::GetInst().SendPacket(sendPacket);
+}
+
+void CMainScene::GameDataCopy()
+{
+    m_inGameData->players[m_myid].pos = vector2(player[m_myid]->GetPos().x, player[m_myid]->GetPos().y);
+    m_inGameData->players[m_myid].state = (char)(EObject_State)(player[m_myid]->GetState());
+    m_inGameData->players[m_myid].dir = (char)(EObject_Dir)(player[m_myid]->GetDir());
+    m_inGameData->players[m_myid].isLanded = player[m_myid]->m_bIsLanded;
+    m_inGameData->players[m_myid].isJump = player[m_myid]->m_bJump;
+    m_inGameData->players[m_myid].isDoubleJump = player[m_myid]->m_bDoubleJump;
+    m_inGameData->players[m_myid].hp = player[m_myid]->m_hp;
+}
+
+void CMainScene::GameStateCheck(float elapsedTime)
+{
+    if (((CPlayer*)m_myPlayer)->m_hp <= 0)
+    {
+        m_deathTime += elapsedTime;
+        if (!m_bDieCheck && m_deathTime >= 1)
+        {
+            GetCamera()->SetTarget(m_player);
+            m_bDieCheck = true;
+        }
+    }
+
+    if (m_bEnd)
+    {
+        CSceneManager::GetInst()->CreateScene<CResultScene>();
+    }
 }
 
 bool CMainScene::IsPlayerInRicheAttackArea()
@@ -210,233 +249,6 @@ void CMainScene::BossAttack()
 {
     boss->Attack(player[m_myid]->GetPos());
 }
-
-void CMainScene::CreateMap()
-{
-    float tilePosX = -930.f;
-    float tilePosY = 475.f;
-
-    // 첫 발판
-    CTile* tile = CreateObject<CTile>("tile");
-    tile->SetPos(tilePosX, tilePosY);
-    tile->SetTileNum(1);
-    tilePosX += 50.f;
-
-    for (int i = 0; i < 20; ++i) {
-        tile = CreateObject<CTile>("tile2");
-        tile->SetPos(tilePosX, 475.f);
-        tilePosX += 50.f;
-        tile->SetTileNum(2);
-    }
-
-    tile = CreateObject<CTile>("tile3");
-    tile->SetPos(tilePosX, 475.f);
-    tilePosX += 150.f;
-    tile->SetTileNum(3);
-
-
-    // 상자 계단
-    tile = CreateObject<CTile>("crate");
-    tile->SetPos(-800.f, 425.f);
-    tile->SetTileNum(17);
-    tile = CreateObject<CTile>("crate");
-    tile->SetPos(-750.f, 425.f);
-    tile->SetTileNum(17);
-    tile = CreateObject<CTile>("crate");
-    tile->SetPos(-750.f, 375.f);
-    tile->SetTileNum(17);
-    tile = CreateObject<CTile>("crate");
-    tile->SetPos(-700.f, 425.f);
-    tile->SetTileNum(17);
-    tile = CreateObject<CTile>("crate");
-    tile->SetPos(-700.f, 375.f);
-    tile->SetTileNum(17);
-    tile = CreateObject<CTile>("crate");
-    tile->SetPos(-700.f, 325.f);
-    tile->SetTileNum(17);
-
-    // 상자 계단2
-    tile = CreateObject<CTile>("crate");
-    tile->SetPos(-550.f, 425.f);
-    tile->SetTileNum(17);
-    tile = CreateObject<CTile>("crate");
-    tile->SetPos(-500.f, 425.f);
-    tile->SetTileNum(17);
-    tile = CreateObject<CTile>("crate");
-    tile->SetPos(-500.f, 375.f);
-    tile->SetTileNum(17);
-    tile = CreateObject<CTile>("crate");
-    tile->SetPos(-500.f, 325.f);
-    tile->SetTileNum(17);
-
-    tile = CreateObject<CTile>("crate");
-    tile->SetPos(-450.f, 425.f);
-    tile->SetTileNum(17);
-    tile = CreateObject<CTile>("crate");
-    tile->SetPos(-450.f, 375.f);
-    tile->SetTileNum(17);
-
-    tile = CreateObject<CTile>("crate");
-    tile->SetPos(-400.f, 425.f);
-    tile->SetTileNum(17);
-
-    //
-    tile = CreateObject<CTile>("tile14");
-    tile->SetPos(-380.f, 250.f);
-    tile->SetTileNum(14);
-    tile = CreateObject<CTile>("tile15");
-    tile->SetPos(-330.f, 250.f);
-    tile->SetTileNum(15);
-    tile = CreateObject<CTile>("tile16");
-    tile->SetPos(-280.f, 250.f);
-    tile->SetTileNum(16);
-
-    tile = CreateObject<CTile>("tile14");
-    tile->SetPos(-130.f, 200.f);
-    tile->SetTileNum(14);
-    tile = CreateObject<CTile>("tile15");
-    tile->SetPos(-80.f, 200.f);
-    tile->SetTileNum(15);
-    tile = CreateObject<CTile>("tile16");
-    tile->SetPos(-30.f, 200.f);
-    tile->SetTileNum(16);
-
-    tile = CreateObject<CTile>("tile14");
-    tile->SetPos(70.f, 170.f);
-    tile->SetTileNum(14);
-    tile = CreateObject<CTile>("tile15");
-    tile->SetPos(120.f, 170.f);
-    tile->SetTileNum(15);
-    tile = CreateObject<CTile>("tile16");
-    tile->SetPos(170.f, 170.f);
-    tile->SetTileNum(16);
-
-    tile = CreateObject<CTile>("tile14");
-    tile->SetPos(-380.f, 100.f);
-    tile->SetTileNum(14);
-    tile = CreateObject<CTile>("tile15");
-    tile->SetPos(-330.f, 100.f);
-    tile->SetTileNum(15);
-    tile = CreateObject<CTile>("tile16");
-    tile->SetPos(-280.f, 100.f);
-    tile->SetTileNum(16);
-    //
-    // 근접 몬스터 가두는 상자
-
-    tile = CreateObject<CTile>("crate");
-    tile->SetPos(-250.f, 425.f);
-    tile->SetTileNum(17);
-
-    tile = CreateObject<CTile>("crate");
-    tile->SetPos(50.f, 425.f);
-    tile->SetTileNum(17);
-    
-
-    // 두번째 발판
-    tile = CreateObject<CTile>("tile1");
-    tile->SetPos(tilePosX, 475.f);
-    tilePosX += 50.f;
-    tile->SetTileNum(1);
-
-    for (int i = 0; i < 6; ++i) {
-        tile = CreateObject<CTile>("tile2");
-        tile->SetPos(tilePosX, 475.f);
-        tilePosX += 50.f;
-        tile->SetTileNum(2);
-    }
-
-    tile = CreateObject<CTile>("tile3");
-    tile->SetPos(tilePosX, 475.f);
-    tilePosX += 250.f;
-    tile->SetTileNum(3);
-
-    // 점프맵 발판
-    tile = CreateObject<CTile>("tile14");
-    tile->SetPos(tilePosX, 400.f);
-    tile->SetTileNum(14);
-    tile = CreateObject<CTile>("tile14");
-    tile->SetPos(tilePosX, 200.f);
-    tile->SetTileNum(14);
-    tilePosX += 50.f;
-
-    tile = CreateObject<CTile>("tile15");
-    tile->SetPos(tilePosX, 400.f);
-    tile->SetTileNum(15);
-    tile = CreateObject<CTile>("tile15");
-    tile->SetPos(tilePosX, 200.f);
-    tile->SetTileNum(15);
-    tilePosX += 50.f;
-
-    tile = CreateObject<CTile>("tile16");
-    tile->SetPos(tilePosX, 400.f);
-    tile->SetTileNum(16);
-    tile = CreateObject<CTile>("tile16");
-    tile->SetPos(tilePosX, 200.f);
-    tile->SetTileNum(16);
-    
-    tilePosX -= 400.f;
-
-    tile = CreateObject<CTile>("tile14");
-    tile->SetPos(tilePosX, 300.f);
-    tile->SetTileNum(14);
-    tile = CreateObject<CTile>("tile14");
-    tile->SetPos(tilePosX, 100.f);
-    tile->SetTileNum(14);
-    tilePosX += 50.f;
-
-    tile = CreateObject<CTile>("tile15");
-    tile->SetPos(tilePosX, 300.f);
-    tile->SetTileNum(15);
-    tile = CreateObject<CTile>("tile15");
-    tile->SetPos(tilePosX, 100.f);
-    tile->SetTileNum(15);
-    tilePosX += 50.f;
-
-    tile = CreateObject<CTile>("tile16");
-    tile->SetPos(tilePosX, 300.f);
-    tile->SetTileNum(16);
-    tile = CreateObject<CTile>("tile16");
-    tile->SetPos(tilePosX, 100.f);
-    tile->SetTileNum(16);
-
-
-    tilePosX -= 400.f;
-
-    tile = CreateObject<CTile>("tile14");
-    tile->SetPos(tilePosX, 0.f);
-    tile->SetTileNum(14);
-    tilePosX += 50.f;
-
-    tile = CreateObject<CTile>("tile15");
-    tile->SetPos(tilePosX, 0.f);
-    tile->SetTileNum(15);
-    tilePosX += 50.f;
-
-    tile = CreateObject<CTile>("tile16");
-    tile->SetPos(tilePosX, 0.f);
-    tile->SetTileNum(16);
-
-    tilePosX += 200.f;
-
-
-    // 포탈 발판
-    tile = CreateObject<CTile>("tile14");
-    tile->SetPos(tilePosX, -100.f);
-    tile->SetTileNum(14);
-    tilePosX += 50.f;
-
-    for (int i = 0; i < 4; ++i) {
-        tile = CreateObject<CTile>("tile15");
-        tile->SetPos(tilePosX, -100.f);
-        tile->SetTileNum(15);
-        tilePosX += 50.f;
-    }
-
-    tile = CreateObject<CTile>("tile16");
-    tile->SetPos(tilePosX, -100.f);
-    tile->SetTileNum(16);
-}
-
 
 void CMainScene::CreateStageOneMap()
 {
