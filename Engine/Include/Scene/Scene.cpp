@@ -3,10 +3,23 @@
 #include "Camera.h"
 #include "SceneResource.h"
 
+HFONT CScene::CreateFontWithSize(HFONT originalFont, int newFontSize)
+{
+    LOGFONT logFont;
+    GetObject(originalFont, sizeof(LOGFONT), &logFont);
+    logFont.lfHeight = newFontSize;
+    return CreateFontIndirect(&logFont);
+}
+
 bool CScene::Init()
 {
     m_resource = std::make_shared<CSceneResource>();
     m_camera = std::make_shared<CCamera>();
+    AddFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, nullptr);
+    m_hFont = CreateFont(
+        40, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
+        DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+        DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"DungGeunMo");
     return true;
 }
 
@@ -82,6 +95,11 @@ void CScene::Render(HDC hDC, float elapsedTime)
             ++iter;
         }
     }
+}
+
+CScene::~CScene()
+{
+    RemoveFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, nullptr);
 }
 
 

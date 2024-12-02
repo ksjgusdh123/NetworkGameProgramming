@@ -142,20 +142,15 @@ void CLobbyScene::SendGameData()
 
 void CLobbyScene::PrintName(HDC hDC)
 {
-
-	AddFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, nullptr);
-	HFONT hFont = CreateFont(
-		40, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
-		DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-		DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"DungGeunMo");
+	HFONT hFont = CreateFontWithSize(m_hFont, 40);
 	HFONT hOldFont = (HFONT)SelectObject(hDC, hFont);
+
 	for (int i = 0; i < 2; ++i)
 	{
 		wchar_t wideName[NAME_LEN] = {};
 		MultiByteToWideChar(CP_ACP, 0, m_lobbyData->players[i].name, -1, wideName, NAME_LEN);
 
 		SetTextColor(hDC, RGB(255, 255, 255));   // 텍스트 색상 (흰색)
-		SetBkColor(hDC, RGB(0, 0, 0));         // 배경색 (파란색)
 		SetBkMode(hDC, TRANSPARENT);
 
 		wchar_t ready[] = L"Ready!";
@@ -172,8 +167,6 @@ void CLobbyScene::PrintName(HDC hDC)
 				TextOut(hDC, 610, 400, ready, wcslen(ready));
 		}
 	}
-	// 이전 폰트를 복원하고 새 폰트를 삭제
 	SelectObject(hDC, hOldFont);
 	DeleteObject(hFont);
-	RemoveFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, nullptr);
 }

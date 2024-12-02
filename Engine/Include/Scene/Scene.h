@@ -12,6 +12,7 @@ public:
 	void SetMyPlayer(class CGameObject* player) { m_myPlayer = player; }
 	void SetPlayer(class CGameObject* player) { m_player = player; }
 
+	HFONT CreateFontWithSize(HFONT originalFont, int newFontSize);
 public:
 	virtual bool Init();
 	virtual void Update(float elapsedTime);
@@ -34,7 +35,7 @@ public:
 
 		return obj.get();
 	}
-
+	~CScene();
 	int m_sceneType = 0;
 
 protected:
@@ -44,5 +45,7 @@ protected:
 	class CGameObject* m_myPlayer;
 	class CGameObject* m_player;
 	int m_myid;
+
+	HFONT m_hFont;
 };
 

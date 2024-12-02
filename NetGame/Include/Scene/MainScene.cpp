@@ -126,6 +126,12 @@ void CMainScene::Update(float elapsedTime)
 
 }
 
+void CMainScene::Render(HDC hDC, float elapsedTime)
+{
+    CScene::Render(hDC, elapsedTime);
+    RenderPlayTime(hDC);
+}
+
 void CMainScene::RecvGameData(const Packet& packet)
 {
     switch (packet.type)
@@ -229,6 +235,28 @@ void CMainScene::GameStateCheck(float elapsedTime)
         CSceneManager::GetInst()->CreateScene<CResultScene>();
     }
 }
+
+void CMainScene::RenderPlayTime(HDC hDC)
+{
+    HFONT hFont = CreateFontWithSize(m_hFont, 30);
+    HFONT hOldFont = (HFONT)SelectObject(hDC, hFont);
+
+    int totalSeconds = m_inGameData->playtime;
+    int hours = totalSeconds / 3600;
+    int minutes = (totalSeconds % 3600) / 60;
+    int seconds = totalSeconds % 60;
+
+    wchar_t timeText[64];
+    swprintf_s(timeText, L"Play Time %02d:%02d:%02d", hours, minutes, seconds);
+
+    SetTextColor(hDC, RGB(255, 255, 204));
+    SetBkMode(hDC, TRANSPARENT);
+
+    TextOut(hDC, 20, 20, timeText, wcslen(timeText));
+    SelectObject(hDC, hOldFont);
+    DeleteObject(hFont);
+}
+
 
 bool CMainScene::IsPlayerInRicheAttackArea()
 {

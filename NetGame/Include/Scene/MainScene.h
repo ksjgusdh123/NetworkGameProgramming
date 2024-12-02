@@ -18,6 +18,9 @@ class CMainScene :
 public:
 	virtual bool Init() override;
 	virtual void Update(float elapsedTime);
+	virtual void Render(HDC hDC, float elapsedTime);
+
+	void RenderPlayTime(HDC hDC);
 	bool IsPlayerInRicheAttackArea();
 	void CreateStageOneMap();
 	void ResourceInit();
