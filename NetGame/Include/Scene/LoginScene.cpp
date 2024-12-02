@@ -15,7 +15,9 @@ bool CLoginScene::Init()
 	CScene::Init();
 	m_sceneType = LOGIN_SCENE;
 	m_myid = PacketManager::GetInst().GetMyID();
-
+#ifdef DEBUG
+	SendLoginRequest("Name");
+#elif
 	CGameObject* back = CreateObject<CGameObject>("eawoi");
 	back->CreateTexture(1);
 	back->SetTexture("LoginBackground", TEXT("Map/LoginBackground.bmp"), EObject_Dir::Right);
@@ -28,22 +30,23 @@ bool CLoginScene::Init()
 	m_hEdit = CreateWindow(TEXT("edit"), TEXT(""), WS_CHILD | WS_VISIBLE | WS_BORDER, 380, 500, 180, 25, hwnd, (HMENU)IDC_EDIT, hInst, NULL);
 	m_hButton = CreateWindow(L"button", L"È®ÀÎ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 600, 500, 100, 25, hwnd, (HMENU)IDC_BUTTON, hInst, NULL);
 
-	// ????? ?????? ??? 10??? ????? ?? ????? ????
 	SendMessage(m_hEdit, EM_SETLIMITTEXT, 10, 0);
-
+#endif
 	return true;
 }
 
 void CLoginScene::Update(float elapsedTime)
 {
 	CScene::Update(elapsedTime);
+#ifdef DEBUG
+	CSceneManager::GetInst()->CreateScene<CLobbyScene>();
+#endif
 }
 
 void CLoginScene::CheckButton()
 {
 	std::string str = EditBoxToString(); 
 	if (str == "") return;
-	// ???? ?????? ???? ??? -> ??? ??? ?? ?¥á??? bool??
 	if (SendLoginRequest(str))
 	{
 		DestroyWindow(m_hEdit);
@@ -55,11 +58,9 @@ void CLoginScene::CheckButton()
 
 std::string CLoginScene::EditBoxToString()
 {
-	// ??????? ??????? ???? wchar_t ?ò÷ ???
 	wchar_t str[11];
 	GetDlgItemText(CEngine::GetInst()->GetWindowHandle(), IDC_EDIT, str, 11);
 
-	// wstring?? string???? ???
 	std::wstring wstr(str);
 	std::string result(wstr.begin(), wstr.end());
 

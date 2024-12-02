@@ -58,7 +58,9 @@ bool CLobbyScene::Init()
 void CLobbyScene::Update(float elapsedTime)
 {
 	CScene::Update(elapsedTime);
-
+#ifdef DEBUG
+	m_lobbyData->players[m_myid].bReady = TRUE;
+#endif
 	if (m_lobbyData->players[0].bReady && m_lobbyData->players[1].bReady)
 	{
 		for (int i = 0; i < 3; ++i)
