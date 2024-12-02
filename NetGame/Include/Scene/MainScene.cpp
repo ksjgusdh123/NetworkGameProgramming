@@ -174,35 +174,23 @@ void CMainScene::SendGameData()
 
 void CMainScene::RenderPlayTime(HDC hDC)
 {
-    // 외부 폰트 추가
-    AddFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, nullptr);
-    HFONT hFont = CreateFont(
-        30, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
-        DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-        DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"DungGeunMo");
+    HFONT hFont = CreateFontWithSize(m_hFont, 30);
     HFONT hOldFont = (HFONT)SelectObject(hDC, hFont);
 
-    // 플레이 시간 계산
     int totalSeconds = m_inGameData->playtime;
     int hours = totalSeconds / 3600;
     int minutes = (totalSeconds % 3600) / 60;
     int seconds = totalSeconds % 60;
 
-    // 플레이 시간 텍스트 생성
     wchar_t timeText[64];
     swprintf_s(timeText, L"Play Time %02d:%02d:%02d", hours, minutes, seconds);
 
-    // 텍스트 색상 및 배경 설정
-    SetTextColor(hDC, RGB(255, 255, 204));   // 흰색 텍스트
-    SetBkMode(hDC, TRANSPARENT);            // 배경 투명
+    SetTextColor(hDC, RGB(255, 255, 204));
+    SetBkMode(hDC, TRANSPARENT);
 
-    // 텍스트 출력 (위치 조정 가능)
     TextOut(hDC, 20, 20, timeText, wcslen(timeText));
-
-    // 이전 폰트 복원 및 리소스 해제
     SelectObject(hDC, hOldFont);
     DeleteObject(hFont);
-    RemoveFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, nullptr);
 }
 
 
