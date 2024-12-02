@@ -168,6 +168,7 @@
     <ClInclude Include="GameObject\BossAttack.h" />
     <ClInclude Include="GameObject\Ghost.h" />
     <ClInclude Include="GameObject\Heart.h" />
+    <ClInclude Include="GameObject\HPBar.h" />
     <ClInclude Include="GameObject\LobbyPlayer.h" />
     <ClInclude Include="GameObject\Portal.h" />
     <ClInclude Include="GameObject\Riche.h" />
@@ -199,6 +200,7 @@
     <ClCompile Include="GameObject\BossAttack.cpp" />
     <ClCompile Include="GameObject\Ghost.cpp" />
     <ClCompile Include="GameObject\Heart.cpp" />
+    <ClCompile Include="GameObject\HPBar.cpp" />
     <ClCompile Include="GameObject\LobbyPlayer.cpp" />
     <ClCompile Include="GameObject\Player.cpp" />
     <ClCompile Include="GameObject\Portal.cpp" />

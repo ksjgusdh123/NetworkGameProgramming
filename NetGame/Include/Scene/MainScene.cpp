@@ -64,12 +64,16 @@ bool CMainScene::Init()
     player[1] = CreateObject<CSwordman>("player1");
     player[0]->SetPos(-930.f, 300.f);
     player[1]->SetPos(-930.f, 300.f);
+    player[0]->CreateHPBar(this);
+    player[1]->CreateHPBar(this);
     SetPlayer(player[abs(1 - m_myid)]);
 
     player[m_myid]->InitInput();
     SetMyPlayer(player[m_myid]);
     GetCamera()->SetTarget(player[m_myid]);
 
+    player[0]->CreateHPBar(this);
+    player[1]->CreateHPBar(this);
 
     ghost = CreateObject<CGhost>("fdkaj");
     ghost->SetPos(-100.f, 410.f);
@@ -158,7 +162,7 @@ void CMainScene::RecvGameData(const Packet& packet)
             player[i]->m_hp = m_inGameData->players[i].hp;
         }
 
-        for (MonsterInfo m : m_inGameData->monster)
+        for (MonsterInfo& m : m_inGameData->monster)
         {
             switch (m.type) {
             case '0':

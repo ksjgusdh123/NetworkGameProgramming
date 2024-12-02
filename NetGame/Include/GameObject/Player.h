@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "HPBar.h"
 
 class CPlayer :public CGameObject
 {
@@ -13,6 +14,8 @@ public:
 	virtual void PostUpdate(float elapsedTime) override;
 	virtual void Render(HDC hDC, float elapsedTime) override;
 	virtual void InitInput();
+
+	void CreateHPBar(class CScene* scene);
 
 	bool m_bIsLanded = false;
 	bool m_bJump = false;
@@ -41,5 +44,6 @@ protected:
 
 	Vector2 m_attackSize;
 	Vector2 m_attackPivot;
-};	
+	CHPBar* m_hpBar;
+};
 

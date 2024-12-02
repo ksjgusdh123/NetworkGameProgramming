@@ -306,3 +306,9 @@ void CPlayer::DieEvent()
 		}
 	}
 }
+
+void CPlayer::CreateHPBar(CScene* scene)
+{
+	m_hpBar = scene->CreateObject<CHPBar>("hpBar");
+	m_hpBar->SetOwner((CGameObject*)this);
+}
