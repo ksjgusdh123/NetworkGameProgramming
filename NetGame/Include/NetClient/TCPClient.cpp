@@ -12,7 +12,6 @@ DWORD WINAPI RecvThread(LPVOID arg)
 	PacketManager::GetInst().Init(sock);
 	while (true)
 	{
-		WaitForSingleObject(hRecvEvent, INFINITE);
 		Packet packet = PacketManager::GetInst().RecvPacket();
 		PacketManager::GetInst().ProcessPacket(packet);
 	}
@@ -23,18 +22,12 @@ DWORD WINAPI SendThread(LPVOID arg)
 {
 	SOCKET sock = (SOCKET)arg;
 
-	while (true)
-	{
-		if (CSceneManager::GetInst()->GetScene()->m_sceneType != LOGIN_SCENE)
-			break;
-	}
-
+	
 	while (true)
 	{
 		PacketManager::GetInst().DequeueSendPacket();
 		CSceneManager::GetInst()->GetScene()->SendGameData();
 		Sleep(1000 / 30);
-		SetEvent(hRecvEvent);
 	}
 	return true;
 }

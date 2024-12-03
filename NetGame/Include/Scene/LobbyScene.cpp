@@ -12,9 +12,9 @@
 #define IDC_BUTTON2 101	
 #define IDC_BUTTON3 102	
 CRITICAL_SECTION cs;
-
 bool CLobbyScene::Init()
 {
+	InitializeCriticalSection(&cs);
 	CScene::Init();
 	m_myid = PacketManager::GetInst().GetMyID();
 	m_lobbyData = &PacketManager::GetInst().lobbyData;
@@ -96,7 +96,7 @@ void CLobbyScene::KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
 void CLobbyScene::RecvGameData(const Packet& packet)
 {
-	//EnterCriticalSection(&cs);
+	EnterCriticalSection(&cs);
 	switch (packet.type)
 	{
 	case TileResponse:
@@ -123,15 +123,15 @@ void CLobbyScene::RecvGameData(const Packet& packet)
 	default:
 		break;
 	}
-	//LeaveCriticalSection(&cs);
+	LeaveCriticalSection(&cs);
 }
 
 void CLobbyScene::SendGameData()
 {
-	//EnterCriticalSection(&cs);
+	EnterCriticalSection(&cs);
 	C_LobbyUpdateRequest sendPacket(m_lobbyData->players[m_myid]);
 	PacketManager::GetInst().SendPacket(sendPacket);
-	//LeaveCriticalSection(&cs);
+	LeaveCriticalSection(&cs);
 }
 
 void CLobbyScene::PrintName(HDC hDC)

@@ -62,10 +62,6 @@ bool CBossScene::Init()
 	m_tilePosY = manager->m_tilePosY;
 	CreateStageOneMap();
 
-	{
-		Packet packet = PacketManager::GetInst().RecvPacket();
-		PacketManager::GetInst().ProcessPacket(packet);
-	}
 	return true;
 }
 
