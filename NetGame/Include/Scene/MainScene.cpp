@@ -98,10 +98,10 @@ bool CMainScene::Init()
 	//    C_TileRequestPkt packet{};
 	//    PacketManager::GetInst().EnqueueSendPacket(packet);
 	//}
-	{
-		Packet packet = PacketManager::GetInst().RecvPacket();
-		PacketManager::GetInst().ProcessPacket(packet);
-	}
+	//{
+	//	Packet packet = PacketManager::GetInst().RecvPacket();
+	//	PacketManager::GetInst().ProcessPacket(packet);
+	//}
 	return true;
 }
 

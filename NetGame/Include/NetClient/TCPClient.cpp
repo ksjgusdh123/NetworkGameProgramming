@@ -15,8 +15,6 @@ DWORD WINAPI RecvThread(LPVOID arg)
 		WaitForSingleObject(hRecvEvent, INFINITE);
 		Packet packet = PacketManager::GetInst().RecvPacket();
 		PacketManager::GetInst().ProcessPacket(packet);
-		ResetEvent(hRecvEvent);
-		SetEvent(hSendEvent);
 	}
 	return true;
 }
@@ -33,11 +31,9 @@ DWORD WINAPI SendThread(LPVOID arg)
 
 	while (true)
 	{
-		WaitForSingleObject(hSendEvent, INFINITE);
-		Sleep(1000 / 30);
 		PacketManager::GetInst().DequeueSendPacket();
 		CSceneManager::GetInst()->GetScene()->SendGameData();
-		ResetEvent(hSendEvent);
+		Sleep(1000 / 30);
 		SetEvent(hRecvEvent);
 	}
 	return true;
@@ -46,8 +42,8 @@ DWORD WINAPI SendThread(LPVOID arg)
 bool TCPClient::Init()
 {
 	cout << "Client Init()\n";
-	hRecvEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-	hSendEvent = CreateEvent(NULL, FALSE, TRUE, NULL);
+	hRecvEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+	hSendEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
 
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)

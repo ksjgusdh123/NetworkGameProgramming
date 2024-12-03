@@ -53,7 +53,8 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 {
 	while (true)
 	{
-		WaitForMultipleObjects(2, hWorkEvent, TRUE, INFINITE);
+		int num = TCPServer::GetInst()->clients.size();
+		WaitForMultipleObjects(num, hWorkEvent, TRUE, INFINITE);
 		ResetEvent(hRecvEvent);
 		switch (curScene)
 		{
@@ -101,8 +102,10 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 		default: break;
 		}
 
-		ResetEvent(hWorkEvent[0]);
-		ResetEvent(hWorkEvent[1]);
+		for (int i = 0; i < num; ++i)
+		{
+			ResetEvent(hWorkEvent[i]);
+		}
 		SetEvent(hRecvEvent);
 	}
 }
@@ -160,8 +163,8 @@ bool TCPServer::Init()
 {
 	cout << "Init()\n";
 	hRecvEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
-	hWorkEvent[0] = CreateEvent(NULL, FALSE, FALSE, NULL);
-	hWorkEvent[1] = CreateEvent(NULL, FALSE, FALSE, NULL);
+	hWorkEvent[0] = CreateEvent(NULL, TRUE, FALSE, NULL);
+	hWorkEvent[1] = CreateEvent(NULL, TRUE, FALSE, NULL);
 
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		return false;
