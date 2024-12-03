@@ -5,6 +5,7 @@
 #include <Scene/Scene.h>
 #include "..\Scene\LoginScene.h"
 HANDLE hRecvEvent, hSendEvent;
+CRITICAL_SECTION cs;
 
 DWORD WINAPI RecvThread(LPVOID arg)
 {
@@ -38,12 +39,12 @@ bool TCPClient::Init()
 	hRecvEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 	hSendEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
 
+	InitializeCriticalSection(&cs);
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		return false;
 	sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == INVALID_SOCKET) err_quit("socket()");
-
 	Connect();
 	return true;
 }

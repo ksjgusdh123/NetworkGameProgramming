@@ -22,7 +22,7 @@ DWORD WINAPI RecvThread(LPVOID arg)
 
 	while (true)
 	{
-		WaitForSingleObject(hRecvEvent, INFINITE);
+		//WaitForSingleObject(hRecvEvent, INFINITE);
 
 		int type;
 		int data_size;

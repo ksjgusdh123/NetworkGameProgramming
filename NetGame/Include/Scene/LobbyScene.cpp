@@ -11,10 +11,8 @@
 #define IDC_BUTTON 100	
 #define IDC_BUTTON2 101	
 #define IDC_BUTTON3 102	
-CRITICAL_SECTION cs;
 bool CLobbyScene::Init()
 {
-	InitializeCriticalSection(&cs);
 	CScene::Init();
 	m_myid = PacketManager::GetInst().GetMyID();
 	m_lobbyData = &PacketManager::GetInst().lobbyData;
