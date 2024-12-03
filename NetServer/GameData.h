@@ -122,8 +122,10 @@ struct TileInfo
 enum ItemType {HEART, STAR, TRAP};
 struct ItemInfo
 {
+	int id;
 	int type;
 	vector2 pos;
+	vector2 size;
 	short GetEffectAmount() const
 	{
 		const static short amounts[] = {100,10,15};

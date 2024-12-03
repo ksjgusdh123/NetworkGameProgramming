@@ -15,14 +15,14 @@ void ItemManager::CreateItem()
 
     inGameData->item.fill({});
 
-    inGameData->item[0] = { ItemType::TRAP, vector2(-570.f, 415.f) };
-    inGameData->item[1] = { ItemType::TRAP, vector2(-40.f, 140.f) };
-    inGameData->item[2] = { ItemType::TRAP, vector2(600.f, 40.f) };
-    inGameData->item[3] = { ItemType::TRAP, vector2(600.f, 240.f) };
+    inGameData->item[0] = { 0 ,ItemType::TRAP, vector2(-570.f, 415.f) };
+    inGameData->item[1] = { 1 ,ItemType::TRAP, vector2(-40.f, 140.f) };
+    inGameData->item[2] = { 2 ,ItemType::TRAP, vector2(600.f, 40.f) };
+    inGameData->item[3] = { 3 ,ItemType::TRAP, vector2(600.f, 240.f) };
 
-    inGameData->item[4] = { ItemType::STAR, vector2(-570.f, 415.f) };
+    inGameData->item[4] = { 4, ItemType::STAR, vector2(-570.f, 415.f) };
 
-    inGameData->item[5] = { ItemType::HEART, vector2(280.f, 415.f) };
+    inGameData->item[5] = { 5, ItemType::HEART, vector2(280.f, 415.f) };
 }
 
 void ItemManager::CheckItemCollision(GamePlayerInfo& player)
