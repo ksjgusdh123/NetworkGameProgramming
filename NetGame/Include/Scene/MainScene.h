@@ -36,6 +36,7 @@ private:
 	class CPlayer* player[2];
 	CGhost* ghost;
 	CRiche* riche;
+	CRicheAttack* richeAttack[10];
 	CBoss* boss;
 	Vector2	m_cameraVelocity;
 	int m_tileNum{};

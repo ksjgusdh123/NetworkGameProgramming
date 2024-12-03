@@ -85,6 +85,10 @@ bool CMainScene::Init()
 	riche->CreateHPBar(this);
 	riche->m_hpBar->SetBarSize(80, 5);
 
+	for (int i = 0; i < 10; ++i) {
+		richeAttack[i] = CreateObject<CRicheAttack>("richeAttack");
+	}
+
 	CSceneManager* manager = CSceneManager::GetInst();
 	m_tileNum = manager->m_tileNum;
 	m_tileType = manager->m_tileType;
@@ -172,7 +176,6 @@ void CMainScene::RecvGameData(const Packet& packet)
 
 		for (MonsterInfo& m : m_inGameData->monster)
 		{
-			
 			switch (m.type) {
 			case '0':
 			{
@@ -207,6 +210,17 @@ void CMainScene::RecvGameData(const Packet& packet)
 			default:
 				break;
 			}
+		}
+
+		for (int i = 0 ; i < MONSTER_ATTACK_NUM ; ++i)
+		{
+			richeAttack[i]->SetPos(m_inGameData->monsterAttack[i].pos.x, m_inGameData->monsterAttack[i].pos.y);
+			richeAttack[i]->SetState(m_inGameData->monsterAttack[i].state);
+			richeAttack[i]->SetDir(m_inGameData->monsterAttack[i].direct);
+			if (m_inGameData->monsterAttack[i].is_alive)
+				richeAttack[i]->SetEnable(true);
+			else
+				richeAttack[i]->SetEnable(false);
 		}
 
 		break;

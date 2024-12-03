@@ -1,5 +1,6 @@
 #include "MonsterManager.h"
 #include "TileManager.h"
+#define min(a,b)            (((a) < (b)) ? (a) : (b))
 
 void MonsterManager::Init()
 {
@@ -38,6 +39,19 @@ void MonsterManager::CreateMonster()
 	info.size = vector2(107.f, 139.f);
 	inGameData->monster[1] = info;
 
+	for (int i = 0; i < MONSTER_ATTACK_NUM; ++i) {
+		MonsterAttackInfo attckInfo;
+		attckInfo.pos = vector2(-1000.f, -1000.f);
+		attckInfo.size = vector2(50.f, 50.f);
+		attckInfo.type = '0';
+		attckInfo.state = EObject_State::Attack;
+		attckInfo.direct = EObject_Dir::Right;
+		attckInfo.velocity = 5.0f;
+		attckInfo.is_alive = false;
+		attckInfo.timer = 0.f;
+		attckInfo.target = vector2(-1000.f, -1000.f);
+		inGameData->monsterAttack[i] = attckInfo;
+	}
 }
 
 void MonsterManager::CreateBossMonster()
@@ -122,15 +136,51 @@ void MonsterManager::UpdateMonster()
 					if (m.state == EObject_State::Attack_L)
 						m.state = EObject_State::Basic_L;
 
-					//CRicheAttack* ra = m_scene->CreateObject<CRicheAttack>("riche_attack");
-					//ra->SetPos(m_pos);
-					//ra->SetTarget(m_target);
+					for (MonsterAttackInfo& monsterAttack : inGameData->monsterAttack) {
+						if (monsterAttack.is_alive) continue;
+						monsterAttack.pos = m.pos;
+						monsterAttack.target = vector2(m.target.x, m.target.y - 40.f);
+						monsterAttack.is_alive = true;
+						monsterAttack.timer = 0.f;
+						break;
+					}
 				}
 			}
 		}
 		break;
 		default:
 
+			break;
+		}
+	}
+
+	for (MonsterAttackInfo& m : inGameData->monsterAttack){
+		if (!m.is_alive)
+			continue;
+		switch (m.type) {
+		case '0':				// Riche 공격
+		{
+			float dx = m.target.x - m.pos.x;
+			float dy = m.target.y - m.pos.y;
+			float distance = sqrt(dx * dx + dy * dy);
+
+			if (distance > 0.0f) { // 거리 계산
+				float velocityFactor = min(distance, m.velocity); // distance와 x 방향 속도 중 작은 값 선택
+				m.pos.x += (dx / distance) * velocityFactor; // x축 이동
+				m.pos.y += (dy / distance) * velocityFactor; // y축 이동
+			}
+
+			m.timer += 0.05;
+			if (m.timer >= 3.0f)
+				m.is_alive = false;
+
+			if (distance < 10)
+				m.is_alive = false;
+		}
+			break;
+		case '1':				// Boss 공격
+			break;	
+		default:
 			break;
 		}
 	}
