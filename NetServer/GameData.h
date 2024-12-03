@@ -2,6 +2,7 @@
 #include "../Engine/Include/Flag.h"
 constexpr int PLAYER_NUM = 2;
 constexpr int MONSTER_NUM = 2;
+constexpr int MONSTER_ATTACK_NUM = 10;
 constexpr int TILE_NUM = 10;
 constexpr int ITEM_NUM = 10;
 constexpr int NAME_LEN = 20;
@@ -112,6 +113,19 @@ struct MonsterInfo
 	vector2 size = vector2(50.f, 50.f);
 };
 
+struct MonsterAttackInfo
+{
+	vector2 pos = vector2(0.f, 0.f);
+	char type = '0';
+	vector2 size = vector2(50.f, 50.f);
+	EObject_State state = EObject_State::Attack;
+	EObject_Dir direct = EObject_Dir::Right;
+	float velocity = 1.f;
+	bool is_alive = true;
+	float timer = 0.f;
+	vector2 target;
+};
+
 struct TileInfo
 {
 	short type;
@@ -154,6 +168,7 @@ struct InGameData :public GameData
 	std::array<GamePlayerInfo, PLAYER_NUM> players;
 	std::array<MonsterInfo, MONSTER_NUM> monster;
 	std::array<ItemInfo, ITEM_NUM> item;
+	std::array<MonsterAttackInfo, MONSTER_ATTACK_NUM> monsterAttack;
 };
 
 struct ResultData : public GameData
