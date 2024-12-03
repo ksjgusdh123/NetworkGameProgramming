@@ -109,6 +109,7 @@ struct MonsterInfo
 	bool is_alive = true;
 	float timer = 0.f;
 	vector2 target;
+	vector2 size = vector2(50.f, 50.f);
 };
 
 struct TileInfo

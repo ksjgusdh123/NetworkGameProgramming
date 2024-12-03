@@ -33,6 +33,7 @@ public:
 	void UpdateInGameData();
 	void ProcessCollsion();
 	void PortalCollision();
+	void MonsterCollision();
 public:
 	static GameManager& GetInst()
 	{

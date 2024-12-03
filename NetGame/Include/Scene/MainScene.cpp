@@ -176,7 +176,11 @@ void CMainScene::RecvGameData(const Packet& packet)
 			switch (m.type) {
 			case '0':
 			{
-				if (!ghost->m_bIsAlive) break;
+				if (!ghost) break;
+				if (!ghost->m_bIsAlive) {
+					ghost->Destroy();
+					break;
+				}
 				ghost->SetPos(m.pos.x, m.pos.y);
 				ghost->SetState(m.state);
 				ghost->SetDir(m.direct);
@@ -324,3 +328,4 @@ void CMainScene::ResourceInit()
 	GetSceneResource()->LoadTexture("Tile(16)", TEXT("Map/Tile (16).bmp"));
 	GetSceneResource()->LoadTexture("Tile(17)", TEXT("Map/Tile (17).bmp"));
 }
+

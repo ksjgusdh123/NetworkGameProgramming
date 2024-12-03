@@ -24,6 +24,7 @@ void MonsterManager::CreateMonster()
 	info.state = EObject_State::Walk;
 	info.is_alive = true;
 	info.velocity = 50.f;
+	info.size = vector2(43.f, 61.f);
 	inGameData->monster[0] = info;
 
 	info.type = '1';
@@ -62,6 +63,12 @@ void MonsterManager::UpdateMonster()
 		switch (m.type) {
 		case '0':
 		{
+			if (m.state == EObject_State::Die_L || m.state == EObject_State::Die)
+			{
+				m.timer += 0.05f;
+				if (m.timer > 1.0f) m.is_alive = false;
+				break;
+			}
 			float range = 100.f;
 
 			if (m.direct == EObject_Dir::Right && m.pos.x >= m.original_pos.x + range)

@@ -15,6 +15,8 @@ bool CGhost::Init()
 	SetTexture("Ghost_R", TEXT("Monster/Ghost_R.png"), EObject_Dir::Right, ETexture_Type::CIMAGE);
 	SetAnimation(Ghost_L, 6, EObject_State::Walk_L, ETexture_Type::Sprite);
 	SetAnimation(Ghost_R, 6, EObject_State::Walk, ETexture_Type::Sprite);
+	SetAnimation(Ghost_D, 6, EObject_State::Die, ETexture_Type::Sprite);
+	SetAnimation(Ghost_D_L, 6, EObject_State::Die_L, ETexture_Type::Sprite);
 	SetSize(43.f, 61.f);
 	SetColorKey(180, 213, 255);
 	
