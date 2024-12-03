@@ -1,6 +1,8 @@
 #include "ErrDisplay.h"
 #include "TCPServer.h"
 #include "GameManager.h"
+#include "TileManager.h"
+#include "MonsterManager.h"
 
 TCPServer* TCPServer::m_inst;
 CRITICAL_SECTION cs;
@@ -65,7 +67,7 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 				gameData->scene = GAMESCENE;
 				curScene = GAMESCENE;
 				GameManager::GetInst().InitGameData();
-				GameManager::GetInst().SendTilePacket();
+				TileManager::GetInst().SendTilePacket();
 			}
 			GameManager::GetInst().SendLobbyGameData();
 			break;
@@ -78,8 +80,8 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 			{
 				gameData->scene = BOSSSCENE;
 				curScene = BOSSSCENE;
-				GameManager::GetInst().InitBossData();
-				GameManager::GetInst().SendTilePacket();
+				MonsterManager::GetInst().InitBossData();
+				TileManager::GetInst().SendTilePacket();
 			}
 			if (gameData->players[0].hp <= 0 && gameData->players[1].hp <= 0)
 			{
@@ -116,7 +118,7 @@ void TCPServer::ProcessRecvPacket(const Packet& packet)
 		C_LoginRequestPkt* RecvPacket = (C_LoginRequestPkt*)&packet;
 		cout << "[LOGIN] " << RecvPacket->client_id << " Player Name = " << RecvPacket->data << endl;
 
-		auto client = TCPServer::GetInst()->clients[RecvPacket->client_id];
+		auto& client = TCPServer::GetInst()->clients[RecvPacket->client_id];
 		strncpy_s(client.player.name, RecvPacket->data, NAME_LEN);
 		GameManager::GetInst().AddLobbyPlayer(client);
 		curScene = LOBBYSCENE;

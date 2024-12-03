@@ -16,6 +16,9 @@
     <Filter Include="소스 파일\Network">
       <UniqueIdentifier>{cdd92687-b82e-4cdf-b2dd-4519a0473c6b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\ObjectMgr">
+      <UniqueIdentifier>{33f9bbc2-2178-4e08-a195-46952524966c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ServerMain.cpp">
@@ -26,6 +29,12 @@
     </ClCompile>
     <ClCompile Include="GameManager.cpp">
       <Filter>소스 파일\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="TileManager.cpp">
+      <Filter>소스 파일\ObjectMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="MonsterManager.cpp">
+      <Filter>소스 파일\ObjectMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -49,6 +58,12 @@
     </ClInclude>
     <ClInclude Include="GameTimer.h">
       <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="TileManager.h">
+      <Filter>소스 파일\ObjectMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="MonsterManager.h">
+      <Filter>소스 파일\ObjectMgr</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

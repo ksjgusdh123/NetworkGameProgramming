@@ -59,6 +59,7 @@ struct PlayerInfo {
 	int id = -1;
 	char name[NAME_LEN] = {};
 	char job = 0;
+	bool bReady = false;
 
 	PlayerInfo() = default;
 
@@ -70,12 +71,10 @@ struct PlayerInfo {
 };
 
 struct LobbyPlayerInfo : public PlayerInfo {
-	bool bReady = false;
-
 	LobbyPlayerInfo() = default;
 
-	LobbyPlayerInfo(const PlayerInfo& base, bool ready = false)
-		: PlayerInfo(base), bReady(ready) {}
+	LobbyPlayerInfo(const PlayerInfo& base)
+		: PlayerInfo(base) {}
 };
 
 struct GamePlayerInfo : public PlayerInfo {
@@ -118,12 +117,16 @@ struct TileInfo
 	vector2 pos;
 	Collision box;
 };
-
+enum ItemType {HEART, STAR, TRAP};
 struct ItemInfo
 {
 	char type;
 	vector2 pos;
-	short amount;
+	short GetEffectAmount() const
+	{
+		const static short amounts[] = {100,10,15};
+		return amounts[type];
+	}
 };
 
 enum SCENE_STATE
@@ -148,7 +151,7 @@ struct InGameData :public GameData
 	int playtime = -1;
 	std::array<GamePlayerInfo, PLAYER_NUM> players;
 	std::array<MonsterInfo, MONSTER_NUM> monster;
-	//std::array<ItemInfo, ITEM_NUM> item;
+	std::array<ItemInfo, ITEM_NUM> item;
 };
 
 struct ResultData : public GameData

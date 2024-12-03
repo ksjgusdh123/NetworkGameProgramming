@@ -143,8 +143,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="MonsterManager.cpp" />
     <ClCompile Include="ServerMain.cpp" />
     <ClCompile Include="TCPServer.cpp" />
+    <ClCompile Include="TileManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Define.h" />
@@ -152,8 +154,10 @@
     <ClInclude Include="GameData.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameTimer.h" />
+    <ClInclude Include="MonsterManager.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="TCPServer.h" />
+    <ClInclude Include="TileManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Include\Engine.vcxproj">

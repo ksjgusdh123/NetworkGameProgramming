@@ -17,7 +17,7 @@ bool CLoginScene::Init()
 	m_myid = PacketManager::GetInst().GetMyID();
 #ifdef DEBUG
 	SendLoginRequest("Name");
-#elif
+#else
 	CGameObject* back = CreateObject<CGameObject>("eawoi");
 	back->CreateTexture(1);
 	back->SetTexture("LoginBackground", TEXT("Map/LoginBackground.bmp"), EObject_Dir::Right);
