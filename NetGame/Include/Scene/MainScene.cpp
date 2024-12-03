@@ -128,7 +128,6 @@ void CMainScene::Update(float elapsedTime)
 	}
 
 	GameStateCheck(elapsedTime);
-
 }
 
 void CMainScene::Render(HDC hDC, float elapsedTime)
@@ -143,6 +142,12 @@ void CMainScene::RecvGameData(const Packet& packet)
 	{
 	case TileResponse:
 	{
+		m_tileNum = 0;
+		m_tileType.clear();
+		m_tilePosX.clear();
+		m_tilePosY.clear();
+		for (auto t : m_objects[(int)EObject_Type::WALL])
+			(*t).Destroy();
 		S_TilesPkt* cur = (S_TilesPkt*)&packet;
 		cur->deserialize(m_tileNum, m_tileType, m_tilePosX, m_tilePosY);
 		CreateStageOneMap();
@@ -165,9 +170,11 @@ void CMainScene::RecvGameData(const Packet& packet)
 
 		for (MonsterInfo& m : m_inGameData->monster)
 		{
+			
 			switch (m.type) {
 			case '0':
 			{
+				if (!ghost->m_bIsAlive) break;
 				ghost->SetPos(m.pos.x, m.pos.y);
 				ghost->SetState(m.state);
 				ghost->SetDir(m.direct);
@@ -177,6 +184,7 @@ void CMainScene::RecvGameData(const Packet& packet)
 			break;
 			case '1':
 			{
+				if (!riche->m_bIsAlive) break;
 				riche->SetState(m.state);
 				riche->SetDir(m.direct);
 				riche->m_bIsAlive = m.is_alive;

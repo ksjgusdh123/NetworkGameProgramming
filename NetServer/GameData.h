@@ -87,7 +87,7 @@ struct GamePlayerInfo : public PlayerInfo {
 	bool isJump = false;
 	bool isDoubleJump = false;
 	bool bReady = false;
-
+	bool bBoss = false;
 	GamePlayerInfo() = default;
 
 	GamePlayerInfo(const PlayerInfo& base, vector2 pos, short health, short dmg, char playerState, char dir)
