@@ -1,6 +1,7 @@
 #include "SceneManager.h"
 #include "Scene.h"
 #include "DefaultScene.h"
+#include "..\Input.h"
 
 DEFINITION_SINGLE(CSceneManager)
 
@@ -42,6 +43,8 @@ bool CSceneManager::ChangeScene()
 {
 	if (m_nextScene)
 	{
+		CInput::GetInst()->ClearCallback(m_scene.get());
+
 		m_scene.swap(m_nextScene);
 		m_nextScene.reset();
 
