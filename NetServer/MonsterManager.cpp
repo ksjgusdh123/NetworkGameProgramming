@@ -35,6 +35,7 @@ void MonsterManager::CreateMonster()
 	info.state = EObject_State::Basic;
 	info.is_alive = true;
 	info.timer = 0.f;
+	info.size = vector2(107.f, 139.f);
 	inGameData->monster[1] = info;
 
 }
@@ -89,6 +90,13 @@ void MonsterManager::UpdateMonster()
 		break;
 		case '1':
 		{
+			if (m.state == EObject_State::Die_L || m.state == EObject_State::Die)
+			{
+				m.timer += 0.05f;
+				if (m.timer > 1.0f) m.is_alive = false;
+				break;
+			}
+
 			int targetNum = IsPlayerInRicheAttackArea();
 			if (targetNum != -1) {
 				GamePlayerInfo p = inGameData->players[targetNum];

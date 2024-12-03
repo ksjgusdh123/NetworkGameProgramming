@@ -137,10 +137,11 @@ void GameManager::MonsterCollision()
 						inGameData.monster[i].state = EObject_State::Die;
 					else
 						inGameData.monster[i].state = EObject_State::Die_L;
+					inGameData.monster[i].timer = 0.f;
 				}
 				else
 				{
-					// 데미지 입음		
+					// 플레이어 데미지 입음		
 				}
 			}
 			

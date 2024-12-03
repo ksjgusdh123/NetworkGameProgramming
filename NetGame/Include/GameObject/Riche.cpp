@@ -20,6 +20,8 @@ bool CRiche::Init()
 	SetAnimation(Riche_R, 6, EObject_State::Basic);
 	SetAnimation(Riche_Attack_L, 18, EObject_State::Attack_L);
 	SetAnimation(Riche_Attack_R, 18, EObject_State::Attack);
+	SetAnimation(Riche_Die_R, 10, EObject_State::Die);
+	SetAnimation(Riche_Die_L, 10, EObject_State::Die_L);
 	SetSize(107.f, 139.f);
 	SetColorKey(180, 213, 255);
 	

@@ -190,7 +190,11 @@ void CMainScene::RecvGameData(const Packet& packet)
 			break;
 			case '1':
 			{
-				if (!riche->m_bIsAlive) break;
+				if (!riche) break;
+				if (!riche->m_bIsAlive) {
+					riche->Destroy();
+					break;
+				}				
 				riche->SetState(m.state);
 				riche->SetDir(m.direct);
 				riche->m_bIsAlive = m.is_alive;
