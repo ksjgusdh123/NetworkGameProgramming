@@ -31,20 +31,20 @@ bool CGhost::Init()
 void CGhost::Update(float elapsedTime)
 {
 	CGameObject::Update(elapsedTime);
-	if (m_objectDir == EObject_Dir::Right && GetPos().x >= m_originalPosX + m_range)
-	{
-		m_objectDir = EObject_Dir::Left;
-		m_objectState = EObject_State::Walk_L;
-		SetVelocity(-50.f, 0.f); // 왼쪽으로 이동
-	}
-	else if (m_objectDir == EObject_Dir::Left && GetPos().x <= m_originalPosX - m_range)
-	{
-		m_objectDir = EObject_Dir::Right;
-		m_objectState = EObject_State::Walk;
-		SetVelocity(50.f, 0.f); // 오른쪽으로 이동
-	}
+	//if (m_objectDir == EObject_Dir::Right && GetPos().x >= m_originalPosX + m_range)
+	//{
+	//	m_objectDir = EObject_Dir::Left;
+	//	m_objectState = EObject_State::Walk_L;
+	//	SetVelocity(-50.f, 0.f); // 왼쪽으로 이동
+	//}
+	//else if (m_objectDir == EObject_Dir::Left && GetPos().x <= m_originalPosX - m_range)
+	//{
+	//	m_objectDir = EObject_Dir::Right;
+	//	m_objectState = EObject_State::Walk;
+	//	SetVelocity(50.f, 0.f); // 오른쪽으로 이동
+	//}
 
-	m_pos.x += m_velocity.x * 2 * ELAPSED_TIME;
+	//m_pos.x += m_velocity.x * 2 * ELAPSED_TIME;
 }
 
 void CGhost::PostUpdate(float elapsedTime)

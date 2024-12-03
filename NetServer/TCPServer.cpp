@@ -82,7 +82,6 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 				curScene = BOSSSCENE;
 				MonsterManager::GetInst().InitBossData();
 				TileManager::GetInst().SendTilePacket();
-				Sleep(500);
 			}
 			if (gameData->players[0].hp <= 0 && gameData->players[1].hp <= 0)
 			{

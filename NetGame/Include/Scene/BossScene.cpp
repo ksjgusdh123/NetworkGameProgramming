@@ -1,4 +1,4 @@
-#include "MainScene.h"
+#include "BossScene.h"
 #include "GameObject.h"
 #include "..\GameObject\Player.h"
 #include "..\GameObject\Swordman.h"
@@ -14,9 +14,8 @@
 #include "Scene/SceneResource.h"
 #include "ResultScene.h"
 #include <Scene/SceneManager.h>
-#include "BossScene.h"
 
-bool CMainScene::Init()
+bool CBossScene::Init()
 {
 	CScene::Init();
 	ResourceInit();
@@ -35,26 +34,6 @@ bool CMainScene::Init()
 	boss->CreateHPBar(this);
 	boss->m_hpBar->SetBarSize(100, 5);
 
-	CTrap* trap = CreateObject<CTrap>("trap");
-	trap->SetPos(-570.f, 415.f);
-
-	trap = CreateObject<CTrap>("trap");
-	trap->SetPos(-40.f, 140.f);
-
-	trap = CreateObject<CTrap>("trap");
-	trap->SetPos(600.f, 40.f);
-
-	trap = CreateObject<CTrap>("trap");
-	trap->SetPos(600.f, 240.f);
-
-	CStar* star = CreateObject<CStar>("star");
-	star->SetPos(-570.f, 415.f);
-
-	CHeart* heart = CreateObject<CHeart>("heart");
-	heart->SetPos(280.f, 415.f);
-
-	CPortal* portal = CreateObject<CPortal>("portal");
-	portal->SetPos(730.f, -150.f);
 
 	Vector2 resolution = { (float)CEngine::GetInst()->GetResolution().width,
 	(float)CEngine::GetInst()->GetResolution().height };
@@ -76,15 +55,6 @@ bool CMainScene::Init()
 	player[0]->CreateHPBar(this);
 	player[1]->CreateHPBar(this);
 
-	ghost = CreateObject<CGhost>("fdkaj");
-	ghost->SetPos(-100.f, 410.f);
-	ghost->m_originalPosX = ghost->GetPos().x;
-
-	riche = CreateObject<CRiche>("riche");
-	riche->SetPos(120.f, 80.f);
-	riche->CreateHPBar(this);
-	riche->m_hpBar->SetBarSize(80, 5);
-
 	CSceneManager* manager = CSceneManager::GetInst();
 	m_tileNum = manager->m_tileNum;
 	m_tileType = manager->m_tileType;
@@ -92,12 +62,6 @@ bool CMainScene::Init()
 	m_tilePosY = manager->m_tilePosY;
 	CreateStageOneMap();
 
-	//// 게임 시작 요청 패킷 전송
-	//if (m_myid == 0)
-	//{
-	//    C_TileRequestPkt packet{};
-	//    PacketManager::GetInst().EnqueueSendPacket(packet);
-	//}
 	{
 		Packet packet = PacketManager::GetInst().RecvPacket();
 		PacketManager::GetInst().ProcessPacket(packet);
@@ -105,7 +69,7 @@ bool CMainScene::Init()
 	return true;
 }
 
-void CMainScene::Update(float elapsedTime)
+void CBossScene::Update(float elapsedTime)
 {
 	CScene::Update(elapsedTime);
 
@@ -129,30 +93,29 @@ void CMainScene::Update(float elapsedTime)
 	}
 
 	GameStateCheck(elapsedTime);
-
-	if (m_inGameData->players[0].bReady && m_inGameData->players[1].bReady)
-		CSceneManager::GetInst()->CreateScene<CBossScene>();
 }
 
-void CMainScene::Render(HDC hDC, float elapsedTime)
+void CBossScene::Render(HDC hDC, float elapsedTime)
 {
 	CScene::Render(hDC, elapsedTime);
 	RenderPlayTime(hDC);
 }
 
-void CMainScene::RecvGameData(const Packet& packet)
+void CBossScene::RecvGameData(const Packet& packet)
 {
 	switch (packet.type)
 	{
 	case TileResponse:
 	{
+		m_tileNum = 0;
+		m_tileType.clear();
+		m_tilePosX.clear();
+		m_tilePosY.clear();
+		for (auto t : m_objects[(int)EObject_Type::WALL])
+			(*t).Destroy();
 		S_TilesPkt* cur = (S_TilesPkt*)&packet;
-		CSceneManager* manager = CSceneManager::GetInst();
-		manager->m_tileNum = 0;
-		manager->m_tileType.clear();
-		manager->m_tilePosX.clear();
-		manager->m_tilePosY.clear();
-		cur->deserialize(manager->m_tileNum, manager->m_tileType, manager->m_tilePosX, manager->m_tilePosY);
+		cur->deserialize(m_tileNum, m_tileType, m_tilePosX, m_tilePosY);
+		CreateStageOneMap();
 		break;
 	}
 	case GameUpdateResponse:
@@ -176,22 +139,10 @@ void CMainScene::RecvGameData(const Packet& packet)
 			switch (m.type) {
 			case '0':
 			{
-				if (!ghost->m_bIsAlive) break;
-				ghost->SetPos(m.pos.x, m.pos.y);
-				ghost->SetState(m.state);
-				ghost->SetDir(m.direct);
-				ghost->m_bIsAlive = m.is_alive;
-				ghost->m_hp = m.hp;
 			}
 			break;
 			case '1':
 			{
-				if (!riche->m_bIsAlive) break;
-				riche->SetState(m.state);
-				riche->SetDir(m.direct);
-				riche->m_bIsAlive = m.is_alive;
-				riche->m_hp = m.hp;
-				riche->m_target = Vector2(m.target.x, m.target.y);
 			}
 			break;
 			case '2':
@@ -216,13 +167,13 @@ void CMainScene::RecvGameData(const Packet& packet)
 	}
 }
 
-void CMainScene::SendGameData()
+void CBossScene::SendGameData()
 {
 	C_GameUpdateRequest sendPacket(m_inGameData->players[m_myid]);
 	PacketManager::GetInst().SendPacket(sendPacket);
 }
 
-void CMainScene::GameDataCopy()
+void CBossScene::GameDataCopy()
 {
 	m_inGameData->players[m_myid].pos = vector2(player[m_myid]->GetPos().x, player[m_myid]->GetPos().y);
 	m_inGameData->players[m_myid].state = (char)(EObject_State)(player[m_myid]->GetState());
@@ -233,7 +184,7 @@ void CMainScene::GameDataCopy()
 	m_inGameData->players[m_myid].hp = player[m_myid]->m_hp;
 }
 
-void CMainScene::GameStateCheck(float elapsedTime)
+void CBossScene::GameStateCheck(float elapsedTime)
 {
 	if (((CPlayer*)m_myPlayer)->m_hp <= 0)
 	{
@@ -251,7 +202,7 @@ void CMainScene::GameStateCheck(float elapsedTime)
 	}
 }
 
-void CMainScene::RenderPlayTime(HDC hDC)
+void CBossScene::RenderPlayTime(HDC hDC)
 {
 	HFONT hFont = CreateFontWithSize(m_hFont, 30);
 	HFONT hOldFont = (HFONT)SelectObject(hDC, hFont);
@@ -273,27 +224,12 @@ void CMainScene::RenderPlayTime(HDC hDC)
 }
 
 
-bool CMainScene::IsPlayerInRicheAttackArea()
-{
-
-	EObject_State riche_state = riche->GetState();
-	if (riche_state == EObject_State::Attack_L || riche_state == EObject_State::Attack) return false;
-
-	float dx = player[m_myid]->GetPos().x - riche->GetPos().x;
-	float dy = player[m_myid]->GetPos().y - riche->GetPos().y;
-	float distance = sqrt(dx * dx + dy * dy);
-	if (distance < 400) return true;
-
-
-	return false;
-}
-
-void CMainScene::BossAttack()
+void CBossScene::BossAttack()
 {
 	boss->Attack(player[m_myid]->GetPos());
 }
 
-void CMainScene::CreateStageOneMap()
+void CBossScene::CreateStageOneMap()
 {
 	CTile* tile;
 	for (int i = 0; i < m_tileNum; ++i) {
@@ -304,7 +240,7 @@ void CMainScene::CreateStageOneMap()
 	}
 }
 
-void CMainScene::ResourceInit()
+void CBossScene::ResourceInit()
 {
 	GetSceneResource()->LoadTexture("Tile(1)", TEXT("Map/Tile (1).bmp"));
 	GetSceneResource()->LoadTexture("Tile(2)", TEXT("Map/Tile (2).bmp"));

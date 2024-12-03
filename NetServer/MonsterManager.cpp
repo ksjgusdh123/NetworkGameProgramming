@@ -8,10 +8,9 @@ void MonsterManager::Init()
 
 void MonsterManager::InitBossData()
 {
+	MonsterManager::GetInst().Init();
 	TileManager::GetInst().CreateBossTile();
 	CreateBossMonster();
-	for (MonsterInfo& m : inGameData->monster)
-		m.is_alive = false;
 }
 
 void MonsterManager::CreateMonster()
