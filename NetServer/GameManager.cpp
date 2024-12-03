@@ -120,3 +120,40 @@ void GameManager::CheckPortalCollision(GamePlayerInfo& player)
 		player.bReady = false;
 	}
 }
+
+void GameManager::MonsterCollision()
+{
+	for (auto& player : inGameData.players) {
+		vector2 size = vector2(50, 60);
+		vector2 playerPos = player.pos;
+		vector2 playerSize = size;
+		float playerLeft = playerPos.x - playerSize.x / 2;
+		float playerRight = playerPos.x + playerSize.x / 2;
+		float playerTop = playerPos.y - playerSize.y / 2;
+		float playerBottom = playerPos.y + playerSize.y / 2;
+
+		for (int i = 0; i < MONSTER_NUM; ++i) {
+			if (!inGameData.monster[i].is_alive) continue;
+			vector2 MonsterPos = inGameData.monster[i].pos;
+			vector2 MonsterSize = inGameData.monster[i].size;
+			vector2 MonsterLT = vector2(MonsterPos.x - MonsterSize.x / 2, MonsterPos.y - MonsterSize.y / 2);
+			vector2 MonsterRB = vector2(MonsterPos.x + MonsterSize.x / 2, MonsterPos.y + MonsterSize.y / 2);
+			if (playerRight > MonsterLT.x && playerLeft < MonsterRB.x &&
+				playerBottom > MonsterLT.y && playerTop < MonsterRB.y) {
+
+				if (player.state == 5 || player.state == 6 || player.state == 7 || player.state == 8) { // 플레이어가 공격상태일 경우 
+					if (inGameData.monster[i].direct == EObject_Dir::Right)
+						inGameData.monster[i].state = EObject_State::Die;
+					else
+						inGameData.monster[i].state = EObject_State::Die_L;
+					inGameData.monster[i].timer = 0.f;
+				}
+				else
+				{
+					// 플레이어 데미지 입음		
+				}
+			}
+
+		}
+	}
+}

@@ -7,11 +7,6 @@ void MonsterManager::Init()
 
 void MonsterManager::CreateMonster()
 {
-	if (!inGameData)
-	{
-		cout << "inGameData is null!\n";
-		return;
-	}
 	MonsterInfo info;
 	info.type = '0';
 	info.pos = vector2(-100.f, 410.f);
@@ -21,6 +16,7 @@ void MonsterManager::CreateMonster()
 	info.state = EObject_State::Walk;
 	info.is_alive = true;
 	info.velocity = 50.f;
+	info.size = vector2(43.f, 61.f);
 	inGameData->monster[0] = info;
 
 	info.type = '1';
@@ -31,6 +27,7 @@ void MonsterManager::CreateMonster()
 	info.state = EObject_State::Basic;
 	info.is_alive = true;
 	info.timer = 0.f;
+	info.size = vector2(107.f, 139.f);
 	inGameData->monster[1] = info;
 
 }
@@ -59,6 +56,12 @@ void MonsterManager::UpdateMonster()
 		switch (m.type) {
 		case '0':
 		{
+			if (m.state == EObject_State::Die_L || m.state == EObject_State::Die)
+			{
+				m.timer += 0.05f;
+				if (m.timer > 1.0f) m.is_alive = false;
+				break;
+			}
 			float range = 100.f;
 
 			if (m.direct == EObject_Dir::Right && m.pos.x >= m.original_pos.x + range)
@@ -79,6 +82,13 @@ void MonsterManager::UpdateMonster()
 		break;
 		case '1':
 		{
+			if (m.state == EObject_State::Die_L || m.state == EObject_State::Die)
+			{
+				m.timer += 0.05f;
+				if (m.timer > 1.0f) m.is_alive = false;
+				break;
+			}
+
 			int targetNum = IsPlayerInRicheAttackArea();
 			if (targetNum != -1) {
 				GamePlayerInfo p = inGameData->players[targetNum];

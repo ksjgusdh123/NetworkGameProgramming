@@ -186,6 +186,7 @@
     <ClInclude Include="ClientManager.h" />
     <ClInclude Include="GameObject\Player.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Scene\BossScene.h" />
     <ClInclude Include="Scene\LobbyScene.h" />
     <ClInclude Include="Scene\LoginScene.h" />
     <ClInclude Include="Scene\MainScene.h" />
@@ -213,6 +214,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NetClient\PacketManager.cpp" />
     <ClCompile Include="NetClient\TCPClient.cpp" />
+    <ClCompile Include="Scene\BossScene.cpp" />
     <ClCompile Include="Scene\LobbyScene.cpp" />
     <ClCompile Include="Scene\LoginScene.cpp" />
     <ClCompile Include="Scene\MainScene.cpp" />
