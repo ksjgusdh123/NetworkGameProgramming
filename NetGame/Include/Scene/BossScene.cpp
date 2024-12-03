@@ -83,15 +83,6 @@ void CBossScene::Update(float elapsedTime)
 		m_timer = 0.f;
 	}
 
-	for (auto& object : m_objects[2])
-	{
-		if (player[m_myid]->GetCollision()->CheckCollision(object->GetCollision()))
-		{
-			object->Destroy();
-			break;
-		}
-	}
-
 	GameStateCheck(elapsedTime);
 }
 

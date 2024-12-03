@@ -119,7 +119,7 @@ void CMainScene::Update(float elapsedTime)
 		m_timer = 0.f;
 	}
 
-	for (auto& object : m_objects[2])
+	for (auto& object : m_objects[(int)EObject_Type::Item])
 	{
 		if (player[m_myid]->GetCollision()->CheckCollision(object->GetCollision()))
 		{

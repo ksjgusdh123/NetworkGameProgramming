@@ -42,7 +42,7 @@ public:
 protected:
 	std::shared_ptr<class CSceneResource> m_resource;
 	std::shared_ptr<class CCamera> m_camera;
-	std::array<std::list<std::shared_ptr<class CGameObject>>, 4> m_objects;
+	std::array<std::list<std::shared_ptr<class CGameObject>>, (int)EObject_Type::Max> m_objects;
 	class CGameObject* m_myPlayer;
 	class CGameObject* m_player;
 	int m_myid;
