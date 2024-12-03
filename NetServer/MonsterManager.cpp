@@ -1,19 +1,17 @@
 #include "MonsterManager.h"
-#include "TileManager.h"
 
 void MonsterManager::Init()
 {
 	inGameData = GameManager::GetInst().GetInGameData();
 }
 
-void MonsterManager::InitBossData()
-{
-	TileManager::GetInst().CreateBossTile();
-	CreateBossMonster();
-}
-
 void MonsterManager::CreateMonster()
 {
+	if (!inGameData)
+	{
+		cout << "inGameData is null!\n";
+		return;
+	}
 	MonsterInfo info;
 	info.type = '0';
 	info.pos = vector2(-100.f, 410.f);

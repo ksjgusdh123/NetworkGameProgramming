@@ -5,7 +5,6 @@ class MonsterManager
 {
 public:
 	void Init();
-	void InitBossData();
 	void CreateMonster();
 	void CreateBossMonster();
 	void UpdateMonster();

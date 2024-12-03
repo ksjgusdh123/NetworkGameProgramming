@@ -39,7 +39,6 @@ DWORD WINAPI RecvThread(LPVOID arg)
 		Packet packet(client_id, type, data_size, data);
 		TCPServer::GetInst()->ProcessRecvPacket(packet);
 
-
 		SetEvent(hWorkEvent[client_id]);
 	}
 
@@ -56,7 +55,6 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 	{
 		WaitForMultipleObjects(2, hWorkEvent, TRUE, INFINITE);
 		ResetEvent(hRecvEvent);
-
 		switch (curScene)
 		{
 		case LOBBYSCENE:
@@ -80,7 +78,7 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 			{
 				gameData->scene = BOSSSCENE;
 				curScene = BOSSSCENE;
-				MonsterManager::GetInst().InitBossData();
+				GameManager::GetInst().InitBossData();
 				TileManager::GetInst().SendTilePacket();
 			}
 			if (gameData->players[0].hp <= 0 && gameData->players[1].hp <= 0)

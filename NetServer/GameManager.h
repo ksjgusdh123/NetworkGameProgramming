@@ -21,7 +21,10 @@ public:
 	InGameData* GetInGameData() { return &inGameData; };
 	ResultData* GetResultData() { return &resultData; };
 
+	void InitObjectManager();
 	void InitGameData();
+	void InitBossData();
+
 	void PrintLobbyState();
 	void PrintGameState();
 	void CacluateResult(bool bWin);
@@ -32,7 +35,7 @@ public:
 
 	void UpdateInGameData();
 	void ProcessCollsion();
-	void PortalCollision();
+	void CheckPortalCollision(GamePlayerInfo& player);
 public:
 	static GameManager& GetInst()
 	{

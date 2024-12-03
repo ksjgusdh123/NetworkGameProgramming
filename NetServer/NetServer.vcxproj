@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="ItemManager.cpp" />
     <ClCompile Include="MonsterManager.cpp" />
     <ClCompile Include="ServerMain.cpp" />
     <ClCompile Include="TCPServer.cpp" />
@@ -154,6 +155,7 @@
     <ClInclude Include="GameData.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameTimer.h" />
+    <ClInclude Include="ItemManager.h" />
     <ClInclude Include="MonsterManager.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="TCPServer.h" />

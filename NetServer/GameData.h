@@ -3,7 +3,7 @@
 constexpr int PLAYER_NUM = 2;
 constexpr int MONSTER_NUM = 2;
 constexpr int TILE_NUM = 10;
-constexpr int ITEM_NUM = 3;
+constexpr int ITEM_NUM = 10;
 constexpr int NAME_LEN = 20;
 
 #pragma pack(push, 1)
@@ -43,10 +43,10 @@ public:
 		vector2 otherRB = box->m_info.RB;
 
 		if (m_info.RB.x < otherLT.x || m_info.LT.x > otherRB.x)
-			return false; // X�࿡�� ��ġ�� ����
+			return false;
 
 		if (m_info.RB.y < otherLT.y || m_info.LT.y > otherRB.y)
-			return false; // Y�࿡�� ��ġ�� ����
+			return false;
 
 		return true;
 	}
@@ -117,10 +117,11 @@ struct TileInfo
 	vector2 pos;
 	Collision box;
 };
+
 enum ItemType {HEART, STAR, TRAP};
 struct ItemInfo
 {
-	char type;
+	int type;
 	vector2 pos;
 	short GetEffectAmount() const
 	{

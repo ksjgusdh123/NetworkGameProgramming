@@ -153,7 +153,7 @@ void TileManager::AddTile(TileInfo& info, vector2 blockSize, int type, int x, in
 	tiles.push_back(info);
 }
 
-bool TileManager::CollisionCheck(GamePlayerInfo& player)
+bool TileManager::CheckTileCollision(GamePlayerInfo& player)
 {
 	Collision box;
 	vector2 size = vector2(50, 60);

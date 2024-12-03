@@ -36,6 +36,9 @@
     <ClCompile Include="MonsterManager.cpp">
       <Filter>소스 파일\ObjectMgr</Filter>
     </ClCompile>
+    <ClCompile Include="ItemManager.cpp">
+      <Filter>소스 파일\ObjectMgr</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Packet.h">
@@ -63,6 +66,9 @@
       <Filter>소스 파일\ObjectMgr</Filter>
     </ClInclude>
     <ClInclude Include="MonsterManager.h">
+      <Filter>소스 파일\ObjectMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemManager.h">
       <Filter>소스 파일\ObjectMgr</Filter>
     </ClInclude>
   </ItemGroup>
