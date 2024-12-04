@@ -105,6 +105,7 @@ void GameManager::ProcessCollsion()
 		ItemManager::GetInst().CheckItemCollision(player);
 		CheckPortalCollision(player);
 	}
+	MonsterCollision();
 }
 
 void GameManager::CheckPortalCollision(GamePlayerInfo& player)
@@ -158,11 +159,42 @@ void GameManager::MonsterCollision()
 				}
 				else
 				{
-					// 플레이어 데미지 입음		
+					player.hp -= 1;
+					player.hp = std::clamp((int)player.hp, 0, 100);
 				}
 			}
 
 		}
+
+		for (int i = 0; i < MONSTER_ATTACK_NUM; ++i) {
+			if (!inGameData.monsterAttack[i].is_alive) continue;
+			vector2 MonsterAttackPos = inGameData.monsterAttack[i].pos;
+			vector2 MonsterAttackSize = inGameData.monsterAttack[i].size;
+			vector2 MonsterAttackLT = vector2(MonsterAttackPos.x - MonsterAttackSize.x / 2, MonsterAttackPos.y - MonsterAttackSize.y / 2);
+			vector2 MonsterAttackRB = vector2(MonsterAttackPos.x + MonsterAttackSize.x / 2, MonsterAttackPos.y + MonsterAttackSize.y / 2);
+			if (playerRight > MonsterAttackLT.x && playerLeft < MonsterAttackRB.x &&
+				playerBottom > MonsterAttackLT.y && playerTop < MonsterAttackRB.y) {
+
+				if (player.job == EPlayer_Job::Sword) { // 전사일 때 원거리 공격 삭제
+					if (player.state == EObject_State::Attack || player.state == EObject_State::Attack_L || player.state == EObject_State::Attack2 || player.state == EObject_State::Attack_L2) { // 플레이어가 공격상태일 경우 
+						inGameData.monsterAttack[i].is_alive = false;
+						break;
+					}
+					else
+					{
+						player.hp -= 1;
+						player.hp = std::clamp((int)player.hp, 0, 100);
+					}
+				}
+				else {	// 궁수 일 때 피 깎임 
+					player.hp -= 1;
+					player.hp = std::clamp((int)player.hp, 0, 100);
+				}
+				
+			}
+
+		}
+
 	}
 }
 
