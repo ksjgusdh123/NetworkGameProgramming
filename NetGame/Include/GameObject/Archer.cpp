@@ -7,12 +7,6 @@ bool CArcher::Init()
 {
 	CPlayer::Init();
 
-	for (int i = 0; i < 50; ++i)
-	{
-		m_arrows[i] = m_scene->CreateObject<CArrow>("Arrow");
-	}
-
-
 	m_attackPivot = Vector2(0.5f, 0.5f);
 	m_attackSize = Vector2(1.3f, 1.f);
 
@@ -67,27 +61,10 @@ void CArcher::CheckFrame(float elapsedTime)
 		SetSize(m_size.x / m_attackSize.x, m_size.y / m_attackSize.y);
 		SetPivot(Vector2(0.5, 0.5f));
 		m_bFrameCheck = false;
-		ShotArrow();
+		//ShotArrow();
 	}
 }
 
 void CArcher::ShotArrow()
 {
-	for (int i = 0; i < 50; ++i)
-	{
-		if (!m_arrows[i]->GetEnable())
-		{
-			m_arrows[i]->SetEnable(true);
-			m_arrows[i]->SetPos(GetPos());
-			m_arrows[i]->SetDir(m_objectDir);
-
-			if (m_objectDir == EObject_Dir::Right)
-				m_arrows[i]->SetState(EObject_State::Basic);
-			else
-				m_arrows[i]->SetState(EObject_State::Basic_L);
-
-			m_arrows[i]->m_timer = 0;
-			break;
-		}
-	}
 }

@@ -39,6 +39,7 @@ private:
 	CGhost* ghost;
 	CRiche* riche;
 	CRicheAttack* richeAttack[10];
+	class  CArrow* arrows[2][10];
 	CBoss* boss;
 	Vector2	m_cameraVelocity;
 	int m_tileNum{};

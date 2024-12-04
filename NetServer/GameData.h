@@ -60,7 +60,7 @@ public:
 struct PlayerInfo {
 	int id = -1;
 	char name[NAME_LEN] = {};
-	EPlayer_Job job = EPlayer_Job::Sword;
+	EPlayer_Job job = EPlayer_Job::Archer;
 	bool bReady = false;
 
 	PlayerInfo() = default;
@@ -83,16 +83,17 @@ struct GamePlayerInfo : public PlayerInfo {
 	vector2 pos{ -930.f ,475.f };
 	short hp = 100;
 	short damage = 10;
-	char state = 0;
-	char dir = 0;
+	EObject_State state = EObject_State::Basic;
+	EObject_Dir dir = EObject_Dir::Right;
 	bool isLanded = false;
 	bool isJump = false;
 	bool isDoubleJump = false;
 	bool bReady = false;
 	bool bBoss = false;
+	float timer = 0.f;
 	GamePlayerInfo() = default;
 
-	GamePlayerInfo(const PlayerInfo& base, vector2 pos, short health, short dmg, char playerState, char dir)
+	GamePlayerInfo(const PlayerInfo& base, vector2 pos, short health, short dmg, EObject_State playerState, EObject_Dir dir)
 		: PlayerInfo(base), pos(pos), hp(health), damage(dmg), state(playerState), dir(dir) {}
 };
 
@@ -102,8 +103,8 @@ struct ArrowInfo
 	vector2 size = vector2(40.f, 10.f);
 	EObject_State state = EObject_State::Basic;
 	EObject_Dir direct = EObject_Dir::Right;
-	float velocity = 1.f;
-	bool is_alive = true;
+	vector2 velocity = vector2(400, 10);
+	bool is_alive = false;
 	float timer = 0.f;
 };
 

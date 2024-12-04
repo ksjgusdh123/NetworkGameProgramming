@@ -59,15 +59,15 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 		{
 		case LOBBYSCENE:
 		{
-			LobbyData* gameData = GameManager::GetInst().GetLobbyData();
-			if (gameData->players[0].bReady && gameData->players[1].bReady)
+			LobbyData* lobbyData = GameManager::GetInst().GetLobbyData();
+			if (lobbyData->players[0].bReady && lobbyData->players[1].bReady)
 			{
-				gameData->scene = GAMESCENE;
+				lobbyData->scene = GAMESCENE;
 				curScene = GAMESCENE;
-				InGameData* data = GameManager::GetInst().GetInGameData();
+				InGameData* gameData = GameManager::GetInst().GetInGameData();
 				for (int i = 0; i < 2; ++i)
 				{
-					data->players[i].job = gameData->players[i].job;
+					gameData->players[i].job = lobbyData->players[i].job;
 				}
 				GameManager::GetInst().InitGameData();
 				TileManager::GetInst().SendTilePacket();

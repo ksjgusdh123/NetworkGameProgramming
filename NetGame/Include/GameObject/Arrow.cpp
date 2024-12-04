@@ -20,23 +20,7 @@ bool CArrow::Init()
 void CArrow::Update(float elapsedTime)
 {
 	CGameObject::Update(elapsedTime);
-	m_timer += elapsedTime;
-
-	if (m_timer >= 3)
-	{
-		SetEnable(false);
-		return;
-	}
-
-	if (m_objectDir == EObject_Dir::Right)
-	{
-		m_pos.x += m_velocity.x * elapsedTime;
-	}
-	else
-	{
-		m_pos.x -= m_velocity.x * elapsedTime;
-	}
-	m_pos.y += m_velocity.y * elapsedTime;
+	
 }
 
 void CArrow::PostUpdate(float elapsedTime)

@@ -71,6 +71,14 @@ bool CMainScene::Init()
 		richeAttack[i] = CreateObject<CRicheAttack>("richeAttack");
 	}
 
+	for (int j = 0; j < 2; ++j)
+	{
+		for (int i = 0; i < 10; ++i) {
+			arrows[j][i] = CreateObject<CArrow>("arrow");
+		}
+	}
+
+
 	CSceneManager* manager = CSceneManager::GetInst();
 	m_tileNum = manager->m_tileNum;
 	m_tileType = manager->m_tileType;
@@ -222,18 +230,17 @@ void CMainScene::GameDataUpdateFromServer()
 
 	for (int j = 0; j < 2; ++j)
 	{
-		CArcher* archer = dynamic_cast<CArcher*>(players[j]);
-		if (archer)
+		if (m_inGameData->players[j].job == EPlayer_Job::Archer)
 		{
 			for (int i = 0; i < ARROW_NUM; ++i)
 			{
-				archer->m_arrows[i]->SetPos(m_inGameData->arrowAttack[i].pos.x, m_inGameData->arrowAttack[i].pos.y);
-				archer->m_arrows[i]->SetState(m_inGameData->arrowAttack[i].state);
-				archer->m_arrows[i]->SetDir(m_inGameData->arrowAttack[i].direct);
+				arrows[j][i]->SetPos(m_inGameData->arrowAttack[i].pos.x, m_inGameData->arrowAttack[i].pos.y);
+				arrows[j][i]->SetState(m_inGameData->arrowAttack[i].state);
+				arrows[j][i]->SetDir(m_inGameData->arrowAttack[i].direct);
 				if (m_inGameData->arrowAttack[i].is_alive)
-					archer->m_arrows[i]->SetEnable(true);
+					arrows[j][i]->SetEnable(true);
 				else
-					archer->m_arrows[i]->SetEnable(false);
+					arrows[j][i]->SetEnable(false);
 			}
 		}
 	}
@@ -254,8 +261,8 @@ void CMainScene::GameDataUpdateFromServer()
 void CMainScene::GameDataUpdateFromClient()
 {
 	m_inGameData->players[m_myid].pos = vector2(players[m_myid]->GetPos().x, players[m_myid]->GetPos().y);
-	m_inGameData->players[m_myid].state = (char)(EObject_State)(players[m_myid]->GetState());
-	m_inGameData->players[m_myid].dir = (char)(EObject_Dir)(players[m_myid]->GetDir());
+	m_inGameData->players[m_myid].state = (EObject_State)(players[m_myid]->GetState());
+	m_inGameData->players[m_myid].dir = (EObject_Dir)(players[m_myid]->GetDir());
 	m_inGameData->players[m_myid].isLanded = players[m_myid]->m_bIsLanded;
 	m_inGameData->players[m_myid].isJump = players[m_myid]->m_bJump;
 	m_inGameData->players[m_myid].isDoubleJump = players[m_myid]->m_bDoubleJump;
