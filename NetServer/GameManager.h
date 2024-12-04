@@ -34,10 +34,13 @@ public:
 	void SendResultData();
 
 	void UpdateInGameData();
+	void UpdateBossData();
 	void ProcessCollsion();
+	void ProcessBossCollsion();
 	void CheckPortalCollision(GamePlayerInfo& player);
 	void CheckArrowCollision();
 	void MonsterCollision();
+	void BossCollsion();
 
 	void CalculateArrow();
 
