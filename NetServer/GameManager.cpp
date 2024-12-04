@@ -165,7 +165,11 @@ void GameManager::CheckArrowCollision()
 			if (inGameData.monster[i].box.CheckCollision(&arrow.box))
 			{
 				arrow.is_alive = false;
-				inGameData.monster[i].is_alive = false;
+				if (inGameData.monster[i].direct == EObject_Dir::Right)
+					inGameData.monster[i].state = EObject_State::Die;
+				else
+					inGameData.monster[i].state = EObject_State::Die_L;
+				inGameData.monster[i].timer = 0.f;
 			}
 		}
 
@@ -199,21 +203,6 @@ void GameManager::MonsterCollision()
 				{
 					player.hp -= 1;
 					player.hp = std::clamp((int)player.hp, 0, 100);
-				}
-			}
-
-
-			for (int j = 0; j < ARROW_NUM; ++j) {
-				if (!inGameData.arrowAttack[j].is_alive) continue;
-				inGameData.arrowAttack[j].box.UpdateCollision(inGameData.arrowAttack[j].pos, inGameData.arrowAttack[j].size);
-				if (inGameData.arrowAttack[j].box.CheckCollision(&inGameData.monster[i].box)) {
-					if (inGameData.monster[i].direct == EObject_Dir::Right)
-						inGameData.monster[i].state = EObject_State::Die;
-					else
-						inGameData.monster[i].state = EObject_State::Die_L;
-					inGameData.monster[i].timer = 0.f;
-
-					inGameData.arrowAttack[j].is_alive = false;
 				}
 			}
 
