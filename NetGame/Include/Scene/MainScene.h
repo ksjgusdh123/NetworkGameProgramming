@@ -23,6 +23,7 @@ public:
 	void RenderPlayTime(HDC hDC);
 	bool IsPlayerInRicheAttackArea();
 	void CreateStageOneMap();
+	void CreateStageOneItem();
 	void ResourceInit();
 	void BossAttack();
 	void RecvGameData(const Packet& packet);

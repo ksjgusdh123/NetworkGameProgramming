@@ -7,58 +7,63 @@ void ItemManager::Init()
 
 void ItemManager::CreateItem()
 {
-    if (!inGameData)
-    {
-        cout << "inGameData is null!\n";
-        return;
-    }
+	if (!inGameData)
+	{
+		cout << "inGameData is null!\n";
+		return;
+	}
 
-    inGameData->item.fill({});
+	inGameData->item.fill({});
 
-    inGameData->item[0] = { 0 ,ItemType::TRAP, vector2(-570.f, 415.f) };
-    inGameData->item[1] = { 1 ,ItemType::TRAP, vector2(-40.f, 140.f) };
-    inGameData->item[2] = { 2 ,ItemType::TRAP, vector2(600.f, 40.f) };
-    inGameData->item[3] = { 3 ,ItemType::TRAP, vector2(600.f, 240.f) };
+	for (int i = 0; i < (int)ItemId::MAX; ++i)
+	{
+		int type;
+		if (i< STAR1)
+			type = ItemType::TRAP;
+		else if (i< HEART1)
+			type = ItemType::STAR;
+		else
+			type = ItemType::HEART;
 
-    inGameData->item[4] = { 4, ItemType::STAR, vector2(-570.f, 415.f) };
-
-    inGameData->item[5] = { 5, ItemType::HEART, vector2(280.f, 415.f) };
+		inGameData->item[i] = { i, type, ItemPos[i] };
+	}
 }
 
 void ItemManager::CheckItemCollision(GamePlayerInfo& player)
 {
-    Collision playerCollision;
-    vector2 playerSize = vector2(50, 60); // 플레이어 크기
-    playerCollision.UpdateCollision(player.pos, playerSize);
+	Collision playerCollision;
+	vector2 playerSize = vector2(50, 60); // 플레이어 크기
+	playerCollision.UpdateCollision(player.pos, playerSize);
 
-    for (auto& item : inGameData->item)
-    {
-        if (item.type == -1) continue; // 비활성화된 아이템 건너뛰기
+	for (auto& item : inGameData->item)
+	{
+		if (item.type == -1) continue; // 비활성화된 아이템 건너뛰기
 
-        Collision itemCollision;
-        vector2 itemSize = vector2(30, 30); // 아이템 크기 (예시)
-        itemCollision.UpdateCollision(item.pos, itemSize);
+		Collision itemCollision;
+		vector2 itemSize = item.GetSize();
+		itemCollision.UpdateCollision(item.pos, itemSize);
 
-        if (playerCollision.CheckCollision(&itemCollision))
-        {
-            short effectAmount = item.GetEffectAmount();
-            switch (item.type)
-            {
-            case ItemType::HEART:
-                player.hp += effectAmount;
-                break;
-            case ItemType::STAR:
-                player.damage += effectAmount;
-                break;
-            case ItemType::TRAP:
-                player.hp -= effectAmount;
-                break;
-            default:
-                break;
-            }
-
-            // 아이템 비활성화
-            item.type = -1;
-        }
-    }
+		if (playerCollision.CheckCollision(&itemCollision))
+		{
+			short effectAmount = item.GetEffectAmount();
+			switch (item.type)
+			{
+			case ItemType::HEART:
+				player.hp += effectAmount;
+				player.hp = std::clamp((int)player.hp, 0, 100);
+				item.type = -1;
+				break;
+			case ItemType::STAR:
+				player.damage += effectAmount;
+				item.type = -1;
+				break;
+			case ItemType::TRAP:
+				player.hp -= effectAmount;
+				player.hp = std::clamp((int)player.hp, 0, 100);
+				break;
+			default:
+				break;
+			}
+		}
+	}
 }

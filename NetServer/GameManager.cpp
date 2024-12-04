@@ -21,6 +21,7 @@ void GameManager::InitGameData()
 	InitObjectManager();
 	TileManager::GetInst().CreateTile();
 	MonsterManager::GetInst().CreateMonster();
+	ItemManager::GetInst().CreateItem();
 	gameTimer.Start();
 }
 

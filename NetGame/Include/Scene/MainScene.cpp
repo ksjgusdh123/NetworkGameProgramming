@@ -35,24 +35,6 @@ bool CMainScene::Init()
 	boss->CreateHPBar(this);
 	boss->m_hpBar->SetBarSize(100, 5);
 
-	CTrap* trap = CreateObject<CTrap>("trap");
-	trap->SetPos(-570.f, 415.f);
-
-	trap = CreateObject<CTrap>("trap");
-	trap->SetPos(-40.f, 140.f);
-
-	trap = CreateObject<CTrap>("trap");
-	trap->SetPos(600.f, 40.f);
-
-	trap = CreateObject<CTrap>("trap");
-	trap->SetPos(600.f, 240.f);
-
-	CStar* star = CreateObject<CStar>("star");
-	star->SetPos(-570.f, 415.f);
-
-	CHeart* heart = CreateObject<CHeart>("heart");
-	heart->SetPos(280.f, 415.f);
-
 	CPortal* portal = CreateObject<CPortal>("portal");
 	portal->SetPos(730.f, -150.f);
 
@@ -91,6 +73,7 @@ bool CMainScene::Init()
 	m_tilePosX = manager->m_tilePosX;
 	m_tilePosY = manager->m_tilePosY;
 	CreateStageOneMap();
+	CreateStageOneItem();
 
 	//// 게임 시작 요청 패킷 전송
 	//if (m_myid == 0)
@@ -119,18 +102,21 @@ void CMainScene::Update(float elapsedTime)
 		m_timer = 0.f;
 	}
 
-	for (auto& object : m_objects[(int)EObject_Type::Item])
+	for (auto& item : m_inGameData->item)
 	{
-		if (players[m_myid]->GetCollision()->CheckCollision(object->GetCollision()))
+		if (item.type != -1) continue;
+
+		for (auto& object : m_objects[(int)EObject_Type::Item])
 		{
-			object->Destroy();
-			break;
+			bool isRemovedId = (item.id == object->GetItemId());
+			if (isRemovedId)
+				object->Destroy();
 		}
 	}
 
 	GameStateCheck(elapsedTime);
-
-	if (m_inGameData->players[0].bReady && m_inGameData->players[1].bReady)
+	bool isPortalEntry = m_inGameData->players[0].bReady && m_inGameData->players[1].bReady;
+	if (isPortalEntry)
 		CSceneManager::GetInst()->CreateScene<CBossScene>();
 }
 
@@ -159,56 +145,7 @@ void CMainScene::RecvGameData(const Packet& packet)
 	{
 		S_GameInfoPacket* RecvPacket = (S_GameInfoPacket*)&packet;
 		memcpy(m_inGameData, RecvPacket->data, RecvPacket->data_size);
-		for (int i = 0; i < PLAYER_NUM; ++i)
-		{
-			players[i]->SetPos(m_inGameData->players[i].pos.x, m_inGameData->players[i].pos.y);
-			players[i]->SetState((EObject_State)(int)m_inGameData->players[i].state);
-			players[i]->SetDir((EObject_Dir)(int)m_inGameData->players[i].dir);
-			players[i]->m_bIsLanded = m_inGameData->players[i].isLanded;
-			players[i]->m_bJump = m_inGameData->players[i].isJump;
-			players[i]->m_bDoubleJump = m_inGameData->players[i].isDoubleJump;
-			players[i]->m_hp = m_inGameData->players[i].hp;
-		}
-
-		for (MonsterInfo& m : m_inGameData->monster)
-		{
-			
-			switch (m.type) {
-			case '0':
-			{
-				if (!ghost) break;
-				if (!ghost->m_bIsAlive) {
-					ghost->Destroy();
-					break;
-				}
-				ghost->SetPos(m.pos.x, m.pos.y);
-				ghost->SetState(m.state);
-				ghost->SetDir(m.direct);
-				ghost->m_bIsAlive = m.is_alive;
-				ghost->m_hp = m.hp;
-			}
-			break;
-			case '1':
-			{
-				if (!riche) break;
-				if (!riche->m_bIsAlive) {
-					riche->Destroy();
-					break;
-				}				
-				riche->SetState(m.state);
-				riche->SetDir(m.direct);
-				riche->m_bIsAlive = m.is_alive;
-				riche->m_hp = m.hp;
-				riche->m_target = Vector2(m.target.x, m.target.y);
-			}
-			break;
-			case '2':
-				break;
-			default:
-				break;
-			}
-		}
-
+		GameDataUpdateFromServer();
 		break;
 	}
 	case GameEndNotification:
@@ -228,6 +165,61 @@ void CMainScene::SendGameData()
 {
 	C_GameUpdateRequest sendPacket(m_inGameData->players[m_myid]);
 	PacketManager::GetInst().SendPacket(sendPacket);
+}
+
+void CMainScene::GameDataUpdateFromServer()
+{
+	for (int i = 0; i < PLAYER_NUM; ++i)
+	{
+		players[i]->SetPos(m_inGameData->players[i].pos.x, m_inGameData->players[i].pos.y);
+		players[i]->SetState((EObject_State)(int)m_inGameData->players[i].state);
+		players[i]->SetDir((EObject_Dir)(int)m_inGameData->players[i].dir);
+		players[i]->m_bIsLanded = m_inGameData->players[i].isLanded;
+		players[i]->m_bJump = m_inGameData->players[i].isJump;
+		players[i]->m_bDoubleJump = m_inGameData->players[i].isDoubleJump;
+		players[i]->m_hp = m_inGameData->players[i].hp;
+	}
+
+	for (MonsterInfo& m : m_inGameData->monster)
+	{
+
+		switch (m.type) {
+		case '0':
+		{
+			if (!ghost) break;
+			if (!ghost->m_bIsAlive) {
+				ghost->Destroy();
+				break;
+			}
+			ghost->SetPos(m.pos.x, m.pos.y);
+			ghost->SetState(m.state);
+			ghost->SetDir(m.direct);
+			ghost->m_bIsAlive = m.is_alive;
+			ghost->m_hp = m.hp;
+		}
+		break;
+		case '1':
+		{
+			if (!riche) break;
+			if (!riche->m_bIsAlive) {
+				riche->Destroy();
+				break;
+			}
+			riche->SetState(m.state);
+			riche->SetDir(m.direct);
+			riche->m_bIsAlive = m.is_alive;
+			riche->m_hp = m.hp;
+			riche->m_target = Vector2(m.target.x, m.target.y);
+		}
+		break;
+		case '2':
+			break;
+		default:
+			break;
+		}
+	}
+
+
 }
 
 void CMainScene::GameDataUpdateFromClient()
@@ -292,7 +284,6 @@ bool CMainScene::IsPlayerInRicheAttackArea()
 	float distance = sqrt(dx * dx + dy * dy);
 	if (distance < 400) return true;
 
-
 	return false;
 }
 
@@ -309,6 +300,45 @@ void CMainScene::CreateStageOneMap()
 		tile = CreateObject<CTile>(tileName);
 		tile->SetPos(m_tilePosX[i], m_tilePosY[i]);
 		tile->SetTileNum(m_tileType[i]);
+	}
+}
+
+void CMainScene::CreateStageOneItem()
+{
+	for (int i = 0; i < (int)ItemId::MAX; ++i)
+	{
+		int type;
+		if (i < STAR1)
+			type = ItemType::TRAP;
+		else if (i < HEART1)
+			type = ItemType::STAR;
+		else
+			type = ItemType::HEART;
+
+		switch(type)
+		{
+		case ItemType::TRAP:
+		{
+			CTrap* trap = CreateObject<CTrap>("trap");
+			trap->SetItemId(i);
+			trap->SetPos(ItemPos[i].x, ItemPos[i].y);
+			break;
+		}
+		case ItemType::STAR:
+		{
+			CStar* star = CreateObject<CStar>("star");
+			star->SetItemId(i);
+			star->SetPos(ItemPos[i].x, ItemPos[i].y);
+			break;
+		}
+		case ItemType::HEART:
+		{
+			CHeart* heart = CreateObject<CHeart>("heart");
+			heart->SetItemId(i);
+			heart->SetPos(ItemPos[i].x, ItemPos[i].y);
+			break;
+		}
+		}
 	}
 }
 
