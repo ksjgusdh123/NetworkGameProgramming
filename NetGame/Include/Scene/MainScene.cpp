@@ -45,18 +45,7 @@ bool CMainScene::Init()
 	GetCamera()->SetViewType(ECamera_Type::Target);
 	m_cameraVelocity = Vector2(100.f, 100.f);
 
-	players[0] = CreateObject<CArcher>("player0");
-	players[1] = CreateObject<CSwordman>("player1");
-	players[0]->SetPos(-930.f, 300.f);
-	players[1]->SetPos(-930.f, 300.f);
-	SetPlayer(players[abs(1 - m_myid)]);
-
-	players[m_myid]->InitInput();
-	SetMyPlayer(players[m_myid]);
-	GetCamera()->SetTarget(players[m_myid]);
-
-	players[0]->CreateHPBar(this);
-	players[1]->CreateHPBar(this);
+	
 
 	ghost = CreateObject<CGhost>("fdkaj");
 	ghost->SetPos(-100.f, 410.f);
@@ -77,9 +66,30 @@ bool CMainScene::Init()
 			arrows[j][i] = CreateObject<CArrow>("arrow");
 		}
 	}
-
-
 	CSceneManager* manager = CSceneManager::GetInst();
+	for (int i = 0; i < 2; ++i)
+	{
+		if (manager->m_playerJob[i] == EPlayer_Job::Archer)
+		{
+			players[i] = CreateObject<CArcher>("player" + i);
+			m_inGameData->players[i].job = EPlayer_Job::Archer;
+		}
+		else
+		{
+			players[i] = CreateObject<CSwordman>("player" + i);
+			m_inGameData->players[i].job = EPlayer_Job::Sword;
+		}
+		players[i]->SetPos(-930.f, 300.f);
+	}
+	SetPlayer(players[abs(1 - m_myid)]);
+
+	players[m_myid]->InitInput();
+	SetMyPlayer(players[m_myid]);
+	GetCamera()->SetTarget(players[m_myid]);
+
+	players[0]->CreateHPBar(this);
+	players[1]->CreateHPBar(this);
+
 	m_tileNum = manager->m_tileNum;
 	m_tileType = manager->m_tileType;
 	m_tilePosX = manager->m_tilePosX;

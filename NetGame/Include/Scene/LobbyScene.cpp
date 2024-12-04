@@ -55,6 +55,10 @@ void CLobbyScene::Update(float elapsedTime)
 #endif
 	if (m_lobbyData->players[0].bReady && m_lobbyData->players[1].bReady)
 	{
+		CSceneManager* manager = CSceneManager::GetInst();
+		manager->m_playerJob[0] = m_lobbyData->players[0].job;
+		manager->m_playerJob[1] = m_lobbyData->players[1].job;
+
 		for (int i = 0; i < 3; ++i)
 		{
 			DestroyWindow(m_hButton[i]);

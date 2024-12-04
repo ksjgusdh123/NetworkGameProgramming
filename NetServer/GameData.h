@@ -60,7 +60,7 @@ public:
 struct PlayerInfo {
 	int id = -1;
 	char name[NAME_LEN] = {};
-	EPlayer_Job job = EPlayer_Job::Archer;
+	EPlayer_Job job = EPlayer_Job::Sword;
 	bool bReady = false;
 
 	PlayerInfo() = default;
