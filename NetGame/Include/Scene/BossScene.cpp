@@ -76,12 +76,12 @@ void CBossScene::Update(float elapsedTime)
 	GameDataCopy();
 
 
-	m_timer += elapsedTime;
-	if (m_timer > 2.0f) {
-		if (boss->GetActive())
-			BossAttack();
-		m_timer = 0.f;
-	}
+	//m_timer += elapsedTime;
+	//if (m_timer > 2.0f) {
+	//	if (boss->GetActive())
+	//		BossAttack();
+	//	m_timer = 0.f;
+	//}
 
 	for (auto& object : m_objects[2])
 	{
@@ -137,15 +137,17 @@ void CBossScene::RecvGameData(const Packet& packet)
 		{
 			
 			switch (m.type) {
-			case '0':
-			{
-			}
-			break;
-			case '1':
-			{
-			}
-			break;
 			case '2':
+				if (!boss) break;
+				if (!boss->m_bIsAlive) {
+					boss->Destroy();
+					break;
+				}
+				boss->SetPos(m.pos.x, m.pos.y);
+				boss->SetState(m.state);
+				boss->SetDir(m.direct);
+				boss->m_bIsAlive = m.is_alive;
+				boss->m_hp = m.hp;
 				break;
 			default:
 				break;

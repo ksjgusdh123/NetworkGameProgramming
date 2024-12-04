@@ -51,13 +51,13 @@ void MonsterManager::CreateBossMonster()
 {
 	MonsterInfo info;
 	info.type = '2';
-	info.pos = vector2(-100.f, 410.f);
-	info.original_pos = info.pos;
+	info.pos = vector2(0.f, 410.f);
 	info.hp = 100;
 	info.direct = EObject_Dir::Right;
-	info.state = EObject_State::Walk;
+	info.state = EObject_State::Basic;
 	info.is_alive = true;
-	info.velocity = 50.f;
+	info.size = vector2(130.f, 160.f);
+	info.timer = 0.f;
 	inGameData->monster[0] = info;
 }
 
@@ -141,6 +141,103 @@ void MonsterManager::UpdateMonster()
 			}
 		}
 		break;
+		case '2':
+			m.timer += 0.05f;
+
+			if (m.timer > 2.0f) {
+				if (m.is_alive) {
+					int targetNum = bossAttack();
+					if (targetNum != -1) {
+						GamePlayerInfo p = inGameData->players[targetNum];
+						m.target = p.pos;
+						m.timer = 0.f;
+
+						float distance = abs(m.target.x - m.pos.x);
+						int bossAttack = 0;
+						if (distance > 400.f)
+							bossAttack = 2;
+						else if (distance <= 400.f && distance > 100.f)
+							bossAttack = 1;
+						else
+							bossAttack = 0;
+
+						switch (bossAttack) {
+						case 0:
+							if (m.target.x >= m.pos.x) {
+								m.state = EObject_State::Attack;
+								m.direct = EObject_Dir::Right;
+							}
+							else {
+								m.state = EObject_State::Attack_L;
+								m.direct = EObject_Dir::Left;
+							}
+							break;
+						case 1:
+							if (m.target.x >= m.pos.x) {
+								m.state = EObject_State::Attack2;
+								m.direct = EObject_Dir::Right;
+							}
+							else {
+								m.state = EObject_State::Attack_L2;
+								m.direct = EObject_Dir::Left;
+							}
+							break;
+						case 2:
+							if (m.target.x >= m.pos.x) {
+								m.state = EObject_State::Telpo;
+								m.direct = EObject_Dir::Up;
+							}
+							else {
+								m.state = EObject_State::Telpo_L;
+								m.direct = EObject_Dir::Up;
+							}
+							break;
+						}
+						
+
+
+					}
+				}
+				m.timer = 0.f;
+			}
+
+
+			if (m.timer >= 1.f) {
+				if (m.state == EObject_State::Attack)
+					m.state = EObject_State::Basic;
+				if (m.state == EObject_State::Attack_L)
+					m.state = EObject_State::Basic_L;
+				if (m.state == EObject_State::Attack_L2) {
+					m.state = EObject_State::Basic_L;
+				/*	CBossAttack* ba = m_scene->CreateObject<CBossAttack>("Boss_Attack");
+					ba->SetPos(m_pos.x - 60.f, m_pos.y + 60.f);
+					ba->SetDir(EObject_Dir::Left);
+
+					ba = m_scene->CreateObject<CBossAttack>("Boss_Attack");
+					ba->SetPos(m_pos.x - 60.f, m_pos.y - 60.f);
+					ba->SetDir(EObject_Dir::Left);*/
+				}
+				if (m.state == EObject_State::Attack2) {
+					m.state = EObject_State::Basic;
+					/*CBossAttack* ba = m_scene->CreateObject<CBossAttack>("Boss_Attack");
+					ba->SetPos(m_pos.x + 60.f, m_pos.y - 60.f);
+					ba->SetDir(EObject_Dir::Right);
+
+					ba = m_scene->CreateObject<CBossAttack>("Boss_Attack");
+					ba->SetPos(m_pos.x + 60.f, m_pos.y + 60.f);
+					ba->SetDir(EObject_Dir::Right);*/
+				}
+				if (m.state == EObject_State::Telpo) {
+					m.state = EObject_State::Telpo;
+					m.pos.x = m.target.x;
+				}
+				if (m.state == EObject_State::Telpo_L) {
+					m.state = EObject_State::Telpo_L;
+					m.pos.x = m.target.x;
+				}
+
+			}
+			break;
 		default:
 
 			break;
@@ -172,6 +269,7 @@ void MonsterManager::UpdateMonster()
 		}
 			break;
 		case '1':				// Boss АјАн
+
 			break;	
 		default:
 			break;
@@ -189,6 +287,18 @@ int MonsterManager::IsPlayerInRicheAttackArea()
 		float dy = inGameData->players[i].pos.y - inGameData->monster[1].pos.y;
 		float distance = sqrt(dx * dx + dy * dy);
 		if (distance < 400) return i;
+	}
+
+	return -1;
+}
+
+int MonsterManager::bossAttack()
+{
+	EObject_State riche_state = inGameData->monster[0].state;
+	if (riche_state == EObject_State::Attack_L || riche_state == EObject_State::Attack || riche_state == EObject_State::Attack2  || riche_state == EObject_State::Attack_L2) return -1;
+
+	for (int i = 0; i < PLAYER_NUM; ++i) {
+		if (inGameData->players[i].hp > 0) return i;
 	}
 
 	return -1;
