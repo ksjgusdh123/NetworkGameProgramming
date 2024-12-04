@@ -53,6 +53,10 @@ public:
 
 	void CreateTexture(int num);
 
+	int GetItemId() { return item_id; };
+	void SetItemId(int id) { item_id = id; };
+private:
+	int item_id;
 public:
 	int m_hp = 100;
 

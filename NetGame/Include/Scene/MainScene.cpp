@@ -35,24 +35,6 @@ bool CMainScene::Init()
 	boss->CreateHPBar(this);
 	boss->m_hpBar->SetBarSize(100, 5);
 
-	CTrap* trap = CreateObject<CTrap>("trap");
-	trap->SetPos(-570.f, 415.f);
-
-	trap = CreateObject<CTrap>("trap");
-	trap->SetPos(-40.f, 140.f);
-
-	trap = CreateObject<CTrap>("trap");
-	trap->SetPos(600.f, 40.f);
-
-	trap = CreateObject<CTrap>("trap");
-	trap->SetPos(600.f, 240.f);
-
-	CStar* star = CreateObject<CStar>("star");
-	star->SetPos(-570.f, 415.f);
-
-	CHeart* heart = CreateObject<CHeart>("heart");
-	heart->SetPos(280.f, 415.f);
-
 	CPortal* portal = CreateObject<CPortal>("portal");
 	portal->SetPos(730.f, -150.f);
 
@@ -63,18 +45,18 @@ bool CMainScene::Init()
 	GetCamera()->SetViewType(ECamera_Type::Target);
 	m_cameraVelocity = Vector2(100.f, 100.f);
 
-	player[0] = CreateObject<CSwordman>("player0");
-	player[1] = CreateObject<CSwordman>("player1");
-	player[0]->SetPos(-930.f, 300.f);
-	player[1]->SetPos(-930.f, 300.f);
-	SetPlayer(player[abs(1 - m_myid)]);
+	players[0] = CreateObject<CSwordman>("player0");
+	players[1] = CreateObject<CSwordman>("player1");
+	players[0]->SetPos(-930.f, 300.f);
+	players[1]->SetPos(-930.f, 300.f);
+	SetPlayer(players[abs(1 - m_myid)]);
 
-	player[m_myid]->InitInput();
-	SetMyPlayer(player[m_myid]);
-	GetCamera()->SetTarget(player[m_myid]);
+	players[m_myid]->InitInput();
+	SetMyPlayer(players[m_myid]);
+	GetCamera()->SetTarget(players[m_myid]);
 
-	player[0]->CreateHPBar(this);
-	player[1]->CreateHPBar(this);
+	players[0]->CreateHPBar(this);
+	players[1]->CreateHPBar(this);
 
 	ghost = CreateObject<CGhost>("fdkaj");
 	ghost->SetPos(-100.f, 410.f);
@@ -95,6 +77,7 @@ bool CMainScene::Init()
 	m_tilePosX = manager->m_tilePosX;
 	m_tilePosY = manager->m_tilePosY;
 	CreateStageOneMap();
+	CreateStageOneItem();
 
 	//// 게임 시작 요청 패킷 전송
 	//if (m_myid == 0)
@@ -113,8 +96,7 @@ void CMainScene::Update(float elapsedTime)
 {
 	CScene::Update(elapsedTime);
 
-	GameDataCopy();
-
+	GameDataUpdateFromClient();
 
 	m_timer += elapsedTime;
 	if (m_timer > 2.0f) {
@@ -123,18 +105,9 @@ void CMainScene::Update(float elapsedTime)
 		m_timer = 0.f;
 	}
 
-	for (auto& object : m_objects[2])
-	{
-		if (player[m_myid]->GetCollision()->CheckCollision(object->GetCollision()))
-		{
-			object->Destroy();
-			break;
-		}
-	}
-
 	GameStateCheck(elapsedTime);
-
-	if (m_inGameData->players[0].bReady && m_inGameData->players[1].bReady)
+	bool isPortalEntry = m_inGameData->players[0].bReady && m_inGameData->players[1].bReady;
+	if (isPortalEntry)
 		CSceneManager::GetInst()->CreateScene<CBossScene>();
 }
 
@@ -163,66 +136,7 @@ void CMainScene::RecvGameData(const Packet& packet)
 	{
 		S_GameInfoPacket* RecvPacket = (S_GameInfoPacket*)&packet;
 		memcpy(m_inGameData, RecvPacket->data, RecvPacket->data_size);
-		for (int i = 0; i < PLAYER_NUM; ++i)
-		{
-			player[i]->SetPos(m_inGameData->players[i].pos.x, m_inGameData->players[i].pos.y);
-			player[i]->SetState((EObject_State)(int)m_inGameData->players[i].state);
-			player[i]->SetDir((EObject_Dir)(int)m_inGameData->players[i].dir);
-			player[i]->m_bIsLanded = m_inGameData->players[i].isLanded;
-			player[i]->m_bJump = m_inGameData->players[i].isJump;
-			player[i]->m_bDoubleJump = m_inGameData->players[i].isDoubleJump;
-			player[i]->m_hp = m_inGameData->players[i].hp;
-		}
-
-		for (MonsterInfo& m : m_inGameData->monster)
-		{
-			switch (m.type) {
-			case '0':
-			{
-				if (!ghost) break;
-				if (!ghost->m_bIsAlive) {
-					ghost->Destroy();
-					break;
-				}
-				ghost->SetPos(m.pos.x, m.pos.y);
-				ghost->SetState(m.state);
-				ghost->SetDir(m.direct);
-				ghost->m_bIsAlive = m.is_alive;
-				ghost->m_hp = m.hp;
-			}
-			break;
-			case '1':
-			{
-				if (!riche) break;
-				if (!riche->m_bIsAlive) {
-					riche->Destroy();
-					break;
-				}				
-				riche->SetState(m.state);
-				riche->SetDir(m.direct);
-				riche->m_bIsAlive = m.is_alive;
-				riche->m_hp = m.hp;
-				riche->m_target = Vector2(m.target.x, m.target.y);
-			}
-			break;
-			case '2':
-				break;
-			default:
-				break;
-			}
-		}
-
-		for (int i = 0 ; i < MONSTER_ATTACK_NUM ; ++i)
-		{
-			richeAttack[i]->SetPos(m_inGameData->monsterAttack[i].pos.x, m_inGameData->monsterAttack[i].pos.y);
-			richeAttack[i]->SetState(m_inGameData->monsterAttack[i].state);
-			richeAttack[i]->SetDir(m_inGameData->monsterAttack[i].direct);
-			if (m_inGameData->monsterAttack[i].is_alive)
-				richeAttack[i]->SetEnable(true);
-			else
-				richeAttack[i]->SetEnable(false);
-		}
-
+		GameDataUpdateFromServer();
 		break;
 	}
 	case GameEndNotification:
@@ -244,15 +158,90 @@ void CMainScene::SendGameData()
 	PacketManager::GetInst().SendPacket(sendPacket);
 }
 
-void CMainScene::GameDataCopy()
+void CMainScene::GameDataUpdateFromServer()
 {
-	m_inGameData->players[m_myid].pos = vector2(player[m_myid]->GetPos().x, player[m_myid]->GetPos().y);
-	m_inGameData->players[m_myid].state = (char)(EObject_State)(player[m_myid]->GetState());
-	m_inGameData->players[m_myid].dir = (char)(EObject_Dir)(player[m_myid]->GetDir());
-	m_inGameData->players[m_myid].isLanded = player[m_myid]->m_bIsLanded;
-	m_inGameData->players[m_myid].isJump = player[m_myid]->m_bJump;
-	m_inGameData->players[m_myid].isDoubleJump = player[m_myid]->m_bDoubleJump;
-	m_inGameData->players[m_myid].hp = player[m_myid]->m_hp;
+	for (int i = 0; i < PLAYER_NUM; ++i)
+	{
+		players[i]->SetPos(m_inGameData->players[i].pos.x, m_inGameData->players[i].pos.y);
+		players[i]->SetState((EObject_State)(int)m_inGameData->players[i].state);
+		players[i]->SetDir((EObject_Dir)(int)m_inGameData->players[i].dir);
+		players[i]->m_bIsLanded = m_inGameData->players[i].isLanded;
+		players[i]->m_bJump = m_inGameData->players[i].isJump;
+		players[i]->m_bDoubleJump = m_inGameData->players[i].isDoubleJump;
+		players[i]->m_hp = m_inGameData->players[i].hp;
+	}
+
+	for (MonsterInfo& m : m_inGameData->monster)
+	{
+		switch (m.type) {
+		case '0':
+		{
+			if (!ghost) break;
+			if (!ghost->m_bIsAlive) {
+				ghost->Destroy();
+				break;
+			}
+			ghost->SetPos(m.pos.x, m.pos.y);
+			ghost->SetState(m.state);
+			ghost->SetDir(m.direct);
+			ghost->m_bIsAlive = m.is_alive;
+			ghost->m_hp = m.hp;
+		}
+		break;
+		case '1':
+		{
+			if (!riche) break;
+			if (!riche->m_bIsAlive) {
+				riche->Destroy();
+				break;
+			}
+			riche->SetState(m.state);
+			riche->SetDir(m.direct);
+			riche->m_bIsAlive = m.is_alive;
+			riche->m_hp = m.hp;
+			riche->m_target = Vector2(m.target.x, m.target.y);
+		}
+		break;
+		case '2':
+			break;
+		default:
+			break;
+		}
+	}
+
+	for (int i = 0; i < MONSTER_ATTACK_NUM; ++i)
+	{
+		richeAttack[i]->SetPos(m_inGameData->monsterAttack[i].pos.x, m_inGameData->monsterAttack[i].pos.y);
+		richeAttack[i]->SetState(m_inGameData->monsterAttack[i].state);
+		richeAttack[i]->SetDir(m_inGameData->monsterAttack[i].direct);
+		if (m_inGameData->monsterAttack[i].is_alive)
+			richeAttack[i]->SetEnable(true);
+		else
+			richeAttack[i]->SetEnable(false);
+	}
+
+	for (auto& item : m_inGameData->item)
+	{
+		if (item.type != -1) continue;
+
+		for (auto& object : m_objects[(int)EObject_Type::Item])
+		{
+			bool isRemovedId = (item.id == object->GetItemId());
+			if (isRemovedId)
+				object->Destroy();
+		}
+	}
+}
+
+void CMainScene::GameDataUpdateFromClient()
+{
+	m_inGameData->players[m_myid].pos = vector2(players[m_myid]->GetPos().x, players[m_myid]->GetPos().y);
+	m_inGameData->players[m_myid].state = (char)(EObject_State)(players[m_myid]->GetState());
+	m_inGameData->players[m_myid].dir = (char)(EObject_Dir)(players[m_myid]->GetDir());
+	m_inGameData->players[m_myid].isLanded = players[m_myid]->m_bIsLanded;
+	m_inGameData->players[m_myid].isJump = players[m_myid]->m_bJump;
+	m_inGameData->players[m_myid].isDoubleJump = players[m_myid]->m_bDoubleJump;
+	m_inGameData->players[m_myid].hp = players[m_myid]->m_hp;
 }
 
 void CMainScene::GameStateCheck(float elapsedTime)
@@ -301,18 +290,17 @@ bool CMainScene::IsPlayerInRicheAttackArea()
 	EObject_State riche_state = riche->GetState();
 	if (riche_state == EObject_State::Attack_L || riche_state == EObject_State::Attack) return false;
 
-	float dx = player[m_myid]->GetPos().x - riche->GetPos().x;
-	float dy = player[m_myid]->GetPos().y - riche->GetPos().y;
+	float dx = players[m_myid]->GetPos().x - riche->GetPos().x;
+	float dy = players[m_myid]->GetPos().y - riche->GetPos().y;
 	float distance = sqrt(dx * dx + dy * dy);
 	if (distance < 400) return true;
-
 
 	return false;
 }
 
 void CMainScene::BossAttack()
 {
-	boss->Attack(player[m_myid]->GetPos());
+	boss->Attack(players[m_myid]->GetPos());
 }
 
 void CMainScene::CreateStageOneMap()
@@ -323,6 +311,45 @@ void CMainScene::CreateStageOneMap()
 		tile = CreateObject<CTile>(tileName);
 		tile->SetPos(m_tilePosX[i], m_tilePosY[i]);
 		tile->SetTileNum(m_tileType[i]);
+	}
+}
+
+void CMainScene::CreateStageOneItem()
+{
+	for (int i = 0; i < (int)ItemId::MAX; ++i)
+	{
+		int type;
+		if (i < STAR1)
+			type = ItemType::TRAP;
+		else if (i < HEART1)
+			type = ItemType::STAR;
+		else
+			type = ItemType::HEART;
+
+		switch(type)
+		{
+		case ItemType::TRAP:
+		{
+			CTrap* trap = CreateObject<CTrap>("trap");
+			trap->SetItemId(i);
+			trap->SetPos(ItemPos[i].x, ItemPos[i].y);
+			break;
+		}
+		case ItemType::STAR:
+		{
+			CStar* star = CreateObject<CStar>("star");
+			star->SetItemId(i);
+			star->SetPos(ItemPos[i].x, ItemPos[i].y);
+			break;
+		}
+		case ItemType::HEART:
+		{
+			CHeart* heart = CreateObject<CHeart>("heart");
+			heart->SetItemId(i);
+			heart->SetPos(ItemPos[i].x, ItemPos[i].y);
+			break;
+		}
+		}
 	}
 }
 

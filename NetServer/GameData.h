@@ -99,14 +99,14 @@ struct MonsterInfo
 {
 	int id = 0;
 	char type = '0';
-	vector2 pos = vector2(0.f,0.f);
+	vector2 pos = vector2(0.f, 0.f);
 	short hp = 100;
 	short damage = 10;
 	EObject_State state = EObject_State::Basic;
 	EObject_Dir direct = EObject_Dir::Right;
 	char attack_type;
 	float velocity = 50.f;
-	vector2 original_pos= vector2(0.f,0.f);
+	vector2 original_pos = vector2(0.f, 0.f);
 	bool is_alive = true;
 	float timer = 0.f;
 	vector2 target;
@@ -133,14 +133,43 @@ struct TileInfo
 	Collision box;
 };
 
-enum ItemType {HEART, STAR, TRAP};
+enum ItemType { HEART, STAR, TRAP };
+enum ItemId
+{
+	TRAP1,
+	TRAP2,
+	TRAP3,
+	TRAP4,
+	STAR1,
+	HEART1,
+	HEART2,
+	HEART3,
+	MAX
+};
+static vector2 ItemPos[(int)ItemId::MAX] =
+{
+	{-550.f, 415.f},
+	{-40.f, 140.f},
+	{570.f, 40.f},
+	{570.f, 240.f},
+	{-570.f, 415.f},
+	{280.f, 415.f},
+	{-330.f, 55.f},
+	{950.f, 140.f},
+};
 struct ItemInfo
 {
+	int id;
 	int type;
 	vector2 pos;
+	vector2 GetSize() const
+	{
+		const static vector2 size[] = { {60.f, 57.f},{60.f, 57.f},{132.f, 74.f} };
+		return size[type];
+	}
 	short GetEffectAmount() const
 	{
-		const static short amounts[] = {100,10,15};
+		const static short amounts[] = { 30,10,1 };
 		return amounts[type];
 	}
 };
@@ -155,7 +184,7 @@ enum SCENE_STATE
 };
 class GameData {};
 
-struct LobbyData:public GameData
+struct LobbyData :public GameData
 {
 	int scene = LOBBYSCENE;
 	std::array<LobbyPlayerInfo, PLAYER_NUM> players;

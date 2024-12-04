@@ -23,17 +23,19 @@ public:
 	void RenderPlayTime(HDC hDC);
 	bool IsPlayerInRicheAttackArea();
 	void CreateStageOneMap();
+	void CreateStageOneItem();
 	void ResourceInit();
 	void BossAttack();
 	void RecvGameData(const Packet& packet);
 	void SendGameData();
-	void GameDataCopy();
+	void GameDataUpdateFromServer();
+	void GameDataUpdateFromClient();
 	void GameStateCheck(float elapsedTime);
 
 	bool m_bDieCheck = false;
 private:
 	InGameData* m_inGameData;
-	class CPlayer* player[2];
+	class CPlayer* players[2];
 	CGhost* ghost;
 	CRiche* riche;
 	CRicheAttack* richeAttack[10];
