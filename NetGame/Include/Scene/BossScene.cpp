@@ -33,6 +33,9 @@ bool CBossScene::Init()
 	boss->SetPos(0.f, 0.f);
 	boss->CreateHPBar(this);
 	boss->m_hpBar->SetBarSize(100, 5);
+	for (int i = 0; i < 10; ++i) {
+		bossAttack[i] = CreateObject<CBossAttack>("richeAttack");
+	}
 
 
 	Vector2 resolution = { (float)CEngine::GetInst()->GetResolution().width,
@@ -76,12 +79,12 @@ void CBossScene::Update(float elapsedTime)
 	GameDataCopy();
 
 
-	m_timer += elapsedTime;
-	if (m_timer > 2.0f) {
-		if (boss->GetActive())
-			BossAttack();
-		m_timer = 0.f;
-	}
+	//m_timer += elapsedTime;
+	//if (m_timer > 2.0f) {
+	//	if (boss->GetActive())
+	//		BossAttack();
+	//	m_timer = 0.f;
+	//}
 
 	GameStateCheck(elapsedTime);
 }
@@ -128,20 +131,34 @@ void CBossScene::RecvGameData(const Packet& packet)
 		{
 			
 			switch (m.type) {
-			case '0':
-			{
-			}
-			break;
-			case '1':
-			{
-			}
-			break;
 			case '2':
+				if (!boss) break;
+				if (!boss->m_bIsAlive) {
+					boss->Destroy();
+					break;
+				}
+				boss->SetPos(m.pos.x, m.pos.y);
+				boss->SetState(m.state);
+				boss->SetDir(m.direct);
+				boss->m_bIsAlive = m.is_alive;
+				boss->m_hp = m.hp;
 				break;
 			default:
 				break;
 			}
 		}
+
+
+		for (int i = 0; i < MONSTER_ATTACK_NUM; ++i)
+		{
+			bossAttack[i]->SetPos(m_inGameData->monsterAttack[i].pos.x, m_inGameData->monsterAttack[i].pos.y);
+			bossAttack[i]->SetDir(m_inGameData->monsterAttack[i].direct);
+			if (m_inGameData->monsterAttack[i].is_alive)
+				bossAttack[i]->SetEnable(true);
+			else
+				bossAttack[i]->SetEnable(false);
+		}
+
 
 		break;
 	}

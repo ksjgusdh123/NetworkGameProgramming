@@ -120,7 +120,7 @@ struct MonsterAttackInfo
 	vector2 size = vector2(50.f, 50.f);
 	EObject_State state = EObject_State::Attack;
 	EObject_Dir direct = EObject_Dir::Right;
-	float velocity = 1.f;
+	float velocity = 10.f;
 	bool is_alive = true;
 	float timer = 0.f;
 	vector2 target;
