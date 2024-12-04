@@ -99,7 +99,7 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 		}
 		case BOSSSCENE:
 		{
-			GameManager::GetInst().UpdateInGameData();
+			GameManager::GetInst().UpdateBossData();
 			GameManager::GetInst().SendInGameData();
 			break;
 		}
