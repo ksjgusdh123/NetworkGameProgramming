@@ -37,7 +37,8 @@ public:
 	void SetAngle(float angle) { m_angle = angle; }
 	void SetDir(EObject_Dir dir) { m_objectDir = dir; }
 	void SetState(EObject_State state) { m_objectState = state; }
-
+	void SetIdx(int num) { m_idx = num; }
+	void SetTime(float num) { m_time = num; }
 	void AddPos(const Vector2& pos) { m_pos.x += pos.x; m_pos.y += pos.y; }
 	void AddAngle(float angle) { m_angle += angle; }
 
