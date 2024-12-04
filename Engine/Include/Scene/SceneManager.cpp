@@ -7,10 +7,12 @@ DEFINITION_SINGLE(CSceneManager)
 
 CSceneManager::CSceneManager()
 {
+	hPauseEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 }
 
 CSceneManager::~CSceneManager()
 {
+	CloseHandle(hPauseEvent);
 }
 
 bool CSceneManager::Init()
@@ -47,7 +49,6 @@ bool CSceneManager::ChangeScene()
 
 		m_scene.swap(m_nextScene);
 		m_nextScene.reset();
-
 		return true;
 	}
 

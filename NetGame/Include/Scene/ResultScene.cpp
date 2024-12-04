@@ -8,20 +8,13 @@
 bool CResultScene::Init()
 {
 	CScene::Init();
+	m_myId = PacketManager::GetInst().GetMyID();
 
 	CGameObject* back = CreateObject<CGameObject>("RoomBackground");
 	back->CreateTexture(1);
 	back->SetTexture("img_result", TEXT("Map/img_result.bmp"), EObject_Dir::Right);
 	back->SetSize(960.f, 650.f);
 	back->SetPivot(0.f, 0.f);
-
-
-	m_myid = PacketManager::GetInst().GetMyID();
-	m_resultData = &PacketManager::GetInst().resultData;
-
-	CSceneManager* manager = CSceneManager::GetInst();
-	m_resultData->bWin = manager->m_bWin;
-	m_resultData->playTime = manager->m_playTime;
 
 	HWND hwnd = CEngine::GetInst()->GetWindowHandle();
 	HINSTANCE hInst = CEngine::GetInst()->GetWindowInstance();
@@ -33,6 +26,7 @@ bool CResultScene::Init()
 void CResultScene::Update(float elapsedTime)
 {
 	CScene::Update(elapsedTime);
+	UpdateGameData();
 }
 
 void CResultScene::Render(HDC hDC, float elapsedTime)
@@ -41,7 +35,7 @@ void CResultScene::Render(HDC hDC, float elapsedTime)
 
 	HFONT hFont = CreateFontWithSize(m_hFont, 80);
 	Vector2 ResultPos = Vector2(480, 250);
-	if (m_resultData->bWin)
+	if (m_resultData.bWin)
 	{
 		wchar_t win[] = L"WIN!!";
 		DrawCenteredText(hDC, win, ResultPos, hFont, RGB(100, 100, 255));
@@ -55,7 +49,7 @@ void CResultScene::Render(HDC hDC, float elapsedTime)
 	hFont = CreateFontWithSize(m_hFont, 50);
 	Vector2 timePos = Vector2(480, 320);
 
-	int totalSeconds = m_resultData->playTime;
+	int totalSeconds = m_resultData.playTime;
 	int hours = totalSeconds / 3600;
 	int minutes = (totalSeconds % 3600) / 60;
 	int seconds = totalSeconds % 60;
@@ -77,4 +71,9 @@ void CResultScene::KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam)
 		break;
 	}
 	}
+}
+
+void CResultScene::UpdateGameData()
+{
+	m_resultData = PacketManager::GetInst().m_resultData;
 }

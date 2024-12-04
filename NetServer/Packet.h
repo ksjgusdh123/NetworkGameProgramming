@@ -176,13 +176,12 @@ struct S_GameEndNotificationPacket :public Packet
 	{
 		type = GameEndNotification;
 		data_size = sizeof(resultData_);
-		//memcpy(data, &resultData_, sizeof(resultData_));
-		sprintf_s(data, "%f %d", resultData_.playTime, resultData_.bWin);
+		memcpy(data, &resultData_, sizeof(resultData_));
+		//sprintf_s(data, "%f %d", resultData_.playTime, resultData_.bWin);
 	}
-	void deserialize(bool& bWin, float& playTime)
+	/*void deserialize(bool& bWin, float& playTime)
 	{
 		sscanf_s(data, "%f %d", &playTime, &bWin);
-	}
-
+	}*/
 };
 #pragma pack(pop)

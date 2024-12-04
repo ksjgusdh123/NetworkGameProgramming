@@ -7,9 +7,10 @@ public:
 	virtual void Update(float elapsedTime);
 	virtual void Render(HDC hDC, float elapsedTime);
 	virtual void KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam);
+	void UpdateGameData();
 
 private:
-	ResultData* m_resultData;
+	ResultData m_resultData;
 	HWND m_hButton;
 };
 

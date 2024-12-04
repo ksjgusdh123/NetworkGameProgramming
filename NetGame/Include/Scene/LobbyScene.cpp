@@ -16,8 +16,10 @@ CRITICAL_SECTION cs;
 bool CLobbyScene::Init()
 {
 	CScene::Init();
-	m_myid = PacketManager::GetInst().GetMyID();
-	m_lobbyData = &PacketManager::GetInst().lobbyData;
+	m_myId = PacketManager::GetInst().GetMyID();
+	m_mateId = abs(1 - m_myId);
+	string myName = PacketManager::GetInst().GetMyName();
+	memcpy(m_lobbyData.players[m_myId].name, myName.c_str(), myName.length());
 
 	CGameObject* back = CreateObject<CGameObject>("RoomBackground");
 	back->CreateTexture(1);
@@ -50,10 +52,9 @@ bool CLobbyScene::Init()
 void CLobbyScene::Update(float elapsedTime)
 {
 	CScene::Update(elapsedTime);
-#ifdef DEBUG
-	m_lobbyData->players[m_myid].bReady = TRUE;
-#endif
-	if (m_lobbyData->players[0].bReady && m_lobbyData->players[1].bReady)
+	UpdateGameData();
+	bool isAllReady = (m_lobbyData.players[0].bReady && m_lobbyData.players[1].bReady);
+	if (isAllReady)
 	{
 		for (int i = 0; i < 3; ++i)
 		{
@@ -78,60 +79,41 @@ void CLobbyScene::KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	{
 	case IDC_BUTTON:
 	{
-		m_lobbyData->players[m_myid].job = (char)(EPlayer_Job::Sword);
+		m_lobbyData.players[m_myId].job = (char)(EPlayer_Job::Sword);
 		break;
 	}
 	case IDC_BUTTON2:
 	{
-		m_lobbyData->players[m_myid].job = (char)(EPlayer_Job::Archer);
+		m_lobbyData.players[m_myId].job = (char)(EPlayer_Job::Archer);
 		break;
 	}
 	case IDC_BUTTON3:
 	{
-		m_lobbyData->players[m_myid].bReady = !m_lobbyData->players[m_myid].bReady;
+		m_lobbyData.players[m_myId].bReady = !m_lobbyData.players[m_myId].bReady;
 		break;
 	}
 	}
 }
 
-void CLobbyScene::RecvGameData(const Packet& packet)
+bool CLobbyScene::SendGameData()
 {
-	//EnterCriticalSection(&cs);
-	switch (packet.type)
-	{
-	case TileResponse:
-	{
-		S_TilesPkt* cur = (S_TilesPkt*)&packet;
-		CSceneManager* manager = CSceneManager::GetInst();
-		cur->deserialize(manager->m_tileNum, manager->m_tileType, manager->m_tilePosX, manager->m_tilePosY);
-		break;
-	}
-	case LobbyUpdateResponse:
-	{
-		S_LobbyInfoPacket* RecvPacket = (S_LobbyInfoPacket*)&packet;
-		memcpy(m_lobbyData, RecvPacket->data, RecvPacket->data_size);
-		m_lobbyData->players[m_myid].id = m_myid;
-		for (int i = 0; i < 2; ++i)
-		{
-			m_LobbyPlayer[i]->SetJob((EPlayer_Job)(int)m_lobbyData->players[i].job);
-			m_LobbyPlayer[i]->SetName(m_lobbyData->players[i].name);
-		}
-
-
-		break;
-	}
-	default:
-		break;
-	}
-	//LeaveCriticalSection(&cs);
+	C_LobbyUpdateRequest sendPacket(m_lobbyData.players[m_myId]);
+	return PacketManager::GetInst().SendPacket(sendPacket);
 }
 
-void CLobbyScene::SendGameData()
+void CLobbyScene::UpdateGameData()
 {
-	//EnterCriticalSection(&cs);
-	C_LobbyUpdateRequest sendPacket(m_lobbyData->players[m_myid]);
-	PacketManager::GetInst().SendPacket(sendPacket);
-	//LeaveCriticalSection(&cs);
+	m_lobbyData.players[m_mateId] = PacketManager::GetInst().m_lobbyData.players[m_mateId];
+	for (int i = 0; i < 2; ++i)
+	{
+		m_LobbyPlayer[i]->SetJob((EPlayer_Job)(int)m_lobbyData.players[i].job);
+		m_LobbyPlayer[i]->SetName(m_lobbyData.players[i].name);
+	}
+}
+
+void CLobbyScene::ClientGameData()
+{
+
 }
 
 void CLobbyScene::PrintName(HDC hDC)
@@ -141,7 +123,7 @@ void CLobbyScene::PrintName(HDC hDC)
 	for (int i = 0; i < 2; ++i)
 	{
 		wchar_t wideName[NAME_LEN] = {};
-		MultiByteToWideChar(CP_ACP, 0, m_lobbyData->players[i].name, -1, wideName, NAME_LEN);
+		MultiByteToWideChar(CP_ACP, 0, m_lobbyData.players[i].name, -1, wideName, NAME_LEN);
 
 		wchar_t ready[] = L"Ready!";
 
@@ -152,7 +134,7 @@ void CLobbyScene::PrintName(HDC hDC)
 
 		DrawCenteredText(hDC, wideName, namePos, hFont, RGB(255, 255, 255));
 
-		if (m_lobbyData->players[i].bReady)
+		if (m_lobbyData.players[i].bReady)
 		{
 			DrawCenteredText(hDC, ready, readyPos, hFont, RGB(0, 255, 0)); // Ready 상태는 녹색으로 표시
 		}

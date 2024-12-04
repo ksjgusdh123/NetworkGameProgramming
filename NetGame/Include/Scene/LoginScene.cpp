@@ -14,10 +14,8 @@ bool CLoginScene::Init()
 {
 	CScene::Init();
 	m_sceneType = LOGIN_SCENE;
-	m_myid = PacketManager::GetInst().GetMyID();
-#ifdef DEBUG
-	SendLoginRequest("Name");
-#else
+	m_myId = PacketManager::GetInst().GetMyID();
+
 	CGameObject* back = CreateObject<CGameObject>("eawoi");
 	back->CreateTexture(1);
 	back->SetTexture("LoginBackground", TEXT("Map/LoginBackground.bmp"), EObject_Dir::Right);
@@ -31,29 +29,28 @@ bool CLoginScene::Init()
 	m_hButton = CreateWindow(L"button", L"È®ÀÎ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 600, 500, 100, 25, hwnd, (HMENU)IDC_BUTTON, hInst, NULL);
 
 	SendMessage(m_hEdit, EM_SETLIMITTEXT, 10, 0);
-#endif
 	return true;
 }
 
 void CLoginScene::Update(float elapsedTime)
 {
 	CScene::Update(elapsedTime);
-#ifdef DEBUG
-	CSceneManager::GetInst()->CreateScene<CLobbyScene>();
-#endif
-}
-
-void CLoginScene::CheckButton()
-{
-	std::string str = EditBoxToString(); 
-	if (str == "") return;
-	if (SendLoginRequest(str))
+	if(isSendLogin)
 	{
 		DestroyWindow(m_hEdit);
 		DestroyWindow(m_hButton);
 
 		CSceneManager::GetInst()->CreateScene<CLobbyScene>();
 	}
+}
+
+bool CLoginScene::CheckButton()
+{
+	m_myName = EditBoxToString();
+	if (m_myName == "")
+		return false;
+	else
+		return true;
 }
 
 std::string CLoginScene::EditBoxToString()
@@ -69,15 +66,12 @@ std::string CLoginScene::EditBoxToString()
 
 bool CLoginScene::SendLoginRequest(std::string name)
 {
-	//if (name.length() <= 0)
-	//	return false;
 	int i = PacketManager::GetInst().GetMyID();
-	char* myName = PacketManager::GetInst().lobbyData.players[PacketManager::GetInst().GetMyID()].name;
+	char* myName = PacketManager::GetInst().m_lobbyData.players[PacketManager::GetInst().GetMyID()].name;
 	memcpy(myName, name.c_str(), name.length());
 
 	C_LoginRequestPkt packet(name);
-	PacketManager::GetInst().EnqueueSendPacket(packet);
-	return true;
+	return PacketManager::GetInst().SendPacket(packet);
 }
 
 void CLoginScene::KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam)
@@ -88,4 +82,15 @@ void CLoginScene::KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam)
 		CheckButton();
 		break;
 	}
+}
+
+bool CLoginScene::SendGameData()
+{
+	if (m_myName == "") return false;
+	if (SendLoginRequest(m_myName))
+	{
+		isSendLogin = true;
+		PacketManager::GetInst().SetMyName(m_myName);
+	}
+	return true;
 }

@@ -20,8 +20,7 @@ public:
 	virtual void PostUpdate(float elapsedTime);
 	virtual void Render(HDC hDC, float elapsedTime);
 	virtual void KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam) {}
-	virtual void RecvGameData(const class Packet& packet) {}
-	virtual void SendGameData() {};
+	virtual bool SendGameData() { return true; };
 public:
 	template <typename T>
 	T* CreateObject(const std::string& name)
@@ -45,7 +44,8 @@ protected:
 	std::array<std::list<std::shared_ptr<class CGameObject>>, (int)EObject_Type::Max> m_objects;
 	class CGameObject* m_myPlayer;
 	class CGameObject* m_player;
-	int m_myid;
+	int m_myId;
+	int m_mateId;
 
 	HFONT m_hFont;
 };

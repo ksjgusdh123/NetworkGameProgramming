@@ -8,15 +8,15 @@ public:
 	virtual void Update(float elapsedTime);
 	virtual void Render(HDC hDC, float elapsedTime);
 	virtual void KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam);
-	virtual void RecvGameData(const class Packet& packet);
-	virtual void SendGameData();
-
+	virtual bool SendGameData();
 public:
+	void UpdateGameData();
+	void ClientGameData();
 	void PrintName(HDC hDC);
 
 private:
+	bool m_isMatching = false;
 	HWND m_hButton[3]{};
 	class CLobbyPlayer* m_LobbyPlayer[2];
-	LobbyData* m_lobbyData;
+	LobbyData m_lobbyData;
 };
-

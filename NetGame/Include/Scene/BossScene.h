@@ -24,21 +24,18 @@ public:
 	void CreateStageOneMap();
 	void ResourceInit();
 	void BossAttack();
-	void RecvGameData(const Packet& packet);
-	void SendGameData();
-	void GameDataCopy();
+	bool SendGameData();
+	void UpdateGameData();
+	void ClientGameData();
 	void GameStateCheck(float elapsedTime);
 
 	bool m_bDieCheck = false;
 private:
-	InGameData* m_inGameData;
+	InGameData m_inGameData;
 	class CPlayer* player[2];
 	CBoss* boss;
 	Vector2	m_cameraVelocity;
-	int m_tileNum{};
-	std::vector<int> m_tileType;
-	std::vector<float> m_tilePosX;
-	std::vector<float> m_tilePosY;
+
 	float m_timer = 0.f;
 	float m_deathTime = 0.f;
 	bool m_bEnd = false;

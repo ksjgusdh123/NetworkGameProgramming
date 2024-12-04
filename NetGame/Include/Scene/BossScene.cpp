@@ -19,9 +19,7 @@ bool CBossScene::Init()
 {
 	CScene::Init();
 	ResourceInit();
-	m_myid = PacketManager::GetInst().GetMyID();
-	m_inGameData = &PacketManager::GetInst().inGameData;
-
+	m_myId = PacketManager::GetInst().GetMyID();
 
 	CGameObject* back = CreateObject<CGameObject>("Background");
 	back->CreateTexture(1);
@@ -34,7 +32,6 @@ bool CBossScene::Init()
 	boss->CreateHPBar(this);
 	boss->m_hpBar->SetBarSize(100, 5);
 
-
 	Vector2 resolution = { (float)CEngine::GetInst()->GetResolution().width,
 	(float)CEngine::GetInst()->GetResolution().height };
 	GetCamera()->SetResolution(resolution);
@@ -46,20 +43,15 @@ bool CBossScene::Init()
 	player[1] = CreateObject<CSwordman>("player1");
 	player[0]->SetPos(-930.f, 300.f);
 	player[1]->SetPos(-930.f, 300.f);
-	SetPlayer(player[abs(1 - m_myid)]);
+	SetPlayer(player[abs(1 - m_myId)]);
 
-	player[m_myid]->InitInput();
-	SetMyPlayer(player[m_myid]);
-	GetCamera()->SetTarget(player[m_myid]);
+	player[m_myId]->InitInput();
+	SetMyPlayer(player[m_myId]);
+	GetCamera()->SetTarget(player[m_myId]);
 
 	player[0]->CreateHPBar(this);
 	player[1]->CreateHPBar(this);
 
-	CSceneManager* manager = CSceneManager::GetInst();
-	m_tileNum = manager->m_tileNum;
-	m_tileType = manager->m_tileType;
-	m_tilePosX = manager->m_tilePosX;
-	m_tilePosY = manager->m_tilePosY;
 	CreateStageOneMap();
 
 	{
@@ -73,7 +65,7 @@ void CBossScene::Update(float elapsedTime)
 {
 	CScene::Update(elapsedTime);
 
-	GameDataCopy();
+	ClientGameData();
 
 
 	m_timer += elapsedTime;
@@ -92,87 +84,28 @@ void CBossScene::Render(HDC hDC, float elapsedTime)
 	RenderPlayTime(hDC);
 }
 
-void CBossScene::RecvGameData(const Packet& packet)
+bool CBossScene::SendGameData()
 {
-	switch (packet.type)
-	{
-	case TileResponse:
-	{
-		m_tileNum = 0;
-		m_tileType.clear();
-		m_tilePosX.clear();
-		m_tilePosY.clear();
-		for (auto t : m_objects[(int)EObject_Type::WALL])
-			(*t).Destroy();
-		S_TilesPkt* cur = (S_TilesPkt*)&packet;
-		cur->deserialize(m_tileNum, m_tileType, m_tilePosX, m_tilePosY);
-		CreateStageOneMap();
-		break;
-	}
-	case GameUpdateResponse:
-	{
-		S_GameInfoPacket* RecvPacket = (S_GameInfoPacket*)&packet;
-		memcpy(m_inGameData, RecvPacket->data, RecvPacket->data_size);
-		for (int i = 0; i < PLAYER_NUM; ++i)
-		{
-			player[i]->SetPos(m_inGameData->players[i].pos.x, m_inGameData->players[i].pos.y);
-			player[i]->SetState((EObject_State)(int)m_inGameData->players[i].state);
-			player[i]->SetDir((EObject_Dir)(int)m_inGameData->players[i].dir);
-			player[i]->m_bIsLanded = m_inGameData->players[i].isLanded;
-			player[i]->m_bJump = m_inGameData->players[i].isJump;
-			player[i]->m_bDoubleJump = m_inGameData->players[i].isDoubleJump;
-			player[i]->m_hp = m_inGameData->players[i].hp;
-		}
-
-		for (MonsterInfo& m : m_inGameData->monster)
-		{
-			
-			switch (m.type) {
-			case '0':
-			{
-			}
-			break;
-			case '1':
-			{
-			}
-			break;
-			case '2':
-				break;
-			default:
-				break;
-			}
-		}
-
-		break;
-	}
-	case GameEndNotification:
-	{
-		S_GameEndNotificationPacket* RecvPacket = (S_GameEndNotificationPacket*)&packet;
-		CSceneManager* manager = CSceneManager::GetInst();
-		RecvPacket->deserialize(manager->m_bWin, manager->m_playTime);
-		m_bEnd = true;
-		break;
-	}
-	default:
-		break;
-	}
+	ClientGameData();
+	C_GameUpdateRequest sendPacket(m_inGameData.players[m_myId]);
+	return PacketManager::GetInst().SendPacket(sendPacket);
 }
 
-void CBossScene::SendGameData()
+void CBossScene::UpdateGameData()
 {
-	C_GameUpdateRequest sendPacket(m_inGameData->players[m_myid]);
-	PacketManager::GetInst().SendPacket(sendPacket);
+	m_inGameData = PacketManager::GetInst().m_inGameData;
+
 }
 
-void CBossScene::GameDataCopy()
+void CBossScene::ClientGameData()
 {
-	m_inGameData->players[m_myid].pos = vector2(player[m_myid]->GetPos().x, player[m_myid]->GetPos().y);
-	m_inGameData->players[m_myid].state = (char)(EObject_State)(player[m_myid]->GetState());
-	m_inGameData->players[m_myid].dir = (char)(EObject_Dir)(player[m_myid]->GetDir());
-	m_inGameData->players[m_myid].isLanded = player[m_myid]->m_bIsLanded;
-	m_inGameData->players[m_myid].isJump = player[m_myid]->m_bJump;
-	m_inGameData->players[m_myid].isDoubleJump = player[m_myid]->m_bDoubleJump;
-	m_inGameData->players[m_myid].hp = player[m_myid]->m_hp;
+	m_inGameData.players[m_myId].pos = vector2(player[m_myId]->GetPos().x, player[m_myId]->GetPos().y);
+	m_inGameData.players[m_myId].state = (char)(EObject_State)(player[m_myId]->GetState());
+	m_inGameData.players[m_myId].dir = (char)(EObject_Dir)(player[m_myId]->GetDir());
+	m_inGameData.players[m_myId].isLanded = player[m_myId]->m_bIsLanded;
+	m_inGameData.players[m_myId].isJump = player[m_myId]->m_bJump;
+	m_inGameData.players[m_myId].isDoubleJump = player[m_myId]->m_bDoubleJump;
+	m_inGameData.players[m_myId].hp = player[m_myId]->m_hp;
 }
 
 void CBossScene::GameStateCheck(float elapsedTime)
@@ -198,7 +131,7 @@ void CBossScene::RenderPlayTime(HDC hDC)
 	HFONT hFont = CreateFontWithSize(m_hFont, 30);
 	HFONT hOldFont = (HFONT)SelectObject(hDC, hFont);
 
-	int totalSeconds = m_inGameData->playtime;
+	int totalSeconds = m_inGameData.playtime;
 	int hours = totalSeconds / 3600;
 	int minutes = (totalSeconds % 3600) / 60;
 	int seconds = totalSeconds % 60;
@@ -217,11 +150,16 @@ void CBossScene::RenderPlayTime(HDC hDC)
 
 void CBossScene::BossAttack()
 {
-	boss->Attack(player[m_myid]->GetPos());
+	boss->Attack(player[m_myId]->GetPos());
 }
 
 void CBossScene::CreateStageOneMap()
 {
+	int m_tileNum = PacketManager::GetInst().m_tileNum;
+	vector<int> m_tileType = PacketManager::GetInst().m_tileType;
+	vector<float> m_tilePosX = PacketManager::GetInst().m_tilePosX;
+	vector<float> m_tilePosY = PacketManager::GetInst().m_tilePosY;
+
 	CTile* tile;
 	for (int i = 0; i < m_tileNum; ++i) {
 		std::string tileName = "tile" + std::to_string(m_tileType[i]);

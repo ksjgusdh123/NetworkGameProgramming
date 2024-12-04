@@ -16,6 +16,7 @@ public:
 	template <typename T>
 	bool CreateScene()
 	{
+		SetEvent(hPauseEvent);
 		std::unique_ptr<T> scene = std::make_unique<T>();
 		if (!scene->Init())
 			return false;
@@ -25,12 +26,10 @@ public:
 		else
 			m_nextScene = std::move(scene);
 		ChangeScene();
+		ResetEvent(hPauseEvent);
 		return true;
 	}
-	int m_tileNum{};
-	std::vector<int> m_tileType;
-	std::vector<float> m_tilePosX;
-	std::vector<float> m_tilePosY;
+	HANDLE hPauseEvent;
 	bool m_bWin = false;
 	float m_playTime = 0;
 private:
