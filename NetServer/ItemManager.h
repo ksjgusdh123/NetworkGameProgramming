@@ -7,7 +7,8 @@ public:
 	void Init();
 	void CreateItem();
 	void CheckItemCollision(GamePlayerInfo& player);
-
+	bool CheckArrowItemCollision(ArrowInfo& parrow);
+	
 public:
 	static ItemManager& GetInst()
 	{

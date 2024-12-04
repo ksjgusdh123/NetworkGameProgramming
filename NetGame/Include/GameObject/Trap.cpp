@@ -5,6 +5,7 @@ bool CTrap::Init()
 	CGameObject::Init();
 
 	SetPivot(0.5f, 0.5f);
+	SetObjectType(EObject_Type::Item);
 	CreateTexture(1);
 	SetTexture("Trap", TEXT("Map/DeadBush.png"), EObject_Dir::Right, ETexture_Type::CIMAGE);
 	SetSize(132.f, 74.f);
