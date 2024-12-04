@@ -100,6 +100,15 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 		case BOSSSCENE:
 		{
 			GameManager::GetInst().UpdateInGameData();
+			InGameData* gameData = GameManager::GetInst().GetInGameData();
+			if (gameData->players[0].hp <= 0 && gameData->players[1].hp <= 0)
+			{
+				// 둘다 체력 없으면 결과창으로 이동
+				gameData->scene = RESULTSCENE;
+				curScene = RESULTSCENE;
+				GameManager::GetInst().CacluateResult(false);
+				GameManager::GetInst().SendResultData();
+			}
 			GameManager::GetInst().SendInGameData();
 			break;
 		}

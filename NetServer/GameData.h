@@ -96,7 +96,7 @@ struct GamePlayerInfo : public PlayerInfo {
 	vector2 GetPlayerSize()
 	{
 		if (state == EObject_State::Attack || state == EObject_State::Attack_L)
-			return vector2(100, 60);
+			return vector2(120, 60);
 		else
 			return vector2(50, 60);
 	}
