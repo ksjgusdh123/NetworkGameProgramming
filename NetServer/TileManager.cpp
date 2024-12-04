@@ -235,6 +235,18 @@ bool TileManager::CheckTileCollision(GamePlayerInfo& player)
 	return false;
 }
 
+bool TileManager::CheckArrowTileCollision(ArrowInfo& arrow)
+{
+	for (TileInfo& tile : tiles)
+	{
+		if (tile.box.CheckCollision(&arrow.box))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void TileManager::SendTilePacket()
 {
 	S_TilesPkt packet((int)tileNumbers.size(), tileNumbers, tilePositions);

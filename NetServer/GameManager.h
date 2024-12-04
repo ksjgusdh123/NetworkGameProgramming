@@ -36,6 +36,7 @@ public:
 	void UpdateInGameData();
 	void ProcessCollsion();
 	void CheckPortalCollision(GamePlayerInfo& player);
+	void CheckArrowCollision();
 	void MonsterCollision();
 
 	void CalculateArrow();

@@ -18,12 +18,6 @@ void GameManager::InitObjectManager()
 
 void GameManager::InitGameData()
 {
-	LobbyData* lobbyData = GameManager::GetInst().GetLobbyData();
-	InGameData* gameData = GameManager::GetInst().GetInGameData();
-	for (int i = 0; i < 2; ++i)
-	{
-		gameData->players[i].job = lobbyData->players[i].job;
-	}
 	InitObjectManager();
 	TileManager::GetInst().CreateTile();
 	MonsterManager::GetInst().CreateMonster();
@@ -101,9 +95,14 @@ void GameManager::ProcessCollsion()
 {
 	for (auto& player : inGameData.players)
 	{
+		if (player.hp <= 0)
+			continue;
+
 		TileManager::GetInst().CheckTileCollision(player);
 		ItemManager::GetInst().CheckItemCollision(player);
+		MonsterCollision();
 		CheckPortalCollision(player);
+		CheckArrowCollision();
 	}
 	MonsterCollision();
 }
@@ -130,27 +129,48 @@ void GameManager::CheckPortalCollision(GamePlayerInfo& player)
 	}
 }
 
+void GameManager::CheckArrowCollision()
+{
+	for (ArrowInfo& arrow : inGameData.arrowAttack)
+	{
+		if (!arrow.is_alive)
+			continue;
+
+		if (TileManager::GetInst().CheckArrowTileCollision(arrow))
+		{
+			arrow.is_alive = false;
+		}
+
+		for (int i = 0; i < MONSTER_NUM; ++i) 
+		{
+			if (!inGameData.monster[i].is_alive) continue;
+
+			if (inGameData.monster[i].box.CheckCollision(&arrow.box))
+			{
+				arrow.is_alive = false;
+				inGameData.monster[i].is_alive = false;
+			}
+		}
+
+		if (ItemManager::GetInst().CheckArrowItemCollision(arrow))
+		{
+			arrow.is_alive = false;
+		}
+	}
+}
+
 void GameManager::MonsterCollision()
 {
 	for (auto& player : inGameData.players) {
 		vector2 size = vector2(50, 60);
-		vector2 playerPos = player.pos;
-		vector2 playerSize = size;
-		float playerLeft = playerPos.x - playerSize.x / 2;
-		float playerRight = playerPos.x + playerSize.x / 2;
-		float playerTop = playerPos.y - playerSize.y / 2;
-		float playerBottom = playerPos.y + playerSize.y / 2;
-
+		player.box.UpdateCollision(player.pos, size);
 		for (int i = 0; i < MONSTER_NUM; ++i) {
 			if (!inGameData.monster[i].is_alive) continue;
-			vector2 MonsterPos = inGameData.monster[i].pos;
-			vector2 MonsterSize = inGameData.monster[i].size;
-			vector2 MonsterLT = vector2(MonsterPos.x - MonsterSize.x / 2, MonsterPos.y - MonsterSize.y / 2);
-			vector2 MonsterRB = vector2(MonsterPos.x + MonsterSize.x / 2, MonsterPos.y + MonsterSize.y / 2);
-			if (playerRight > MonsterLT.x && playerLeft < MonsterRB.x &&
-				playerBottom > MonsterLT.y && playerTop < MonsterRB.y) {
 
-				if (player.state == EObject_State::Attack || player.state == EObject_State::Attack_L || player.state == EObject_State::Attack2 || player.state == EObject_State::Attack_L2) { // 플레이어가 공격상태일 경우 
+			inGameData.monster[i].box.UpdateCollision(inGameData.monster[i].pos, inGameData.monster[i].size);
+			if(inGameData.monster[i].box.CheckCollision(&player.box))
+			{
+				if (player.state == EObject_State::Attack || player.state == EObject_State::Attack_L) { // 플레이어가 공격상태일 경우 
 					if (inGameData.monster[i].direct == EObject_Dir::Right)
 						inGameData.monster[i].state = EObject_State::Die;
 					else
@@ -266,6 +286,9 @@ void GameManager::CalculateArrow()
 
 		arrow.pos.x += arrow.velocity.x * 0.05 * num;
 		arrow.pos.y += arrow.velocity.y * 0.05;
+
+		vector2 arrowSize = vector2(40, 10);
+		arrow.box.UpdateCollision(arrow.pos, arrowSize);
 
 		arrow.timer += 0.05;
 		if (arrow.timer >= 3.0f)

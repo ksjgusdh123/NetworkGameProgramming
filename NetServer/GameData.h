@@ -91,6 +91,16 @@ struct GamePlayerInfo : public PlayerInfo {
 	bool bReady = false;
 	bool bBoss = false;
 	float timer = 0.f;
+	Collision box;
+
+	vector2 GetPlayerSize()
+	{
+		if (state == EObject_State::Attack || state == EObject_State::Attack_L)
+			return vector2(100, 60);
+		else
+			return vector2(50, 60);
+	}
+
 	GamePlayerInfo() = default;
 
 	GamePlayerInfo(const PlayerInfo& base, vector2 pos, short health, short dmg, EObject_State playerState, EObject_Dir dir)
@@ -106,6 +116,7 @@ struct ArrowInfo
 	vector2 velocity = vector2(400, 10);
 	bool is_alive = false;
 	float timer = 0.f;
+	Collision box;
 };
 
 struct MonsterInfo
@@ -124,6 +135,7 @@ struct MonsterInfo
 	float timer = 0.f;
 	vector2 target;
 	vector2 size = vector2(50.f, 50.f);
+	Collision box;
 };
 
 struct MonsterAttackInfo
