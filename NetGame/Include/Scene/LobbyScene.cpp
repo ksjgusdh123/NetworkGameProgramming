@@ -28,12 +28,12 @@ bool CLobbyScene::Init()
 	m_LobbyPlayer[0] = CreateObject<CLobbyPlayer>("Player1");
 	m_LobbyPlayer[0]->SetSize(100.f, 200.f);
 	m_LobbyPlayer[0]->SetPos(270.f, 300.f);
-	m_LobbyPlayer[0]->SetEnable(true);
+	m_LobbyPlayer[0]->SetEnable(false);
 
 	m_LobbyPlayer[1] = CreateObject<CLobbyPlayer>("Player2");
 	m_LobbyPlayer[1]->SetSize(100.f, 200.f);
 	m_LobbyPlayer[1]->SetPos(680.f, 300.f);
-	m_LobbyPlayer[1]->SetEnable(true);
+	m_LobbyPlayer[1]->SetEnable(false);
 
 	HWND hwnd = CEngine::GetInst()->GetWindowHandle();
 	HINSTANCE hInst = CEngine::GetInst()->GetWindowInstance();
@@ -53,8 +53,21 @@ void CLobbyScene::Update(float elapsedTime)
 #ifdef DEBUG
 	m_lobbyData->players[m_myid].bReady = TRUE;
 #endif
+
+	for (int i = 0; i < 2; ++i)
+	{
+		if (strcmp(m_lobbyData->players[i].name, ""))
+		{
+			m_LobbyPlayer[i]->SetEnable(true);
+		}
+	}
+
 	if (m_lobbyData->players[0].bReady && m_lobbyData->players[1].bReady)
 	{
+		CSceneManager* manager = CSceneManager::GetInst();
+		manager->m_playerJob[0] = m_lobbyData->players[0].job;
+		manager->m_playerJob[1] = m_lobbyData->players[1].job;
+
 		for (int i = 0; i < 3; ++i)
 		{
 			DestroyWindow(m_hButton[i]);
@@ -78,12 +91,12 @@ void CLobbyScene::KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	{
 	case IDC_BUTTON:
 	{
-		m_lobbyData->players[m_myid].job = (char)(EPlayer_Job::Sword);
+		m_lobbyData->players[m_myid].job = (EPlayer_Job::Sword);
 		break;
 	}
 	case IDC_BUTTON2:
 	{
-		m_lobbyData->players[m_myid].job = (char)(EPlayer_Job::Archer);
+		m_lobbyData->players[m_myid].job = (EPlayer_Job::Archer);
 		break;
 	}
 	case IDC_BUTTON3:
@@ -116,8 +129,6 @@ void CLobbyScene::RecvGameData(const Packet& packet)
 			m_LobbyPlayer[i]->SetJob((EPlayer_Job)(int)m_lobbyData->players[i].job);
 			m_LobbyPlayer[i]->SetName(m_lobbyData->players[i].name);
 		}
-
-
 		break;
 	}
 	default:

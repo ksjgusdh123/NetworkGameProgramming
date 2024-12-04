@@ -129,7 +129,7 @@ void CBossScene::RecvGameData(const Packet& packet)
 
 		for (MonsterInfo& m : m_inGameData->monster)
 		{
-			
+
 			switch (m.type) {
 			case '2':
 				if (!boss) break;
@@ -184,8 +184,8 @@ void CBossScene::SendGameData()
 void CBossScene::GameDataCopy()
 {
 	m_inGameData->players[m_myid].pos = vector2(player[m_myid]->GetPos().x, player[m_myid]->GetPos().y);
-	m_inGameData->players[m_myid].state = (char)(EObject_State)(player[m_myid]->GetState());
-	m_inGameData->players[m_myid].dir = (char)(EObject_Dir)(player[m_myid]->GetDir());
+	m_inGameData->players[m_myid].state = (EObject_State)(player[m_myid]->GetState());
+	m_inGameData->players[m_myid].dir = (EObject_Dir)(player[m_myid]->GetDir());
 	m_inGameData->players[m_myid].isLanded = player[m_myid]->m_bIsLanded;
 	m_inGameData->players[m_myid].isJump = player[m_myid]->m_bJump;
 	m_inGameData->players[m_myid].isDoubleJump = player[m_myid]->m_bDoubleJump;

@@ -3,6 +3,7 @@
 constexpr int PLAYER_NUM = 2;
 constexpr int MONSTER_NUM = 2;
 constexpr int MONSTER_ATTACK_NUM = 10;
+constexpr int ARROW_NUM = 10;
 constexpr int TILE_NUM = 10;
 constexpr int ITEM_NUM = 10;
 constexpr int NAME_LEN = 20;
@@ -59,12 +60,12 @@ public:
 struct PlayerInfo {
 	int id = -1;
 	char name[NAME_LEN] = {};
-	char job = 0;
+	EPlayer_Job job = EPlayer_Job::Sword;
 	bool bReady = false;
 
 	PlayerInfo() = default;
 
-	PlayerInfo(int playerId, const char* playerName, char playerJob = 0)
+	PlayerInfo(int playerId, const char* playerName, EPlayer_Job playerJob = EPlayer_Job::Sword)
 		: id(playerId), job(playerJob)
 	{
 		strncpy_s(name, playerName, NAME_LEN);
@@ -82,17 +83,29 @@ struct GamePlayerInfo : public PlayerInfo {
 	vector2 pos{ -930.f ,475.f };
 	short hp = 100;
 	short damage = 10;
-	char state = 0;
-	char dir = 0;
+	EObject_State state = EObject_State::Basic;
+	EObject_Dir dir = EObject_Dir::Right;
 	bool isLanded = false;
 	bool isJump = false;
 	bool isDoubleJump = false;
 	bool bReady = false;
 	bool bBoss = false;
+	float timer = 0.f;
 	GamePlayerInfo() = default;
 
-	GamePlayerInfo(const PlayerInfo& base, vector2 pos, short health, short dmg, char playerState, char dir)
+	GamePlayerInfo(const PlayerInfo& base, vector2 pos, short health, short dmg, EObject_State playerState, EObject_Dir dir)
 		: PlayerInfo(base), pos(pos), hp(health), damage(dmg), state(playerState), dir(dir) {}
+};
+
+struct ArrowInfo
+{
+	vector2 pos = vector2(0.f, 0.f);
+	vector2 size = vector2(40.f, 10.f);
+	EObject_State state = EObject_State::Basic;
+	EObject_Dir direct = EObject_Dir::Right;
+	vector2 velocity = vector2(400, 10);
+	bool is_alive = false;
+	float timer = 0.f;
 };
 
 struct MonsterInfo
@@ -195,6 +208,7 @@ struct InGameData :public GameData
 	int scene = GAMESCENE;
 	int playtime = -1;
 	std::array<GamePlayerInfo, PLAYER_NUM> players;
+	std::array<ArrowInfo, ARROW_NUM> arrowAttack;
 	std::array<MonsterInfo, MONSTER_NUM> monster;
 	std::array<ItemInfo, ITEM_NUM> item;
 	std::array<MonsterAttackInfo, MONSTER_ATTACK_NUM> monsterAttack;

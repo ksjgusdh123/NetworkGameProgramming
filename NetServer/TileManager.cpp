@@ -197,25 +197,25 @@ bool TileManager::CheckTileCollision(GamePlayerInfo& player)
 				player.isLanded = true;
 				player.isJump = false;
 				player.isDoubleJump = false;
-				if (player.state == 12 || player.state == 10)
+				if (player.state == EObject_State::Jump_Down_L || player.state == EObject_State::Jump_L)
 				{
-					player.state = 1;
+					player.state = EObject_State::Basic_L;
 				}
-				else if (player.state == 11 || player.state == 9)
+				else if (player.state == EObject_State::Jump || player.state == EObject_State::Jump_Down)
 				{
-					player.state = 0;
+					player.state = EObject_State::Basic;
 				}
 				bCheck = true;
 			}
 			else {
 				player.pos.y += (overlapBottom + offset); // 아래쪽으로 밀어냄
-				if (player.dir == 1)
+				if (player.dir == EObject_Dir::Left)
 				{
-					player.state = 12;
+					player.state = EObject_State::Jump_Down_L;
 				}
-				else if (player.dir == 0)
+				else if (player.dir == EObject_Dir::Right)
 				{
-					player.state = 11;
+					player.state = EObject_State::Jump_Down;
 				}
 			}
 		}
@@ -224,11 +224,11 @@ bool TileManager::CheckTileCollision(GamePlayerInfo& player)
 	if (bCheck)
 		return true;
 
-	if (player.state == 2)
+	if (player.state == EObject_State::Walk)
 	{
 		player.isLanded = false;
 	}
-	if (player.state == 3)
+	if (player.state == EObject_State::Walk_L)
 	{
 		player.isLanded = false;
 	}

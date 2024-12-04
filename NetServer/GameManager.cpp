@@ -18,6 +18,12 @@ void GameManager::InitObjectManager()
 
 void GameManager::InitGameData()
 {
+	LobbyData* lobbyData = GameManager::GetInst().GetLobbyData();
+	InGameData* gameData = GameManager::GetInst().GetInGameData();
+	for (int i = 0; i < 2; ++i)
+	{
+		gameData->players[i].job = lobbyData->players[i].job;
+	}
 	InitObjectManager();
 	TileManager::GetInst().CreateTile();
 	MonsterManager::GetInst().CreateMonster();
@@ -35,6 +41,7 @@ void GameManager::UpdateInGameData()
 {
 	inGameData.playtime = gameTimer.GetElapsedTime();
 	MonsterManager::GetInst().UpdateMonster();
+	CalculateArrow();
 	ProcessCollsion();
 }
 
@@ -62,7 +69,7 @@ void GameManager::PrintGameState()
 			<< ", Name=" << player.name
 			<< ", Pos=(" << player.pos.x << "," << player.pos.y << ")"
 			<< ", HP=" << player.hp
-			<< ", Job=" << player.job << "\n";
+			<< ", Job=" << (int)player.job << "\n";
 	}
 }
 
@@ -142,7 +149,7 @@ void GameManager::MonsterCollision()
 			if (playerRight > MonsterLT.x && playerLeft < MonsterRB.x &&
 				playerBottom > MonsterLT.y && playerTop < MonsterRB.y) {
 
-				if (player.state == 5 || player.state == 6 || player.state == 7 || player.state == 8) { // 플레이어가 공격상태일 경우 
+				if (player.state == EObject_State::Attack || player.state == EObject_State::Attack_L || player.state == EObject_State::Attack2 || player.state == EObject_State::Attack_L2) { // 플레이어가 공격상태일 경우 
 					if (inGameData.monster[i].direct == EObject_Dir::Right)
 						inGameData.monster[i].state = EObject_State::Die;
 					else
@@ -155,6 +162,66 @@ void GameManager::MonsterCollision()
 				}
 			}
 
+		}
+	}
+}
+
+void GameManager::CalculateArrow()
+{
+	for (auto& player : inGameData.players)
+	{
+		if (player.job != EPlayer_Job::Archer)
+			continue;
+
+		if (player.state == EObject_State::Attack || player.state == EObject_State::Attack_L)
+		{
+			player.timer += 0.05f;
+
+			if (player.timer >= 1.f)
+			{
+				for (ArrowInfo& arrow : inGameData.arrowAttack)
+				{
+					if (arrow.is_alive)	continue;
+					arrow.pos = player.pos;
+					arrow.is_alive = true;
+					arrow.timer = 0.f;
+					player.timer = 0.f;
+					if (player.state == EObject_State::Attack)
+					{
+						arrow.direct = EObject_Dir::Right;
+						arrow.state = EObject_State::Basic;
+						player.state = EObject_State::Basic;
+					}
+					else if (player.state == EObject_State::Attack_L)
+					{
+						arrow.direct = EObject_Dir::Left;
+						arrow.state = EObject_State::Basic_L;
+						player.state = EObject_State::Basic_L;
+					}
+					break;
+				}
+			}
+		}
+	}
+
+	for (ArrowInfo& arrow : inGameData.arrowAttack)
+	{
+		if (!arrow.is_alive)
+			continue;
+
+		int num;
+		if (arrow.direct == EObject_Dir::Right)
+			num = 1;
+		else
+			num = -1;
+
+		arrow.pos.x += arrow.velocity.x * 0.05 * num;
+		arrow.pos.y += arrow.velocity.y * 0.05;
+
+		arrow.timer += 0.05;
+		if (arrow.timer >= 3.0f)
+		{
+			arrow.is_alive = false;
 		}
 	}
 }

@@ -20,6 +20,8 @@ public:
 	bool m_bIsLanded = false;
 	bool m_bJump = false;
 	bool m_bDoubleJump = false;
+	bool m_bAttack = false;
+
 protected:
 	void PlayerMoveLeft();
 	void PlayerLeftIdle();
