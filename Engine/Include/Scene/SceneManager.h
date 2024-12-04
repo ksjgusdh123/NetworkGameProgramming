@@ -32,6 +32,7 @@ public:
 	HANDLE hPauseEvent;
 	bool m_bWin = false;
 	float m_playTime = 0;
+	std::array<EPlayer_Job, 2> m_playerJob;
 private:
 	bool ChangeScene();
 	

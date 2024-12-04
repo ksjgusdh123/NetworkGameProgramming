@@ -29,11 +29,6 @@ bool CMainScene::Init()
 	back->SetSize(2000.f, 1000.f);
 	back->SetPivot(0.5f, 0.5f);
 
-	boss = CreateObject<CBoss>("boss");
-	boss->SetPos(0.f, 0.f);
-	boss->CreateHPBar(this);
-	boss->m_hpBar->SetBarSize(100, 5);
-
 	CPortal* portal = CreateObject<CPortal>("portal");
 	portal->SetPos(730.f, -150.f);
 
@@ -44,18 +39,7 @@ bool CMainScene::Init()
 	GetCamera()->SetViewType(ECamera_Type::Target);
 	m_cameraVelocity = Vector2(100.f, 100.f);
 
-	players[0] = CreateObject<CSwordman>("player0");
-	players[1] = CreateObject<CSwordman>("player1");
-	players[0]->SetPos(-930.f, 300.f);
-	players[1]->SetPos(-930.f, 300.f);
-	SetPlayer(players[m_mateId]);
-
-	players[m_myId]->InitInput();
-	SetMyPlayer(players[m_myId]);
-	GetCamera()->SetTarget(players[m_myId]);
-
-	players[0]->CreateHPBar(this);
-	players[1]->CreateHPBar(this);
+	
 
 	ghost = CreateObject<CGhost>("fdkaj");
 	ghost->SetPos(-100.f, 410.f);
@@ -70,6 +54,40 @@ bool CMainScene::Init()
 		richeAttack[i] = CreateObject<CRicheAttack>("richeAttack");
 	}
 
+	for (int j = 0; j < 2; ++j)
+	{
+		for (int i = 0; i < 10; ++i) {
+			arrows[j][i] = CreateObject<CArrow>("arrow");
+		}
+	}
+	CSceneManager* manager = CSceneManager::GetInst();
+	for (int i = 0; i < 2; ++i)
+	{
+		if (manager->m_playerJob[i] == EPlayer_Job::Archer)
+		{
+			players[i] = CreateObject<CArcher>("player" + i);
+			m_inGameData->players[i].job = EPlayer_Job::Archer;
+		}
+		else
+		{
+			players[i] = CreateObject<CSwordman>("player" + i);
+			m_inGameData->players[i].job = EPlayer_Job::Sword;
+		}
+		players[i]->SetPos(-930.f, 300.f);
+	}
+	SetPlayer(players[abs(1 - m_myid)]);
+
+	players[m_myid]->InitInput();
+	SetMyPlayer(players[m_myid]);
+	GetCamera()->SetTarget(players[m_myid]);
+
+	players[0]->CreateHPBar(this);
+	players[1]->CreateHPBar(this);
+
+	m_tileNum = manager->m_tileNum;
+	m_tileType = manager->m_tileType;
+	m_tilePosX = manager->m_tilePosX;
+	m_tilePosY = manager->m_tilePosY;
 	CreateStageOneMap();
 	CreateStageOneItem();
 
@@ -79,13 +97,10 @@ bool CMainScene::Init()
 void CMainScene::Update(float elapsedTime)
 {
 	CScene::Update(elapsedTime);
-	UpdateGameData();
-	/*m_timer += elapsedTime;
-	if (m_timer > 2.0f) {
-		if (boss->GetActive())
-			BossAttack();
-		m_timer = 0.f;
-	}*/
+
+	GameDataUpdateFromClient();
+
+	m_timer += elapsedTime;
 
 	GameStateCheck(elapsedTime);
 	bool isPortalEntry = m_inGameData.players[0].bReady && m_inGameData.players[1].bReady;
@@ -170,7 +185,24 @@ void CMainScene::UpdateGameData()
 			richeAttack[i]->SetEnable(false);
 	}
 
-	for (auto& item : m_inGameData.item)
+	for (int j = 0; j < 2; ++j)
+	{
+		if (m_inGameData->players[j].job == EPlayer_Job::Archer)
+		{
+			for (int i = 0; i < ARROW_NUM; ++i)
+			{
+				arrows[j][i]->SetPos(m_inGameData->arrowAttack[i].pos.x, m_inGameData->arrowAttack[i].pos.y);
+				arrows[j][i]->SetState(m_inGameData->arrowAttack[i].state);
+				arrows[j][i]->SetDir(m_inGameData->arrowAttack[i].direct);
+				if (m_inGameData->arrowAttack[i].is_alive)
+					arrows[j][i]->SetEnable(true);
+				else
+					arrows[j][i]->SetEnable(false);
+			}
+		}
+	}
+
+	for (auto& item : m_inGameData->item)
 	{
 		for (auto& object : m_objects[(int)EObject_Type::Item])
 		{
@@ -185,13 +217,13 @@ void CMainScene::UpdateGameData()
 
 void CMainScene::ClientGameData()
 {
-	m_inGameData.players[m_myId].pos = vector2(players[m_myId]->GetPos().x, players[m_myId]->GetPos().y);
-	m_inGameData.players[m_myId].state = (char)(EObject_State)(players[m_myId]->GetState());
-	m_inGameData.players[m_myId].dir = (char)(EObject_Dir)(players[m_myId]->GetDir());
-	m_inGameData.players[m_myId].isLanded = players[m_myId]->m_bIsLanded;
-	m_inGameData.players[m_myId].isJump = players[m_myId]->m_bJump;
-	m_inGameData.players[m_myId].isDoubleJump = players[m_myId]->m_bDoubleJump;
-	m_inGameData.players[m_myId].hp = players[m_myId]->m_hp;
+	m_inGameData->players[m_myid].pos = vector2(players[m_myid]->GetPos().x, players[m_myid]->GetPos().y);
+	m_inGameData->players[m_myid].state = (EObject_State)(players[m_myid]->GetState());
+	m_inGameData->players[m_myid].dir = (EObject_Dir)(players[m_myid]->GetDir());
+	m_inGameData->players[m_myid].isLanded = players[m_myid]->m_bIsLanded;
+	m_inGameData->players[m_myid].isJump = players[m_myid]->m_bJump;
+	m_inGameData->players[m_myid].isDoubleJump = players[m_myid]->m_bDoubleJump;
+	m_inGameData->players[m_myid].hp = players[m_myid]->m_hp;
 }
 
 void CMainScene::GameStateCheck(float elapsedTime)
@@ -246,11 +278,6 @@ bool CMainScene::IsPlayerInRicheAttackArea()
 	if (distance < 400) return true;
 
 	return false;
-}
-
-void CMainScene::BossAttack()
-{
-	boss->Attack(players[m_myId]->GetPos());
 }
 
 void CMainScene::CreateStageOneMap()

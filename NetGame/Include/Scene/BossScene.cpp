@@ -31,6 +31,9 @@ bool CBossScene::Init()
 	boss->SetPos(0.f, 0.f);
 	boss->CreateHPBar(this);
 	boss->m_hpBar->SetBarSize(100, 5);
+	for (int i = 0; i < 10; ++i) {
+		bossAttack[i] = CreateObject<CBossAttack>("richeAttack");
+	}
 
 	Vector2 resolution = { (float)CEngine::GetInst()->GetResolution().width,
 	(float)CEngine::GetInst()->GetResolution().height };
@@ -39,15 +42,32 @@ bool CBossScene::Init()
 	GetCamera()->SetViewType(ECamera_Type::Target);
 	m_cameraVelocity = Vector2(100.f, 100.f);
 
-	player[0] = CreateObject<CSwordman>("player0");
-	player[1] = CreateObject<CSwordman>("player1");
-	player[0]->SetPos(-930.f, 300.f);
-	player[1]->SetPos(-930.f, 300.f);
-	SetPlayer(player[abs(1 - m_myId)]);
+	for (int j = 0; j < 2; ++j)
+	{
+		for (int i = 0; i < 10; ++i) {
+			arrows[j][i] = CreateObject<CArrow>("arrow");
+		}
+	}
+	CSceneManager* manager = CSceneManager::GetInst();
+	for (int i = 0; i < 2; ++i)
+	{
+		if (manager->m_playerJob[i] == EPlayer_Job::Archer)
+		{
+			players[i] = CreateObject<CArcher>("player" + i);
+			m_inGameData->players[i].job = EPlayer_Job::Archer;
+		}
+		else
+		{
+			players[i] = CreateObject<CSwordman>("player" + i);
+			m_inGameData->players[i].job = EPlayer_Job::Sword;
+		}
+		players[i]->SetPos(-930.f, 300.f);
+	}
+	SetPlayer(players[abs(1 - m_myid)]);
 
-	player[m_myId]->InitInput();
-	SetMyPlayer(player[m_myId]);
-	GetCamera()->SetTarget(player[m_myId]);
+	players[m_myid]->InitInput();
+	SetMyPlayer(players[m_myid]);
+	GetCamera()->SetTarget(players[m_myid]);
 
 	player[0]->CreateHPBar(this);
 	player[1]->CreateHPBar(this);
@@ -68,12 +88,12 @@ void CBossScene::Update(float elapsedTime)
 	ClientGameData();
 
 
-	m_timer += elapsedTime;
-	if (m_timer > 2.0f) {
-		if (boss->GetActive())
-			BossAttack();
-		m_timer = 0.f;
-	}
+	//m_timer += elapsedTime;
+	//if (m_timer > 2.0f) {
+	//	if (boss->GetActive())
+	//		BossAttack();
+	//	m_timer = 0.f;
+	//}
 
 	GameStateCheck(elapsedTime);
 }

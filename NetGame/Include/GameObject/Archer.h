@@ -16,12 +16,11 @@ public:
 	virtual void InitInput();
 
 public:
-	virtual void CheckFrame(float elapsedTime);
+	virtual void CheckFrame(float elapsedTime);	
 
 private:
 	void ShotArrow();
 
 public:
-	CArrow* m_arrows[50];
 };
 

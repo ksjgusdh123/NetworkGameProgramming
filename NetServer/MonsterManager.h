@@ -9,6 +9,7 @@ public:
 	void CreateBossMonster();
 	void UpdateMonster();
 	int IsPlayerInRicheAttackArea();
+	int bossAttack();
 public:
 	static MonsterManager& GetInst()
 	{

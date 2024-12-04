@@ -25,7 +25,6 @@ public:
 	void CreateStageOneMap();
 	void CreateStageOneItem();
 	void ResourceInit();
-	void BossAttack();
 	void RecvGameData(const Packet& packet);
 	bool SendGameData();
 	void UpdateGameData();
@@ -39,7 +38,7 @@ private:
 	CGhost* ghost;
 	CRiche* riche;
 	CRicheAttack* richeAttack[10];
-	CBoss* boss;
+	class  CArrow* arrows[2][10];
 	Vector2	m_cameraVelocity;
 
 	float m_timer = 0.f;

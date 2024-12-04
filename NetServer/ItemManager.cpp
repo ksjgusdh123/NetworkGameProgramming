@@ -32,7 +32,7 @@ void ItemManager::CreateItem()
 void ItemManager::CheckItemCollision(GamePlayerInfo& player)
 {
 	Collision playerCollision;
-	vector2 playerSize = vector2(50, 60); // 플레이어 크기
+	vector2 playerSize = player.GetPlayerSize(); // 플레이어 크기
 	playerCollision.UpdateCollision(player.pos, playerSize);
 
 	for (auto& item : inGameData->item)
@@ -58,6 +58,12 @@ void ItemManager::CheckItemCollision(GamePlayerInfo& player)
 				item.type = -1;
 				break;
 			case ItemType::TRAP:
+				if (player.job == EPlayer_Job::Sword &&
+					(player.state == EObject_State::Attack || player.state == EObject_State::Attack_L))
+				{
+					item.type = -1;
+					return;
+				}
 				player.hp -= effectAmount;
 				player.hp = std::clamp((int)player.hp, 0, 100);
 				inGameData->item[item.id + STAR1].type = ItemType::STAR;
@@ -68,4 +74,24 @@ void ItemManager::CheckItemCollision(GamePlayerInfo& player)
 			}
 		}
 	}
+}
+
+bool ItemManager::CheckArrowItemCollision(ArrowInfo& arrow)
+{
+	for (auto& item : inGameData->item)
+	{
+		if (item.type != ItemType::TRAP)
+			continue;
+
+		Collision itemCollision;
+		vector2 itemSize = item.GetSize();
+		itemCollision.UpdateCollision(item.pos, itemSize);
+
+		if (itemCollision.CheckCollision(&arrow.box))
+		{
+			item.type = -1;
+			return true;
+		}
+	}
+	return false;
 }

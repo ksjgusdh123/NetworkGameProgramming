@@ -59,11 +59,16 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 		{
 		case LOBBYSCENE:
 		{
-			LobbyData* gameData = GameManager::GetInst().GetLobbyData();
-			if (gameData->players[0].bReady && gameData->players[1].bReady)
+			LobbyData* lobbyData = GameManager::GetInst().GetLobbyData();
+			if (lobbyData->players[0].bReady && lobbyData->players[1].bReady)
 			{
-				gameData->scene = GAMESCENE;
+				lobbyData->scene = GAMESCENE;
 				curScene = GAMESCENE;
+				InGameData* gameData = GameManager::GetInst().GetInGameData();
+				for (int i = 0; i < 2; ++i)
+				{
+					gameData->players[i].job = lobbyData->players[i].job;
+				}
 				GameManager::GetInst().InitGameData();
 				TileManager::GetInst().SendTilePacket();
 			}
@@ -94,7 +99,16 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 		}
 		case BOSSSCENE:
 		{
-			GameManager::GetInst().UpdateInGameData();
+			GameManager::GetInst().UpdateBossData();
+			InGameData* gameData = GameManager::GetInst().GetInGameData();
+			if (gameData->players[0].hp <= 0 && gameData->players[1].hp <= 0)
+			{
+				// 둘다 체력 없으면 결과창으로 이동
+				gameData->scene = RESULTSCENE;
+				curScene = RESULTSCENE;
+				GameManager::GetInst().CacluateResult(false);
+				GameManager::GetInst().SendResultData();
+			}
 			GameManager::GetInst().SendInGameData();
 			break;
 		}

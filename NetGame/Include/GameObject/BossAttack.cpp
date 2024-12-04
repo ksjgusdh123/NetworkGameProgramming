@@ -33,14 +33,14 @@ void CBossAttack::Update(float elapsedTime)
 {
 	CGameObject::Update(elapsedTime);
 
-	if (m_objectDir == EObject_Dir::Right)
-		m_pos.x += m_velocity.x * 2 * ELAPSED_TIME;
-	else if (m_objectDir == EObject_Dir::Left)
-		m_pos.x -= m_velocity.x * 2 * ELAPSED_TIME;
+	//if (m_objectDir == EObject_Dir::Right)
+	//	m_pos.x += m_velocity.x * 2 * ELAPSED_TIME;
+	//else if (m_objectDir == EObject_Dir::Left)
+	//	m_pos.x -= m_velocity.x * 2 * ELAPSED_TIME;
 
-	m_timer += elapsedTime;
-	if (m_timer >= 5.0f)
-		Destroy();
+	//m_timer += elapsedTime;
+	//if (m_timer >= 5.0f)
+	//	Destroy();
 
 
 }

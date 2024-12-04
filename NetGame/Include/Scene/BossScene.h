@@ -6,6 +6,7 @@
 #include "../GameObject/Riche.h"
 #include "../GameObject/RicheAttack.h"
 #include "../GameObject/Boss.h"
+#include "../GameObject/BossAttack.h"
 #include "../GameObject//Tile.h"
 #include "..\NetClient\TCPClient.h"
 // Warning: SceneManager에서 MainScene을 알 수 없기 때문에 씬이 제거될 때 MainScene으로 캐스팅 되지 않는다. (Scene 소멸자만 호출)
@@ -34,6 +35,8 @@ private:
 	InGameData m_inGameData;
 	class CPlayer* player[2];
 	CBoss* boss;
+	CBossAttack* bossAttack[10];
+	class  CArrow* arrows[2][10];
 	Vector2	m_cameraVelocity;
 
 	float m_timer = 0.f;

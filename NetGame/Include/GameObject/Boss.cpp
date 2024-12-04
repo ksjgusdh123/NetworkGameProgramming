@@ -47,43 +47,6 @@ void CBoss::Update(float elapsedTime)
 
 	m_timer += elapsedTime;
 
-
-	if (m_timer >= 1.f) {
-		if (m_objectState == EObject_State::Attack)
-			m_objectState = EObject_State::Basic;
-		if (m_objectState == EObject_State::Attack_L)
-			m_objectState = EObject_State::Basic_L;
-		if (m_objectState == EObject_State::Attack_L2) {
-			m_objectState = EObject_State::Basic_L;
-			CBossAttack* ba = m_scene->CreateObject<CBossAttack>("Boss_Attack");
-			ba->SetPos(m_pos.x - 60.f, m_pos.y + 60.f);
-			ba->SetDir(EObject_Dir::Left);
-
-			ba = m_scene->CreateObject<CBossAttack>("Boss_Attack");
-			ba->SetPos(m_pos.x - 60.f, m_pos.y - 60.f);
-			ba->SetDir(EObject_Dir::Left);
-		}
-		if (m_objectState == EObject_State::Attack2) {
-			m_objectState = EObject_State::Basic;
-			CBossAttack* ba = m_scene->CreateObject<CBossAttack>("Boss_Attack");
-			ba->SetPos(m_pos.x + 60.f, m_pos.y - 60.f);
-			ba->SetDir(EObject_Dir::Right);
-
-			ba = m_scene->CreateObject<CBossAttack>("Boss_Attack");
-			ba->SetPos(m_pos.x + 60.f, m_pos.y + 60.f);
-			ba->SetDir(EObject_Dir::Right);
-		}
-		if (m_objectState == EObject_State::Telpo) {
-			m_objectState = EObject_State::Telpo;
-			SetPos(m_target.x, m_pos.y);
-		}
-		if (m_objectState == EObject_State::Telpo_L) {
-			m_objectState = EObject_State::Telpo_L;
-			SetPos(m_target.x, m_pos.y);
-		}
-
-	}
-
 }
 
 void CBoss::PostUpdate(float elapsedTime)
@@ -94,7 +57,7 @@ void CBoss::PostUpdate(float elapsedTime)
 
 void CBoss::Attack(Vector2 target)
 {
-	float distance = abs(target.x - GetPos().x);
+	/*float distance = abs(target.x - GetPos().x);
 	int bossAttack = 0;
 	if (distance > 400.f)
 		bossAttack = 2;
@@ -136,7 +99,7 @@ void CBoss::Attack(Vector2 target)
 		break;
 	}
 	m_target = target;
-	m_timer = 0.f;
+	m_timer = 0.f;*/
 }
 
 
