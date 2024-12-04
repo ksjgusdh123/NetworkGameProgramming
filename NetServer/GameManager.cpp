@@ -205,12 +205,8 @@ void GameManager::MonsterCollision()
 
 			for (int j = 0; j < ARROW_NUM; ++j) {
 				if (!inGameData.arrowAttack[j].is_alive) continue;
-				vector2 ArrowPos = inGameData.arrowAttack[j].pos;
-				vector2 ArrowSize = inGameData.arrowAttack[j].size;
-				vector2 ArrowLT = vector2(ArrowPos.x - ArrowSize.x / 2, ArrowPos.y - ArrowSize.y / 2);
-				vector2 ArrowRB = vector2(ArrowPos.x + ArrowSize.x / 2, ArrowPos.y + ArrowSize.y / 2);
-				if (ArrowRB.x > MonsterLT.x && ArrowLT.x < MonsterRB.x &&
-					ArrowRB.y > MonsterLT.y && ArrowLT.y < MonsterRB.y) {
+				inGameData.arrowAttack[j].box.UpdateCollision(inGameData.arrowAttack[j].pos, inGameData.arrowAttack[j].size);
+				if (inGameData.arrowAttack[j].box.CheckCollision(&inGameData.monster[i].box)) {
 					if (inGameData.monster[i].direct == EObject_Dir::Right)
 						inGameData.monster[i].state = EObject_State::Die;
 					else

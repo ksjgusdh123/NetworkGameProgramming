@@ -100,7 +100,6 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 		case BOSSSCENE:
 		{
 			GameManager::GetInst().UpdateBossData();
-			GameManager::GetInst().UpdateInGameData();
 			InGameData* gameData = GameManager::GetInst().GetInGameData();
 			if (gameData->players[0].hp <= 0 && gameData->players[1].hp <= 0)
 			{
