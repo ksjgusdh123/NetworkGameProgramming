@@ -4,7 +4,6 @@ constexpr int PLAYER_NUM = 2;
 constexpr int MONSTER_NUM = 2;
 constexpr int MONSTER_ATTACK_NUM = 10;
 constexpr int TILE_NUM = 10;
-constexpr int ITEM_NUM = 10;
 constexpr int NAME_LEN = 20;
 
 #pragma pack(push, 1)
@@ -133,17 +132,23 @@ struct TileInfo
 	Collision box;
 };
 
-enum ItemType { HEART, STAR, TRAP };
+enum ItemType { HEART, STAR_H, STAR, TRAP };
 enum ItemId
 {
 	TRAP1,
 	TRAP2,
 	TRAP3,
 	TRAP4,
+
 	STAR1,
+	STAR2,
+	STAR3,
+	STAR4,
+
 	HEART1,
 	HEART2,
 	HEART3,
+
 	MAX
 };
 static vector2 ItemPos[(int)ItemId::MAX] =
@@ -152,7 +157,12 @@ static vector2 ItemPos[(int)ItemId::MAX] =
 	{-40.f, 140.f},
 	{570.f, 40.f},
 	{570.f, 240.f},
-	{-570.f, 415.f},
+
+	{-550.f, 415.f},
+	{-40.f, 140.f},
+	{570.f, 40.f},
+	{570.f, 240.f},
+
 	{280.f, 415.f},
 	{-330.f, 55.f},
 	{950.f, 140.f},
@@ -164,12 +174,12 @@ struct ItemInfo
 	vector2 pos;
 	vector2 GetSize() const
 	{
-		const static vector2 size[] = { {60.f, 57.f},{60.f, 57.f},{132.f, 74.f} };
+		const static vector2 size[] = { {60.f, 57.f},{0,0},{60.f, 57.f},{132.f, 74.f} };
 		return size[type];
 	}
 	short GetEffectAmount() const
 	{
-		const static short amounts[] = { 30,10,1 };
+		const static short amounts[] = { 30,NULL,10,1 };
 		return amounts[type];
 	}
 };
@@ -196,7 +206,7 @@ struct InGameData :public GameData
 	int playtime = -1;
 	std::array<GamePlayerInfo, PLAYER_NUM> players;
 	std::array<MonsterInfo, MONSTER_NUM> monster;
-	std::array<ItemInfo, ITEM_NUM> item;
+	std::array<ItemInfo, (int)ItemId::MAX> item;
 	std::array<MonsterAttackInfo, MONSTER_ATTACK_NUM> monsterAttack;
 };
 

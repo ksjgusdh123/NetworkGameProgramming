@@ -222,13 +222,13 @@ void CMainScene::GameDataUpdateFromServer()
 
 	for (auto& item : m_inGameData->item)
 	{
-		if (item.type != -1) continue;
-
 		for (auto& object : m_objects[(int)EObject_Type::Item])
 		{
-			bool isRemovedId = (item.id == object->GetItemId());
-			if (isRemovedId)
+			if (item.id != object->GetItemId()) continue;
+			if (item.type == -1)
 				object->Destroy();
+			if (item.type == ItemType::STAR)
+				object.get()->SetEnable(true);
 		}
 	}
 }
@@ -322,7 +322,7 @@ void CMainScene::CreateStageOneItem()
 		if (i < STAR1)
 			type = ItemType::TRAP;
 		else if (i < HEART1)
-			type = ItemType::STAR;
+			type = ItemType::STAR_H;
 		else
 			type = ItemType::HEART;
 
@@ -335,11 +335,12 @@ void CMainScene::CreateStageOneItem()
 			trap->SetPos(ItemPos[i].x, ItemPos[i].y);
 			break;
 		}
-		case ItemType::STAR:
+		case ItemType::STAR_H:
 		{
 			CStar* star = CreateObject<CStar>("star");
 			star->SetItemId(i);
 			star->SetPos(ItemPos[i].x, ItemPos[i].y);
+			star->SetEnable(false);
 			break;
 		}
 		case ItemType::HEART:
