@@ -30,11 +30,6 @@ bool CMainScene::Init()
 	back->SetSize(2000.f, 1000.f);
 	back->SetPivot(0.5f, 0.5f);
 
-	boss = CreateObject<CBoss>("boss");
-	boss->SetPos(0.f, 0.f);
-	boss->CreateHPBar(this);
-	boss->m_hpBar->SetBarSize(100, 5);
-
 	CPortal* portal = CreateObject<CPortal>("portal");
 	portal->SetPos(730.f, -150.f);
 
@@ -117,11 +112,6 @@ void CMainScene::Update(float elapsedTime)
 	GameDataUpdateFromClient();
 
 	m_timer += elapsedTime;
-	if (m_timer > 2.0f) {
-		if (boss->GetActive())
-			BossAttack();
-		m_timer = 0.f;
-	}
 
 	GameStateCheck(elapsedTime);
 	bool isPortalEntry = m_inGameData->players[0].bReady && m_inGameData->players[1].bReady;
@@ -331,11 +321,6 @@ bool CMainScene::IsPlayerInRicheAttackArea()
 	if (distance < 400) return true;
 
 	return false;
-}
-
-void CMainScene::BossAttack()
-{
-	boss->Attack(players[m_myid]->GetPos());
 }
 
 void CMainScene::CreateStageOneMap()
