@@ -34,7 +34,7 @@ void MonsterManager::CreateMonster()
 
 	for (int i = 0; i < MONSTER_ATTACK_NUM; ++i) {
 		MonsterAttackInfo attckInfo;
-		attckInfo.pos = vector2(-1000.f, -1000.f);
+		attckInfo.pos = vector2(-10000.f, -10000.f);
 		attckInfo.size = vector2(50.f, 50.f);
 		attckInfo.type = '0';
 		attckInfo.state = EObject_State::Attack;
@@ -51,7 +51,7 @@ void MonsterManager::CreateBossMonster()
 {
 	MonsterInfo info;
 	info.type = '2';
-	info.pos = vector2(0.f, 410.f);
+	info.pos = vector2(0.f, 370.f);
 	info.hp = 100;
 	info.direct = EObject_Dir::Right;
 	info.state = EObject_State::Basic;
@@ -59,6 +59,23 @@ void MonsterManager::CreateBossMonster()
 	info.size = vector2(130.f, 160.f);
 	info.timer = 0.f;
 	inGameData->monster[0] = info;
+
+	info.type = '3';
+	inGameData->monster[1] = info;
+
+	for (int i = 0; i < MONSTER_ATTACK_NUM; ++i) {
+		MonsterAttackInfo attckInfo;
+		attckInfo.pos = vector2(-1000.f, -1000.f);
+		attckInfo.size = vector2(50.f, 50.f);
+		attckInfo.type = '1';
+		attckInfo.state = EObject_State::Attack;
+		attckInfo.direct = EObject_Dir::Right;
+		attckInfo.velocity = 5.0f;
+		attckInfo.is_alive = false;
+		attckInfo.timer = 0.f;
+		attckInfo.target = vector2(-1000.f, -1000.f);
+		inGameData->monsterAttack[i] = attckInfo;
+	}
 }
 
 void MonsterManager::UpdateMonster()
@@ -209,23 +226,48 @@ void MonsterManager::UpdateMonster()
 					m.state = EObject_State::Basic_L;
 				if (m.state == EObject_State::Attack_L2) {
 					m.state = EObject_State::Basic_L;
-				/*	CBossAttack* ba = m_scene->CreateObject<CBossAttack>("Boss_Attack");
-					ba->SetPos(m_pos.x - 60.f, m_pos.y + 60.f);
-					ba->SetDir(EObject_Dir::Left);
+					int Attack_Num = 0;
+					for (MonsterAttackInfo& monsterAttack : inGameData->monsterAttack) {
+						if (monsterAttack.is_alive) continue;
+						if (Attack_Num < 1) {
+							monsterAttack.pos = vector2(m.pos.x - 60.f, m.pos.y + 60.f);
+							monsterAttack.is_alive = true;
+							monsterAttack.timer = 0.f;
+							monsterAttack.direct = EObject_Dir::Left;
+						}
+						else {
+							monsterAttack.pos = vector2(m.pos.x - 60.f, m.pos.y - 60.f);
+							monsterAttack.is_alive = true;
+							monsterAttack.timer = 0.f;
+							monsterAttack.direct = EObject_Dir::Left;
+						}
+						Attack_Num += 1;
+						if (Attack_Num >= 2)
+							break;
+					}
 
-					ba = m_scene->CreateObject<CBossAttack>("Boss_Attack");
-					ba->SetPos(m_pos.x - 60.f, m_pos.y - 60.f);
-					ba->SetDir(EObject_Dir::Left);*/
 				}
 				if (m.state == EObject_State::Attack2) {
 					m.state = EObject_State::Basic;
-					/*CBossAttack* ba = m_scene->CreateObject<CBossAttack>("Boss_Attack");
-					ba->SetPos(m_pos.x + 60.f, m_pos.y - 60.f);
-					ba->SetDir(EObject_Dir::Right);
-
-					ba = m_scene->CreateObject<CBossAttack>("Boss_Attack");
-					ba->SetPos(m_pos.x + 60.f, m_pos.y + 60.f);
-					ba->SetDir(EObject_Dir::Right);*/
+					int Attack_Num = 0;
+					for (MonsterAttackInfo& monsterAttack : inGameData->monsterAttack) {
+						if (monsterAttack.is_alive) continue;
+						if (Attack_Num < 1) {
+							monsterAttack.pos = vector2(m.pos.x + 60.f, m.pos.y + 60.f);
+							monsterAttack.is_alive = true;
+							monsterAttack.timer = 0.f;
+							monsterAttack.direct = EObject_Dir::Right;
+						}
+						else {
+							monsterAttack.pos = vector2(m.pos.x + 60.f, m.pos.y - 60.f);
+							monsterAttack.is_alive = true;
+							monsterAttack.timer = 0.f;
+							monsterAttack.direct = EObject_Dir::Right;
+						}
+						Attack_Num += 1;
+						if (Attack_Num >= 2)
+							break;
+					}
 				}
 				if (m.state == EObject_State::Telpo) {
 					m.state = EObject_State::Telpo;
@@ -268,12 +310,21 @@ void MonsterManager::UpdateMonster()
 				m.is_alive = false;
 		}
 			break;
-		case '1':				// Boss АјАн
+		case '1':
+		{
+			if (m.direct == EObject_Dir::Right)
+				m.pos.x += m.velocity * 2.5f;
+			else if (m.direct == EObject_Dir::Left)
+				m.pos.x -= m.velocity * 2.5f;
 
+			m.timer += 0.05f;
+			if (m.timer >= 3.0f)
+				m.is_alive = false;
+		}
 			break;	
 		default:
 			break;
-		}
+		} 
 	}
 }
 

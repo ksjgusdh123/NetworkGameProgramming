@@ -33,6 +33,9 @@ bool CBossScene::Init()
 	boss->SetPos(0.f, 0.f);
 	boss->CreateHPBar(this);
 	boss->m_hpBar->SetBarSize(100, 5);
+	for (int i = 0; i < 10; ++i) {
+		bossAttack[i] = CreateObject<CBossAttack>("richeAttack");
+	}
 
 
 	Vector2 resolution = { (float)CEngine::GetInst()->GetResolution().width,
@@ -153,6 +156,18 @@ void CBossScene::RecvGameData(const Packet& packet)
 				break;
 			}
 		}
+
+
+		for (int i = 0; i < MONSTER_ATTACK_NUM; ++i)
+		{
+			bossAttack[i]->SetPos(m_inGameData->monsterAttack[i].pos.x, m_inGameData->monsterAttack[i].pos.y);
+			bossAttack[i]->SetDir(m_inGameData->monsterAttack[i].direct);
+			if (m_inGameData->monsterAttack[i].is_alive)
+				bossAttack[i]->SetEnable(true);
+			else
+				bossAttack[i]->SetEnable(false);
+		}
+
 
 		break;
 	}
