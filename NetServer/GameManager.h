@@ -37,6 +37,9 @@ public:
 	void ProcessCollsion();
 	void CheckPortalCollision(GamePlayerInfo& player);
 	void MonsterCollision();
+
+	void CalculateArrow();
+
 public:
 	static GameManager& GetInst()
 	{

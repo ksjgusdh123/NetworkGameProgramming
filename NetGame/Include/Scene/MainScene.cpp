@@ -45,7 +45,7 @@ bool CMainScene::Init()
 	GetCamera()->SetViewType(ECamera_Type::Target);
 	m_cameraVelocity = Vector2(100.f, 100.f);
 
-	players[0] = CreateObject<CSwordman>("player0");
+	players[0] = CreateObject<CArcher>("player0");
 	players[1] = CreateObject<CSwordman>("player1");
 	players[0]->SetPos(-930.f, 300.f);
 	players[1]->SetPos(-930.f, 300.f);
@@ -218,6 +218,24 @@ void CMainScene::GameDataUpdateFromServer()
 			richeAttack[i]->SetEnable(true);
 		else
 			richeAttack[i]->SetEnable(false);
+	}
+
+	for (int j = 0; j < 2; ++j)
+	{
+		CArcher* archer = dynamic_cast<CArcher*>(players[j]);
+		if (archer)
+		{
+			for (int i = 0; i < ARROW_NUM; ++i)
+			{
+				archer->m_arrows[i]->SetPos(m_inGameData->arrowAttack[i].pos.x, m_inGameData->arrowAttack[i].pos.y);
+				archer->m_arrows[i]->SetState(m_inGameData->arrowAttack[i].state);
+				archer->m_arrows[i]->SetDir(m_inGameData->arrowAttack[i].direct);
+				if (m_inGameData->arrowAttack[i].is_alive)
+					archer->m_arrows[i]->SetEnable(true);
+				else
+					archer->m_arrows[i]->SetEnable(false);
+			}
+		}
 	}
 
 	for (auto& item : m_inGameData->item)

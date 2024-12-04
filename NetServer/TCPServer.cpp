@@ -64,6 +64,11 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 			{
 				gameData->scene = GAMESCENE;
 				curScene = GAMESCENE;
+				InGameData* data = GameManager::GetInst().GetInGameData();
+				for (int i = 0; i < 2; ++i)
+				{
+					data->players[i].job = gameData->players[i].job;
+				}
 				GameManager::GetInst().InitGameData();
 				TileManager::GetInst().SendTilePacket();
 			}

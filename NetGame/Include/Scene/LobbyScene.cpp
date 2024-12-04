@@ -78,12 +78,12 @@ void CLobbyScene::KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	{
 	case IDC_BUTTON:
 	{
-		m_lobbyData->players[m_myid].job = (char)(EPlayer_Job::Sword);
+		m_lobbyData->players[m_myid].job = (EPlayer_Job::Sword);
 		break;
 	}
 	case IDC_BUTTON2:
 	{
-		m_lobbyData->players[m_myid].job = (char)(EPlayer_Job::Archer);
+		m_lobbyData->players[m_myid].job = (EPlayer_Job::Archer);
 		break;
 	}
 	case IDC_BUTTON3:
@@ -116,8 +116,6 @@ void CLobbyScene::RecvGameData(const Packet& packet)
 			m_LobbyPlayer[i]->SetJob((EPlayer_Job)(int)m_lobbyData->players[i].job);
 			m_LobbyPlayer[i]->SetName(m_lobbyData->players[i].name);
 		}
-
-
 		break;
 	}
 	default:

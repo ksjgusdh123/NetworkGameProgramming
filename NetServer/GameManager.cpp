@@ -35,6 +35,7 @@ void GameManager::UpdateInGameData()
 {
 	inGameData.playtime = gameTimer.GetElapsedTime();
 	MonsterManager::GetInst().UpdateMonster();
+	CalculateArrow();
 	ProcessCollsion();
 }
 
@@ -62,7 +63,7 @@ void GameManager::PrintGameState()
 			<< ", Name=" << player.name
 			<< ", Pos=(" << player.pos.x << "," << player.pos.y << ")"
 			<< ", HP=" << player.hp
-			<< ", Job=" << player.job << "\n";
+			<< ", Job=" << (int)player.job << "\n";
 	}
 }
 
@@ -154,7 +155,19 @@ void GameManager::MonsterCollision()
 					// 플레이어 데미지 입음		
 				}
 			}
+			
+		}
+	}
+}
 
+void GameManager::CalculateArrow()
+{
+	for (auto& player : inGameData.players)
+	{
+		if (player.job == EPlayer_Job::Archer)
+		{
+			int a = 3;
+			cout << a;
 		}
 	}
 }
