@@ -33,9 +33,10 @@ public:
 	bool m_bDieCheck = false;
 private:
 	InGameData* m_inGameData;
-	class CPlayer* player[2];
+	class CPlayer* players[2];
 	CBoss* boss;
 	CBossAttack* bossAttack[10];
+	class  CArrow* arrows[2][10];
 	Vector2	m_cameraVelocity;
 	int m_tileNum{};
 	std::vector<int> m_tileType;
