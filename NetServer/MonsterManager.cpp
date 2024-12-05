@@ -78,7 +78,7 @@ void MonsterManager::CreateBossMonster()
 	}
 }
 
-void MonsterManager::UpdateMonster()
+void MonsterManager::UpdateMonster(float elapsed)
 {
 	for (MonsterInfo& m : inGameData->monster)
 	{
@@ -90,7 +90,7 @@ void MonsterManager::UpdateMonster()
 		{
 			if (m.state == EObject_State::Die_L || m.state == EObject_State::Die)
 			{
-				m.timer += 0.05f;
+				m.timer += elapsed;
 				if (m.timer > 1.0f) m.is_alive = false;
 				break;
 			}
@@ -116,7 +116,7 @@ void MonsterManager::UpdateMonster()
 		{
 			if (m.state == EObject_State::Die_L || m.state == EObject_State::Die)
 			{
-				m.timer += 0.05f;
+				m.timer += elapsed;
 				if (m.timer > 1.0f) m.is_alive = false;
 				break;
 			}
@@ -138,7 +138,7 @@ void MonsterManager::UpdateMonster()
 			}
 
 			if (m.state == EObject_State::Attack || m.state == EObject_State::Attack_L) {
-				m.timer += 0.05f;
+				m.timer += elapsed;
 
 				if (m.timer >= 1.f) {
 					if (m.state == EObject_State::Attack)
@@ -159,7 +159,7 @@ void MonsterManager::UpdateMonster()
 		}
 		break;
 		case '2':
-			m.timer += 0.05f;
+			m.timer += elapsed;
 
 			if (m.timer > 2.0f) {
 				if (m.is_alive) {
@@ -302,7 +302,7 @@ void MonsterManager::UpdateMonster()
 				m.pos.y += (dy / distance) * velocityFactor; // yÃà ÀÌµ¿
 			}
 
-			m.timer += 0.05;
+			m.timer += elapsed;
 			if (m.timer >= 3.0f)
 				m.is_alive = false;
 
@@ -317,7 +317,7 @@ void MonsterManager::UpdateMonster()
 			else if (m.direct == EObject_Dir::Left)
 				m.pos.x -= m.velocity * 2.5f;
 
-			m.timer += 0.05f;
+			m.timer += elapsed;
 			if (m.timer >= 3.0f)
 				m.is_alive = false;
 		}

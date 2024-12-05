@@ -32,13 +32,9 @@ void CPlayer::Update(float elapsedTime)
 		DieEvent();
 	}
 
-	if (m_bFrameCheck)
-	{
-		CheckFrame(elapsedTime);
-	}
 	if (m_jumpState == EJump_State::Jumping)
 	{
-		CalculateJump(elapsedTime);
+		//CalculateJump(elapsedTime);
 	}
 
 }
@@ -245,7 +241,7 @@ void CPlayer::PlayerJump()
 	if (m_jumpState == EJump_State::Jumping)
 		return;
 
-	if (m_jumpState == EJump_State::JumpDown)
+	if (m_jumpState == EJump_State::JumpDown || (m_jumpState == EJump_State::Jumping && m_jumpTime >= 0.4f))
 	{
 		if (m_bDoubleJump)
 			return;

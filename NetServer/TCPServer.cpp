@@ -84,6 +84,13 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 			{
 				gameData->scene = BOSSSCENE;
 				curScene = BOSSSCENE;
+				for (int i = 0; i < 2; ++i)
+				{
+					gameData->players[i].hp = 100;
+					gameData->players[i].pos = vector2(-930 + 50 * i, 300);
+					gameData->players[i].state = EObject_State::Basic;
+					gameData->players[i].jumpState = EJump_State::JumpDown;
+				}
 				GameManager::GetInst().InitBossData();
 				TileManager::GetInst().SendTilePacket();
 			}

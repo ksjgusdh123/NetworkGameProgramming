@@ -69,15 +69,14 @@ bool CBossScene::Init()
 	SetMyPlayer(player[m_myid]);
 	GetCamera()->SetTarget(player[m_myid]);
 
+	m_inputPlayer = CreateObject<CPlayer>("player");
+	m_inputPlayer->InitInput();
+	m_inputPlayer->m_bRender = false;
+
 	player[0]->CreateHPBar(this);
 	player[1]->CreateHPBar(this);
 
 	CreateStageOneMap();
-
-	{
-		Packet packet = PacketManager::GetInst().RecvPacket();
-		PacketManager::GetInst().ProcessPacket(packet);
-	}
 	return true;
 }
 
@@ -87,6 +86,7 @@ void CBossScene::Update(float elapsedTime)
 
 	m_timer += elapsedTime;
 
+	UpdateGameData();
 	GameStateCheck(elapsedTime);
 }
 
@@ -107,15 +107,79 @@ void CBossScene::UpdateGameData()
 {
 	m_inGameData = PacketManager::GetInst().m_inGameData;
 
+	for (int i = 0; i < PLAYER_NUM; ++i)
+	{
+		player[i]->SetPos(m_inGameData.players[i].pos.x, m_inGameData.players[i].pos.y);
+		player[i]->SetState((EObject_State)(int)m_inGameData.players[i].state);
+		player[i]->m_jumpState = m_inGameData.players[i].jumpState;
+		player[i]->SetDir((EObject_Dir)(int)m_inGameData.players[i].dir);
+		player[i]->m_hp = m_inGameData.players[i].hp;
+	}
+
+	GetCamera()->Update(ELAPSED_TIME);
+	for (int i = 0; i < 2; ++i)
+	{
+		player[i]->m_hpBar->Update(ELAPSED_TIME);
+	}
+
+	if (m_inputPlayer->m_jumpState == EJump_State::Jumping)
+	{
+		if (m_inGameData.players[m_myid].jumpState != EJump_State::Jumping && m_inGameData.players[m_myid].jumpTime >= 0.1)
+			m_inputPlayer->m_jumpState = m_inGameData.players[m_myid].jumpState;
+	}
+
+	m_inputPlayer->m_jumpTime += m_inGameData.players[m_myid].jumpTime;
+	if (m_inputPlayer->m_jumpState == EJump_State::JumpDown)
+	{
+		if (m_inGameData.players[m_myid].jumpState == EJump_State::Landed)
+		{
+			m_inputPlayer->m_jumpState = EJump_State::Landed;
+			m_inputPlayer->m_bDoubleJump = false;
+		}
+	}
+
+	if (m_inputPlayer->GetState() == EObject_State::Attack)
+	{
+		if (m_inGameData.players[m_myid].state != EObject_State::Attack && m_inGameData.players[m_myid].nowFrame > 0.4)
+			m_inputPlayer->SetState(EObject_State::Basic);
+	}
+	else if (m_inputPlayer->GetState() == EObject_State::Attack_L)
+	{
+		if (m_inGameData.players[m_myid].state != EObject_State::Attack_L && m_inGameData.players[m_myid].nowFrame > 0.4)
+			m_inputPlayer->SetState(EObject_State::Basic_L);
+	}
+
+	if (m_inGameData.players[m_myid].hp <= 0)
+	{
+		m_inputPlayer->m_hp = 0;
+	}
+
+	for (int j = 0; j < 2; ++j)
+	{
+		if (m_inGameData.players[j].job == EPlayer_Job::Archer)
+		{
+			for (int i = 0; i < ARROW_NUM; ++i)
+			{
+				arrows[j][i]->SetPos(m_inGameData.arrowAttack[i].pos.x, m_inGameData.arrowAttack[i].pos.y);
+				arrows[j][i]->SetState(m_inGameData.arrowAttack[i].state);
+				arrows[j][i]->SetDir(m_inGameData.arrowAttack[i].direct);
+				if (m_inGameData.arrowAttack[i].is_alive)
+					arrows[j][i]->SetEnable(true);
+				else
+					arrows[j][i]->SetEnable(false);
+			}
+		}
+	}
+
 }
 
 void CBossScene::ClientGameData()
 {
-	m_inGameData.players[m_myid].pos = vector2(player[m_myid]->GetPos().x, player[m_myid]->GetPos().y);
-	m_inGameData.players[m_myid].state = (EObject_State)(player[m_myid]->GetState());
-	m_inGameData.players[m_myid].dir = (EObject_Dir)(player[m_myid]->GetDir());
-	m_inGameData.players[m_myid].isDoubleJump = player[m_myid]->m_bDoubleJump;
-	m_inGameData.players[m_myid].hp = player[m_myid]->m_hp;
+	m_inGameData.players[m_myid].elapsedTime = ELAPSED_TIME;
+	m_inGameData.players[m_myid].state = (EObject_State)(m_inputPlayer->GetState());
+	m_inGameData.players[m_myid].dir = (EObject_Dir)(m_inputPlayer->GetDir());
+	m_inGameData.players[m_myid].jumpState = (m_inputPlayer->m_jumpState);
+
 }
 
 void CBossScene::GameStateCheck(float elapsedTime)

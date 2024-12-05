@@ -36,9 +36,8 @@ void GameManager::UpdateInGameData()
 {
 	inGameData.playtime = (int)gameTimer.GetElapsedTime();
 	elapsed = gameTimer.Update();
-	cout << elapsed << '\n';
 	UpdatePlayer();		
-	MonsterManager::GetInst().UpdateMonster();
+	MonsterManager::GetInst().UpdateMonster(elapsed);
 	CalculateArrow();
 	ProcessCollsion();
 }
@@ -47,7 +46,7 @@ void GameManager::UpdatePlayer()
 {
 	for (int i = 0; i < 2; ++i)
 	{
-		inGameData.players[i].pos.y += 50 * elapsed;
+		inGameData.players[i].pos.y += 100 * elapsed;
 		switch (inGameData.players[i].state)
 		{
 		case EObject_State::Basic:
@@ -88,9 +87,18 @@ void GameManager::UpdatePlayer()
 
 		switch (inGameData.players[i].jumpState)
 		{
+		case EJump_State::Landed:
+		case EJump_State::JumpDown:
+			inGameData.players[i].jumpTime = 0.f;
+			break;
 		case EJump_State::Jumping:
 		{
-			inGameData.players[i].pos.y -= 150.f * elapsed;
+			inGameData.players[i].pos.y -= 250.f * elapsed;
+			inGameData.players[i].jumpTime += elapsed;
+			if (inGameData.players[i].jumpTime >= 0.5)
+			{
+				inGameData.players[i].jumpState = EJump_State::JumpDown;
+			}
 			break;
 		}
 		default:
@@ -103,7 +111,7 @@ void GameManager::UpdatePlayer()
 void GameManager::UpdateBossData()
 {
 	inGameData.playtime = gameTimer.GetElapsedTime();
-	MonsterManager::GetInst().UpdateMonster();
+	MonsterManager::GetInst().UpdateMonster(elapsed);
 	CalculateArrow();
 	ProcessBossCollsion();
 }

@@ -93,6 +93,7 @@ struct GamePlayerInfo : public PlayerInfo {
 	Collision box;
 	float nowFrame;
 	float frame;
+	float jumpTime = 0.f;
 
 	vector2 GetPlayerSize()
 	{

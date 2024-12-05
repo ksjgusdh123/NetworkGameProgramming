@@ -133,6 +133,19 @@ void CMainScene::UpdateGameData()
 		players[i]->m_hp = m_inGameData.players[i].hp;
 	}
 
+	GetCamera()->Update(ELAPSED_TIME);
+	for (int i = 0; i < 2; ++i)
+	{
+		players[i]->m_hpBar->Update(ELAPSED_TIME);
+	}
+
+	if (m_inputPlayer->m_jumpState == EJump_State::Jumping)
+	{
+		if (m_inGameData.players[m_myid].jumpState != EJump_State::Jumping && m_inGameData.players[m_myid].jumpTime >= 0.1)
+			m_inputPlayer->m_jumpState = m_inGameData.players[m_myid].jumpState;
+	}
+
+	m_inputPlayer->m_jumpTime += m_inGameData.players[m_myid].jumpTime;
 	if (m_inputPlayer->m_jumpState == EJump_State::JumpDown)
 	{
 		if (m_inGameData.players[m_myid].jumpState == EJump_State::Landed)
