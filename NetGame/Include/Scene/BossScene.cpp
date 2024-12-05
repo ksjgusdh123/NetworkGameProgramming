@@ -23,11 +23,18 @@ bool CBossScene::Init()
 	m_inGameData = &PacketManager::GetInst().inGameData;
 
 
+
 	CGameObject* back = CreateObject<CGameObject>("Background");
 	back->CreateTexture(1);
 	back->SetTexture("Background", TEXT("Map/BG.bmp"), EObject_Dir::Right);
 	back->SetSize(2000.f, 1000.f);
 	back->SetPivot(0.5f, 0.5f);
+
+	CPortal* portal = CreateObject<CPortal>("portal");
+	portal->SetPos(300.f, 0.f);
+
+	portal = CreateObject<CPortal>("portal");
+	portal->SetPos(-400.f, -0.f);
 
 	boss = CreateObject<CBoss>("boss");
 	boss->SetPos(0.f, 0.f);

@@ -142,6 +142,18 @@ void TileManager::CreateBossTile()
 
 	AddTile(info, blockSize, 3, tilePosX, tilePosY);
 	tilePosX += 150.f;
+
+	for (int i = 0; i < 3; ++i) {
+		AddTile(info, blockSize, 14, 250, 350 - i * 150);
+		AddTile(info, blockSize, 15, 300, 350 - i * 150);
+		AddTile(info, blockSize, 16, 350, 350 - i * 150);
+	}
+
+	for (int i = 0; i < 3; ++i) {
+		AddTile(info, blockSize, 14, -450, 350 - i * 150);
+		AddTile(info, blockSize, 15, -400, 350 - i * 150);
+		AddTile(info, blockSize, 16, -350, 350 - i * 150);
+	}
 }
 
 void TileManager::AddTile(TileInfo& info, vector2 blockSize, int type, int x, int y)

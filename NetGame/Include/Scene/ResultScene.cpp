@@ -19,7 +19,7 @@ bool CResultScene::Init()
 	m_myid = PacketManager::GetInst().GetMyID();
 	m_resultData = &PacketManager::GetInst().resultData;
 
-	CSceneManager* manager = CSceneManager::GetInst();
+ 	CSceneManager* manager = CSceneManager::GetInst();
 	m_resultData->bWin = manager->m_bWin;
 	m_resultData->playTime = manager->m_playTime;
 
