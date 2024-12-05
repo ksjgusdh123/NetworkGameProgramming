@@ -22,6 +22,7 @@ bool CBoss::Init()
 	SetTexture("Boss_L", TEXT("Monster/Boss_L.png"), EObject_Dir::Left, ETexture_Type::CIMAGE);
 	SetTexture("Boss_R", TEXT("Monster/Boss_R.png"), EObject_Dir::Right, ETexture_Type::CIMAGE);
 	SetTexture("Telpo", TEXT("Monster/telpo2.png"), EObject_Dir::Up, ETexture_Type::CIMAGE);
+
 	
 	SetAnimation(Boss_Basic_L, 8, EObject_State::Basic_L);
 	SetAnimation(Boss_Basic_R, 8, EObject_State::Basic);
@@ -29,6 +30,8 @@ bool CBoss::Init()
 	SetAnimation(Boss_Attack1_R, 8, EObject_State::Attack);
 	SetAnimation(Boss_Attack2_L, 8, EObject_State::Attack_L2);
 	SetAnimation(Boss_Attack2_R, 8, EObject_State::Attack2);
+	SetAnimation(Boss_DIE_R, 8, EObject_State::Die);
+	SetAnimation(Boss_DIE_L, 8, EObject_State::Die_L);
 	SetAnimation(B_TELPO, 17, EObject_State::Telpo);
 	SetAnimation(B_TELPO, 17, EObject_State::Telpo_L);
 	SetSize(130.f, 160.f);
