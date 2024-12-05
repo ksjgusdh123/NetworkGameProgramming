@@ -21,7 +21,7 @@ public:
 	bool m_bJump = false;
 	bool m_bDoubleJump = false;
 	bool m_bAttack = false;
-
+	bool m_bRender = true;
 protected:
 	void PlayerMoveLeft();
 	void PlayerLeftIdle();

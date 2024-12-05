@@ -34,9 +34,33 @@ void GameManager::InitBossData()
 void GameManager::UpdateInGameData()
 {
 	inGameData.playtime = gameTimer.GetElapsedTime();
+	UpdatePlayer();
 	MonsterManager::GetInst().UpdateMonster();
 	CalculateArrow();
 	ProcessCollsion();
+}
+
+void GameManager::UpdatePlayer()
+{
+	for (int i = 0; i < 2; ++i)
+	{
+		inGameData.players[i].pos.y += 3.f;
+		switch (inGameData.players[i].state)
+		{
+		case EObject_State::Walk:
+		{
+			inGameData.players[i].pos.x += 100.f * 0.05f;
+			break;
+		}
+		case EObject_State::Walk_L:
+		{
+			inGameData.players[i].pos.x -= 100.f * 0.05f;
+			break;
+		}
+		default:
+			break;
+		}
+	}
 }
 
 void GameManager::UpdateBossData()

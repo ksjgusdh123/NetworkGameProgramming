@@ -39,8 +39,6 @@ bool CMainScene::Init()
 	GetCamera()->SetViewType(ECamera_Type::Target);
 	m_cameraVelocity = Vector2(100.f, 100.f);
 
-	
-
 	ghost = CreateObject<CGhost>("fdkaj");
 	ghost->SetPos(-100.f, 410.f);
 	ghost->m_originalPosX = ghost->GetPos().x;
@@ -60,6 +58,7 @@ bool CMainScene::Init()
 			arrows[j][i] = CreateObject<CArrow>("arrow");
 		}
 	}
+
 	auto lobbyData = PacketManager::GetInst().m_lobbyData;
 	for (int i = 0; i < 2; ++i)
 	{
@@ -75,11 +74,15 @@ bool CMainScene::Init()
 		}
 		players[i]->SetPos(-930.f, 200.f);
 	}
-	SetPlayer(players[abs(1 - m_myid)]);
 
-	players[m_myid]->InitInput();
+
+	SetPlayer(players[abs(1 - m_myid)]);
 	SetMyPlayer(players[m_myid]);
 	GetCamera()->SetTarget(players[m_myid]);
+
+	m_inputPlayer = CreateObject<CPlayer>("player");
+	m_inputPlayer->InitInput();
+	m_inputPlayer->m_bRender = false;
 
 	players[0]->CreateHPBar(this);
 	players[1]->CreateHPBar(this);
@@ -110,28 +113,36 @@ void CMainScene::Render(HDC hDC, float elapsedTime)
 
 bool CMainScene::SendGameData()
 {
-	//ClientGameData();
+	ClientGameData();
 	C_GameUpdateRequest sendPacket(m_inGameData.players[m_myid]);
 	return PacketManager::GetInst().SendPacket(sendPacket);
 }
 
 void CMainScene::UpdateGameData()
 {
-	m_inGameData = PacketManager::GetInst().m_inGameData;
+	/*auto& serverData = PacketManager::GetInst().m_inGameData;
+	m_inGameData.scene = serverData.scene;
+	m_inGameData.playtime = serverData.playtime;
 
-	//for (int i = 0; i < PLAYER_NUM; ++i)
-	int i = m_mateId;
+	m_inGameData.players[m_myid].pos = serverData.players[m_myid].pos;
+	m_inGameData.players[m_myid].hp = serverData.players[m_myid].hp;
+
+	m_inGameData.players[m_mateId] = serverData.players[m_mateId];
+	memcpy(&m_inGameData.arrowAttack, &serverData.arrowAttack,
+		sizeof(serverData) - (sizeof(serverData.scene)+ sizeof(serverData.playtime) + sizeof(serverData.players)));*/
+	m_inGameData = PacketManager::GetInst().m_inGameData;
+	for (int i = 0; i < PLAYER_NUM; ++i)
+	//int i = m_mateId;
 	{
 		players[i]->SetPos(m_inGameData.players[i].pos.x, m_inGameData.players[i].pos.y);
 		players[i]->SetState((EObject_State)(int)m_inGameData.players[i].state);
 		players[i]->SetDir((EObject_Dir)(int)m_inGameData.players[i].dir);
-		players[i]->m_bIsLanded = m_inGameData.players[i].isLanded;
-		players[i]->m_bJump = m_inGameData.players[i].isJump;
-		players[i]->m_bDoubleJump = m_inGameData.players[i].isDoubleJump;
 		players[i]->m_hp = m_inGameData.players[i].hp;
 	}
 
-	/*for (MonsterInfo& m : m_inGameData.monster)
+	//players[m_myid]->SetPos(m_inGameData.players[m_myid].pos.x, m_inGameData.players[m_myid].pos.y);
+
+	for (MonsterInfo& m : m_inGameData.monster)
 	{
 		switch (m.type) {
 		case '0':
@@ -178,7 +189,7 @@ void CMainScene::UpdateGameData()
 			richeAttack[i]->SetEnable(true);
 		else
 			richeAttack[i]->SetEnable(false);
-	}*/
+	}
 
 	for (int j = 0; j < 2; ++j)
 	{
@@ -212,13 +223,8 @@ void CMainScene::UpdateGameData()
 
 void CMainScene::ClientGameData()
 {
-	m_inGameData.players[m_myid].pos = vector2(players[m_myid]->GetPos().x, players[m_myid]->GetPos().y);
-	m_inGameData.players[m_myid].state = (EObject_State)(players[m_myid]->GetState());
-	m_inGameData.players[m_myid].dir = (EObject_Dir)(players[m_myid]->GetDir());
-	m_inGameData.players[m_myid].isLanded = players[m_myid]->m_bIsLanded;
-	m_inGameData.players[m_myid].isJump = players[m_myid]->m_bJump;
-	m_inGameData.players[m_myid].isDoubleJump = players[m_myid]->m_bDoubleJump;
-	m_inGameData.players[m_myid].hp = players[m_myid]->m_hp;
+	m_inGameData.players[m_myid].state = (EObject_State)(m_inputPlayer->GetState());
+	m_inGameData.players[m_myid].dir = (EObject_Dir)(m_inputPlayer->GetDir());
 }
 
 void CMainScene::GameStateCheck(float elapsedTime)

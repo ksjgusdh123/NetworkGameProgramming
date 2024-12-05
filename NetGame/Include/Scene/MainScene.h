@@ -33,6 +33,7 @@ public:
 	bool m_bDieCheck = false;
 private:
 	InGameData m_inGameData;
+	class CPlayer* m_inputPlayer;
 	class CPlayer* players[2];
 	CGhost* ghost;
 	CRiche* riche;

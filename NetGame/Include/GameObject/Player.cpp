@@ -16,7 +16,7 @@ bool CPlayer::Init()
 	SetTexture("Player_L", TEXT("Player/player_L.png"), EObject_Dir::Left, ETexture_Type::CIMAGE);
 	SetTexture("Player", TEXT("Player/player.png"), EObject_Dir::Right, ETexture_Type::CIMAGE);
 	SetSize(50.f, 60.f);
-	m_objectState = EObject_State::Jump_Down;
+	m_objectState = EObject_State::Basic;
 	return true;
 }
 
@@ -30,15 +30,15 @@ void CPlayer::Update(float elapsedTime)
 		DieEvent();
 	}
 
-	if (!m_bIsLanded && (m_objectState != EObject_State::Basic && m_objectState != EObject_State::Basic_L
-		&& m_objectState != EObject_State::Jump && m_objectState != EObject_State::Jump_L))
-	{
-		if (m_objectDir == EObject_Dir::Right)
-			m_objectState = EObject_State::Jump_Down;
-		else if (m_objectDir == EObject_Dir::Left)
-			m_objectState = EObject_State::Jump_Down_L;
-		m_pos.y += elapsedTime * (m_velocity.y);
-	}
+	//if (!m_bIsLanded && (m_objectState != EObject_State::Basic && m_objectState != EObject_State::Basic_L
+	//	&& m_objectState != EObject_State::Jump && m_objectState != EObject_State::Jump_L))
+	//{
+	//	if (m_objectDir == EObject_Dir::Right)
+	//		m_objectState = EObject_State::Jump_Down;
+	//	else if (m_objectDir == EObject_Dir::Left)
+	//		m_objectState = EObject_State::Jump_Down_L;
+	//	//m_pos.y += elapsedTime * (m_velocity.y);
+	//}
 
 	if (m_bFrameCheck)
 	{
@@ -58,7 +58,8 @@ void CPlayer::PostUpdate(float elapsedTime)
 
 void CPlayer::Render(HDC hDC, float elapsedTime)
 {
-	CGameObject::Render(hDC, elapsedTime);
+	if(m_bRender)
+		CGameObject::Render(hDC, elapsedTime);
 }
 
 void CPlayer::InitInput()
@@ -95,7 +96,7 @@ void CPlayer::PlayerMoveLeft()
 	}
 
 	m_objectDir = EObject_Dir::Left;
-	m_pos.x -= m_velocity.x * 2 * ELAPSED_TIME;
+	//m_pos.x -= m_velocity.x * 2 * ELAPSED_TIME;
 		
 }
 
@@ -135,7 +136,7 @@ void CPlayer::PlayerMoveRight()
 	}
 
 	m_objectDir = EObject_Dir::Right;
-	m_pos.x += m_velocity.x * 2 * ELAPSED_TIME;
+	//m_pos.x += m_velocity.x * 2 * ELAPSED_TIME;
 }
 
 void CPlayer::PlayerRightIdle()
@@ -195,7 +196,7 @@ void CPlayer::PlayerJump()
 	else
 		m_prevHeight = m_pos.y;
 
-	m_pos.y -= 3.f;
+	//m_pos.y -= 3.f;
 	m_bIsLanded = false;
 
 	m_multipleNum = 1;
@@ -272,7 +273,7 @@ void CPlayer::CalculateJump(float elapsedTime)
 	}
 
 	m_jumpTime += elapsedTime;
-	m_pos.y -= elapsedTime * m_velocity.y * m_multipleNum;
+	//m_pos.y -= elapsedTime * m_velocity.y * m_multipleNum;
 
 
 

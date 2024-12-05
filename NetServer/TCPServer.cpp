@@ -68,6 +68,7 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 				for (int i = 0; i < 2; ++i)
 				{
 					gameData->players[i].job = lobbyData->players[i].job;
+					gameData->players[i].pos = vector2(-930 + 50 * i,300);
 				}
 				GameManager::GetInst().InitGameData();
 				TileManager::GetInst().SendTilePacket();
