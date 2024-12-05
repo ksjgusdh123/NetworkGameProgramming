@@ -120,6 +120,27 @@ void GameManager::ProcessBossCollsion()
 	for (auto& player : inGameData.players)
 	{
 		TileManager::GetInst().CheckTileCollision(player);
+
+		vector2 size = vector2(50, 60);
+		player.box.UpdateCollision(player.pos, size);
+		vector2 portalPos[2] = { { -400.f, 0.f}, {300.f, 0.f} };
+		vector2 portalSize = vector2(50.f, 60.f);
+		Collision box;
+		for (int i = 0; i < 2; ++i) {
+			box.UpdateCollision(portalPos[i], portalSize);
+				if (player.box.CheckCollision(&box)) {
+					if (i == 0) {
+						player.pos.x = 300.f;
+						player.pos.y = 300.f;
+					}
+					else {
+						player.pos.x = -400.f;
+						player.pos.y = 300.f;
+					}
+				}
+		}
+		
+
 	}
 	BossCollsion();
 }
