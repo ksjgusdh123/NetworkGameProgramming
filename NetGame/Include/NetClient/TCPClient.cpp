@@ -25,7 +25,7 @@ DWORD WINAPI SendThread(LPVOID arg)
 	{
 		auto* current_scene = CSceneManager::GetInst()->GetScene();
 		current_scene->SendGameData();
-		Sleep(1000 / 60);
+		Sleep(1000 / 30);
 	}
 	return true;
 }

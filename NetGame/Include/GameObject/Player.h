@@ -22,6 +22,7 @@ public:
 	bool m_bDoubleJump = false;
 	bool m_bAttack = false;
 	bool m_bRender = true;
+	EJump_State m_jumpState = EJump_State::Landed;
 protected:
 	void PlayerMoveLeft();
 	void PlayerLeftIdle();
@@ -47,5 +48,6 @@ protected:
 	Vector2 m_attackSize;
 	Vector2 m_attackPivot;
 	CHPBar* m_hpBar;
+
 };
 

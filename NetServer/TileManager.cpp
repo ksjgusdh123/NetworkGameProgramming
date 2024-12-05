@@ -153,17 +153,14 @@ void TileManager::AddTile(TileInfo& info, vector2 blockSize, int type, int x, in
 	tiles.push_back(info);
 }
 
-bool TileManager::CheckTileCollision(GamePlayerInfo& player)
+void TileManager::CheckTileCollision(GamePlayerInfo& player)
 {
-	Collision box;
-	vector2 size = vector2(50, 60);
-	box.UpdateCollision(player.pos, size);
 	bool bCheck = false;
-
 	for (TileInfo& tile : tiles)
 	{
 		vector2 playerPos = player.pos;
-		vector2 playerSize = size; // size는 플레이어 크기 (50, 60)
+		vector2 playerSize = vector2(50, 60);
+		player.box.UpdateCollision(playerPos, playerSize);
 		vector2 boxLT = tile.box.m_info.LT; // 타일 박스 왼쪽 위
 		vector2 boxRB = tile.box.m_info.RB; // 타일 박스 오른쪽 아래
 
@@ -177,8 +174,8 @@ bool TileManager::CheckTileCollision(GamePlayerInfo& player)
 		const float offset = 2.0f; // 2 픽셀 정도 여유를 둠
 
 		// 박스와 플레이어의 충돌 검사
-		if (playerRight > boxLT.x && playerLeft < boxRB.x &&
-			playerBottom > boxLT.y && playerTop < boxRB.y) {
+		if (tile.box.CheckCollision(&player.box))
+		{
 			// 충돌 발생 시 위치 조정
 			float overlapLeft = playerRight - boxLT.x;   // 왼쪽 겹침
 			float overlapRight = boxRB.x - playerLeft;   // 오른쪽 겹침
@@ -194,45 +191,21 @@ bool TileManager::CheckTileCollision(GamePlayerInfo& player)
 			}
 			else if (overlapTop <= overlapLeft && overlapTop <= overlapRight && overlapTop <= overlapBottom) {
 				player.pos.y -= (overlapTop - offset); // 위쪽으로 밀어냄
-				player.isLanded = true;
-				player.isJump = false;
-				player.isDoubleJump = false;
-				if (player.state == EObject_State::Jump_Down_L || player.state == EObject_State::Jump_L)
-				{
-					player.state = EObject_State::Basic_L;
-				}
-				else if (player.state == EObject_State::Jump || player.state == EObject_State::Jump_Down)
-				{
-					player.state = EObject_State::Basic;
-				}
+				player.jumpState = EJump_State::Landed;
 				bCheck = true;
 			}
 			else {
 				player.pos.y += (overlapBottom + offset); // 아래쪽으로 밀어냄
-				if (player.dir == EObject_Dir::Left)
-				{
-					player.state = EObject_State::Jump_Down_L;
-				}
-				else if (player.dir == EObject_Dir::Right)
-				{
-					player.state = EObject_State::Jump_Down;
-				}
+				player.jumpState = EJump_State::JumpDown;
 			}
 		}
 	}
 
 	if (bCheck)
-		return true;
+		return;
 
-	if (player.state == EObject_State::Walk)
-	{
-		player.isLanded = false;
-	}
-	if (player.state == EObject_State::Walk_L)
-	{
-		player.isLanded = false;
-	}
-	return false;
+	if(player.jumpState != EJump_State::Jumping)
+		player.jumpState = EJump_State::JumpDown;
 }
 
 bool TileManager::CheckArrowTileCollision(ArrowInfo& arrow)

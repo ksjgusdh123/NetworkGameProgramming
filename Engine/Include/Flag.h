@@ -37,6 +37,14 @@ enum class EObject_Dir
 	Max
 };
 
+enum class EJump_State
+{
+	Landed,
+	Jumping,
+	JumpDown,
+	Max
+};
+
 enum class EObject_State
 {
 	Basic,

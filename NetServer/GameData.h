@@ -84,13 +84,15 @@ struct GamePlayerInfo : public PlayerInfo {
 	short damage = 10;
 	EObject_State state = EObject_State::Basic;
 	EObject_Dir dir = EObject_Dir::Right;
-	bool isLanded = false;
-	bool isJump = false;
+	EJump_State jumpState = EJump_State::Landed;
 	bool isDoubleJump = false;
 	bool bReady = false;
 	bool bBoss = false;
 	float timer = 0.f;
+	float elapsedTime = 0.f;
 	Collision box;
+	float nowFrame;
+	float frame;
 
 	vector2 GetPlayerSize()
 	{

@@ -15,6 +15,7 @@
 #include "ResultScene.h"
 #include <Scene/SceneManager.h>
 #include "BossScene.h"
+#include "Timer.h"
 
 bool CMainScene::Init()
 {
@@ -99,6 +100,7 @@ void CMainScene::Update(float elapsedTime)
 	m_timer += elapsedTime;
 
 	UpdateGameData();
+
 	GameStateCheck(elapsedTime);
 	bool isPortalEntry = m_inGameData.players[0].bReady && m_inGameData.players[1].bReady;
 	if (isPortalEntry)
@@ -120,27 +122,42 @@ bool CMainScene::SendGameData()
 
 void CMainScene::UpdateGameData()
 {
-	/*auto& serverData = PacketManager::GetInst().m_inGameData;
-	m_inGameData.scene = serverData.scene;
-	m_inGameData.playtime = serverData.playtime;
-
-	m_inGameData.players[m_myid].pos = serverData.players[m_myid].pos;
-	m_inGameData.players[m_myid].hp = serverData.players[m_myid].hp;
-
-	m_inGameData.players[m_mateId] = serverData.players[m_mateId];
-	memcpy(&m_inGameData.arrowAttack, &serverData.arrowAttack,
-		sizeof(serverData) - (sizeof(serverData.scene)+ sizeof(serverData.playtime) + sizeof(serverData.players)));*/
 	m_inGameData = PacketManager::GetInst().m_inGameData;
+
 	for (int i = 0; i < PLAYER_NUM; ++i)
-	//int i = m_mateId;
 	{
 		players[i]->SetPos(m_inGameData.players[i].pos.x, m_inGameData.players[i].pos.y);
 		players[i]->SetState((EObject_State)(int)m_inGameData.players[i].state);
+		players[i]->m_jumpState = m_inGameData.players[i].jumpState;
 		players[i]->SetDir((EObject_Dir)(int)m_inGameData.players[i].dir);
 		players[i]->m_hp = m_inGameData.players[i].hp;
 	}
 
-	//players[m_myid]->SetPos(m_inGameData.players[m_myid].pos.x, m_inGameData.players[m_myid].pos.y);
+	if (m_inputPlayer->m_jumpState == EJump_State::JumpDown)
+	{
+		if (m_inGameData.players[m_myid].jumpState == EJump_State::Landed)
+		{
+			m_inputPlayer->m_jumpState = EJump_State::Landed;
+			m_inputPlayer->m_bDoubleJump = false;
+		}
+	}
+
+	if (m_inputPlayer->GetState() == EObject_State::Attack)
+	{
+		if (m_inGameData.players[m_myid].state != EObject_State::Attack && m_inGameData.players[m_myid].nowFrame > 0.4)
+			m_inputPlayer->SetState(EObject_State::Basic);
+	}
+	else if (m_inputPlayer->GetState() == EObject_State::Attack_L)
+	{
+		if (m_inGameData.players[m_myid].state != EObject_State::Attack_L && m_inGameData.players[m_myid].nowFrame > 0.4)
+			m_inputPlayer->SetState(EObject_State::Basic_L);
+	}
+
+	if (m_inGameData.players[m_myid].hp <= 0)
+	{
+		m_inputPlayer->m_hp = 0;
+	}
+
 
 	for (MonsterInfo& m : m_inGameData.monster)
 	{
@@ -223,8 +240,11 @@ void CMainScene::UpdateGameData()
 
 void CMainScene::ClientGameData()
 {
+	m_inGameData.players[m_myid].elapsedTime = ELAPSED_TIME;
 	m_inGameData.players[m_myid].state = (EObject_State)(m_inputPlayer->GetState());
 	m_inGameData.players[m_myid].dir = (EObject_Dir)(m_inputPlayer->GetDir());
+	m_inGameData.players[m_myid].jumpState = (m_inputPlayer->m_jumpState);
+
 }
 
 void CMainScene::GameStateCheck(float elapsedTime)

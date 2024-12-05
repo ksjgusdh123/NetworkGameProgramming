@@ -4,6 +4,7 @@
 #include "MonsterManager.h"
 #include "ItemManager.h"
 
+float elapsed;
 void GameManager::AddLobbyPlayer(const Client& client)
 {
 	int i = client.player.id;
@@ -33,8 +34,10 @@ void GameManager::InitBossData()
 
 void GameManager::UpdateInGameData()
 {
-	inGameData.playtime = gameTimer.GetElapsedTime();
-	UpdatePlayer();
+	inGameData.playtime = (int)gameTimer.GetElapsedTime();
+	elapsed = gameTimer.Update();
+	cout << elapsed << '\n';
+	UpdatePlayer();		
 	MonsterManager::GetInst().UpdateMonster();
 	CalculateArrow();
 	ProcessCollsion();
@@ -44,23 +47,57 @@ void GameManager::UpdatePlayer()
 {
 	for (int i = 0; i < 2; ++i)
 	{
-		inGameData.players[i].pos.y += 3.f;
+		inGameData.players[i].pos.y += 50 * elapsed;
 		switch (inGameData.players[i].state)
 		{
+		case EObject_State::Basic:
+		case EObject_State::Basic_L:
+			inGameData.players[i].nowFrame = 0;
+			break;
 		case EObject_State::Walk:
 		{
-			inGameData.players[i].pos.x += 100.f * 0.05f;
+			inGameData.players[i].pos.x += 150.f * elapsed * 2;
 			break;
 		}
 		case EObject_State::Walk_L:
 		{
-			inGameData.players[i].pos.x -= 100.f * 0.05f;
+			inGameData.players[i].pos.x -= 150.f * elapsed * 2;
+			break;
+		}
+		case EObject_State::Die:
+		case EObject_State::Die_L:
+			return;
+		case EObject_State::Attack:
+		case EObject_State::Attack_L:
+			inGameData.players[i].nowFrame += elapsed;
+			if (inGameData.players[i].nowFrame >= 1)
+			{
+				if (inGameData.players[i].dir == EObject_Dir::Right)
+				{
+					inGameData.players[i].state = EObject_State::Basic;
+				}
+				else
+				{
+					inGameData.players[i].state = EObject_State::Basic_L;
+				}
+			}
+			break;
+		default:
+			break;
+		}
+
+		switch (inGameData.players[i].jumpState)
+		{
+		case EJump_State::Jumping:
+		{
+			inGameData.players[i].pos.y -= 150.f * elapsed;
 			break;
 		}
 		default:
 			break;
 		}
 	}
+
 }
 
 void GameManager::UpdateBossData()
@@ -128,10 +165,9 @@ void GameManager::ProcessCollsion()
 {
 	for (auto& player : inGameData.players)
 	{
+		TileManager::GetInst().CheckTileCollision(player);
 		if (player.hp <= 0)
 			continue;
-
-		TileManager::GetInst().CheckTileCollision(player);
 		ItemManager::GetInst().CheckItemCollision(player);
 		CheckPortalCollision(player);
 	}
@@ -356,9 +392,9 @@ void GameManager::CalculateArrow()
 
 		if (player.state == EObject_State::Attack || player.state == EObject_State::Attack_L)
 		{
-			player.timer += 0.05f;
+			player.timer += elapsed;
 
-			if (player.timer >= 1.f)
+			if (player.timer >= 0.9f)
 			{
 				for (ArrowInfo& arrow : inGameData.arrowAttack)
 				{
@@ -396,13 +432,13 @@ void GameManager::CalculateArrow()
 		else
 			num = -1;
 
-		arrow.pos.x += arrow.velocity.x * 0.05 * num;
-		arrow.pos.y += arrow.velocity.y * 0.05;
+		arrow.pos.x += arrow.velocity.x * elapsed * num;
+		arrow.pos.y += arrow.velocity.y * elapsed;
 
 		vector2 arrowSize = vector2(40, 10);
 		arrow.box.UpdateCollision(arrow.pos, arrowSize);
 
-		arrow.timer += 0.05;
+		arrow.timer += elapsed;
 		if (arrow.timer >= 3.0f)
 		{
 			arrow.is_alive = false;

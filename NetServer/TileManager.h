@@ -7,7 +7,7 @@ public:
 	void CreateTile();
 	void CreateBossTile();
 	void AddTile(TileInfo& info, vector2 blockSize, int type, int x, int y);
-	bool CheckTileCollision(GamePlayerInfo& player);
+	void CheckTileCollision(GamePlayerInfo& player);
 	bool CheckArrowTileCollision(ArrowInfo& arrow);
 	void SendTilePacket();
 public:
