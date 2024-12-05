@@ -5,20 +5,12 @@
 #include <Scene/Scene.h>
 #include "..\Scene\LoginScene.h"
 
-void CheckPauseEvent()
-{
-	while (WaitForSingleObject(CSceneManager::GetInst()->hPauseEvent, 0) == WAIT_OBJECT_0)
-	{
-		WaitForSingleObject(CSceneManager::GetInst()->hPauseEvent, INFINITE);
-	}
-}
 DWORD WINAPI RecvThread(LPVOID arg)
 {
 	SOCKET sock = (SOCKET)arg;
 	PacketManager::GetInst().Init(sock);
 	while (true)
 	{
-		CheckPauseEvent();
 		Packet packet = PacketManager::GetInst().RecvPacket();
 		PacketManager::GetInst().ProcessPacket(packet);
 	}
@@ -31,7 +23,6 @@ DWORD WINAPI SendThread(LPVOID arg)
 
 	while (true)
 	{
-		CheckPauseEvent();
 		auto* current_scene = CSceneManager::GetInst()->GetScene();
 		current_scene->SendGameData();
 		Sleep(1000 / 60);

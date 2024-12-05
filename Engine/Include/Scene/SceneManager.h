@@ -16,7 +16,6 @@ public:
 	template <typename T>
 	bool CreateScene()
 	{
-		SetEvent(hPauseEvent);
 		std::unique_ptr<T> scene = std::make_unique<T>();
 		if (!scene->Init())
 			return false;
@@ -26,10 +25,8 @@ public:
 		else
 			m_nextScene = std::move(scene);
 		ChangeScene();
-		ResetEvent(hPauseEvent);
 		return true;
 	}
-	HANDLE hPauseEvent;
 	bool m_bWin = false;
 	float m_playTime = 0;
 	std::array<EPlayer_Job, 2> m_playerJob;

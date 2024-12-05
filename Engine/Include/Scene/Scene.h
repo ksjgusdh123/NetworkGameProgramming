@@ -44,7 +44,7 @@ protected:
 	std::array<std::list<std::shared_ptr<class CGameObject>>, (int)EObject_Type::Max> m_objects;
 	class CGameObject* m_myPlayer;
 	class CGameObject* m_player;
-	int m_myId;
+	int m_myid;
 	int m_mateId;
 
 	HFONT m_hFont;

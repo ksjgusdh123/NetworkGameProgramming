@@ -8,7 +8,7 @@
 bool CResultScene::Init()
 {
 	CScene::Init();
-	m_myId = PacketManager::GetInst().GetMyID();
+	m_myid = PacketManager::GetInst().GetMyID();
 
 	CGameObject* back = CreateObject<CGameObject>("RoomBackground");
 	back->CreateTexture(1);

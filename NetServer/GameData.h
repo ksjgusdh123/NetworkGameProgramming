@@ -217,17 +217,19 @@ enum SCENE_STATE
 	BOSSSCENE,
 	RESULTSCENE,
 };
-class GameData {};
+class GameData
+{
+public:
+	int scene = LOGINSCENE;
+};
 
 struct LobbyData :public GameData
 {
-	int scene = LOBBYSCENE;
 	std::array<LobbyPlayerInfo, PLAYER_NUM> players;
 };
 
 struct InGameData :public GameData
 {
-	int scene = GAMESCENE;
 	int playtime = -1;
 	std::array<GamePlayerInfo, PLAYER_NUM> players;
 	std::array<ArrowInfo, ARROW_NUM> arrowAttack;
@@ -238,7 +240,6 @@ struct InGameData :public GameData
 
 struct ResultData : public GameData
 {
-	int scene = RESULTSCENE;
 	float playTime = -1;
 	bool bWin = false;
 };

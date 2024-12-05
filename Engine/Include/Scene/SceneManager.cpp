@@ -7,12 +7,10 @@ DEFINITION_SINGLE(CSceneManager)
 
 CSceneManager::CSceneManager()
 {
-	hPauseEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 }
 
 CSceneManager::~CSceneManager()
 {
-	CloseHandle(hPauseEvent);
 }
 
 bool CSceneManager::Init()

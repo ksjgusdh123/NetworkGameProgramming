@@ -16,10 +16,10 @@ CRITICAL_SECTION cs;
 bool CLobbyScene::Init()
 {
 	CScene::Init();
-	m_myId = PacketManager::GetInst().GetMyID();
-	m_mateId = abs(1 - m_myId);
+	m_myid = PacketManager::GetInst().GetMyID();
+	m_mateId = abs(1 - m_myid);
 	string myName = PacketManager::GetInst().GetMyName();
-	memcpy(m_lobbyData.players[m_myId].name, myName.c_str(), myName.length());
+	memcpy(m_lobbyData.players[m_myid].name, myName.c_str(), myName.length());
 
 	CGameObject* back = CreateObject<CGameObject>("RoomBackground");
 	back->CreateTexture(1);
@@ -53,13 +53,8 @@ void CLobbyScene::Update(float elapsedTime)
 {
 	CScene::Update(elapsedTime);
 	UpdateGameData();
-	bool isAllReady = (m_lobbyData.players[0].bReady && m_lobbyData.players[1].bReady);
-	if (isAllReady)
+	if (m_lobbyData.scene == GAMESCENE)
 	{
-		CSceneManager* manager = CSceneManager::GetInst();
-		manager->m_playerJob[0] = m_lobbyData->players[0].job;
-		manager->m_playerJob[1] = m_lobbyData->players[1].job;
-
 		for (int i = 0; i < 3; ++i)
 		{
 			DestroyWindow(m_hButton[i]);
@@ -83,17 +78,17 @@ void CLobbyScene::KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	{
 	case IDC_BUTTON:
 	{
-		m_lobbyData->players[m_myid].job = (EPlayer_Job::Sword);
+		m_lobbyData.players[m_myid].job = (EPlayer_Job::Sword);
 		break;
 	}
 	case IDC_BUTTON2:
 	{
-		m_lobbyData->players[m_myid].job = (EPlayer_Job::Archer);
+		m_lobbyData.players[m_myid].job = (EPlayer_Job::Archer);
 		break;
 	}
 	case IDC_BUTTON3:
 	{
-		m_lobbyData.players[m_myId].bReady = !m_lobbyData.players[m_myId].bReady;
+		m_lobbyData.players[m_myid].bReady = !m_lobbyData.players[m_myid].bReady;
 		break;
 	}
 	}
@@ -101,17 +96,23 @@ void CLobbyScene::KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
 bool CLobbyScene::SendGameData()
 {
-	C_LobbyUpdateRequest sendPacket(m_lobbyData.players[m_myId]);
+	C_LobbyUpdateRequest sendPacket(m_lobbyData.players[m_myid]);
 	return PacketManager::GetInst().SendPacket(sendPacket);
 }
 
 void CLobbyScene::UpdateGameData()
 {
 	m_lobbyData.players[m_mateId] = PacketManager::GetInst().m_lobbyData.players[m_mateId];
+	m_lobbyData.scene = PacketManager::GetInst().m_lobbyData.scene;
+
 	for (int i = 0; i < 2; ++i)
 	{
 		m_LobbyPlayer[i]->SetJob((EPlayer_Job)(int)m_lobbyData.players[i].job);
 		m_LobbyPlayer[i]->SetName(m_lobbyData.players[i].name);
+		if (strcmp(m_lobbyData.players[i].name, ""))
+		{
+			m_LobbyPlayer[i]->SetEnable(true);
+		}
 	}
 }
 

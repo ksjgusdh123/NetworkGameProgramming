@@ -14,7 +14,7 @@ bool CLoginScene::Init()
 {
 	CScene::Init();
 	m_sceneType = LOGIN_SCENE;
-	m_myId = PacketManager::GetInst().GetMyID();
+	m_myid = PacketManager::GetInst().GetMyID();
 
 	CGameObject* back = CreateObject<CGameObject>("eawoi");
 	back->CreateTexture(1);

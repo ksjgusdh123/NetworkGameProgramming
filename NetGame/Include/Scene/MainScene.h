@@ -25,7 +25,6 @@ public:
 	void CreateStageOneMap();
 	void CreateStageOneItem();
 	void ResourceInit();
-	void RecvGameData(const Packet& packet);
 	bool SendGameData();
 	void UpdateGameData();
 	void ClientGameData();
