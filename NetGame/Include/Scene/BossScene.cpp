@@ -93,15 +93,6 @@ void CBossScene::Update(float elapsedTime)
 	CScene::Update(elapsedTime);
 
 	GameDataCopy();
-
-
-	//m_timer += elapsedTime;
-	//if (m_timer > 2.0f) {
-	//	if (boss->GetActive())
-	//		BossAttack();
-	//	m_timer = 0.f;
-	//}
-
 	GameStateCheck(elapsedTime);
 }
 

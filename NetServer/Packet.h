@@ -176,12 +176,15 @@ struct S_GameEndNotificationPacket :public Packet
 	{
 		type = GameEndNotification;
 		data_size = sizeof(resultData_);
-		//memcpy(data, &resultData_, sizeof(resultData_));
-		sprintf_s(data, "%f %d", resultData_.playTime, resultData_.bWin);
+		// 명시적으로 bool을 int로 캐스팅하여 저장
+		sprintf_s(data, "%f %d", resultData_.playTime, static_cast<int>(resultData_.bWin));
 	}
 	void deserialize(bool& bWin, float& playTime)
 	{
-		sscanf_s(data, "%f %d", &playTime, &bWin);
+		int bWinAsInt;
+		// int로 읽어온 후 bool로 변환
+		sscanf_s(data, "%f %d", &playTime, &bWinAsInt);
+		bWin = static_cast<bool>(bWinAsInt);
 	}
 
 };
