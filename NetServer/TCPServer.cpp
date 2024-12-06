@@ -157,7 +157,13 @@ void TCPServer::ProcessRecvPacket(const Packet& packet)
 		C_GameUpdateRequest* RecvPacket = (C_GameUpdateRequest*)&packet;
 		InGameData* gameData = GameManager::GetInst().GetInGameData();
 		const int i = RecvPacket->client_id;
-		memcpy(&gameData->players[i], RecvPacket->data, RecvPacket->data_size);
+		GamePlayerInfo data;
+		memcpy(&data, RecvPacket->data, RecvPacket->data_size);
+
+		gameData->players[i].dir = data.dir;
+		gameData->players[i].state = data.state;
+		gameData->players[i].jumpState = data.jumpState;
+		//memcpy(&gameData->players[i], RecvPacket->data, RecvPacket->data_size);
 		break;
 	}
 	default:
