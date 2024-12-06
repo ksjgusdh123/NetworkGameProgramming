@@ -111,6 +111,8 @@ void GameManager::UpdatePlayer()
 void GameManager::UpdateBossData()
 {
 	inGameData.playtime = gameTimer.GetElapsedTime();
+	elapsed = gameTimer.Update();
+	UpdatePlayer();
 	MonsterManager::GetInst().UpdateMonster(elapsed);
 	CalculateArrow();
 	ProcessBossCollsion();

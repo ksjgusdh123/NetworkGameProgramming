@@ -31,7 +31,8 @@ bool CBossScene::Init()
 	boss->SetPos(0.f, 0.f);
 	boss->CreateHPBar(this);
 	boss->m_hpBar->SetBarSize(100, 5);
-	for (int i = 0; i < 10; ++i) {
+	for (int i = 0; i < 10; ++i) 
+	{
 		bossAttack[i] = CreateObject<CBossAttack>("richeAttack");
 	}
 
@@ -179,7 +180,6 @@ void CBossScene::ClientGameData()
 	m_inGameData.players[m_myid].state = (EObject_State)(m_inputPlayer->GetState());
 	m_inGameData.players[m_myid].dir = (EObject_Dir)(m_inputPlayer->GetDir());
 	m_inGameData.players[m_myid].jumpState = (m_inputPlayer->m_jumpState);
-
 }
 
 void CBossScene::GameStateCheck(float elapsedTime)
