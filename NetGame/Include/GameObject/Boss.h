@@ -18,7 +18,6 @@ public:
 	void Attack(Vector2 target);
 	void CreateHPBar(CScene* scene);
 
-	int m_hp;
 	bool m_bIsAlive;
 	Vector2 m_target;
 	float m_timer;

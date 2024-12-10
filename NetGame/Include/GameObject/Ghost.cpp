@@ -20,7 +20,7 @@ bool CGhost::Init()
 	SetSize(43.f, 61.f);
 	SetColorKey(180, 213, 255);
 	
-	m_hp = 100;
+	m_hp = 200;
 	m_objectDir = EObject_Dir::Right;
 	m_objectState = EObject_State::Walk;
 	m_bIsAlive = true;

@@ -81,7 +81,7 @@ struct LobbyPlayerInfo : public PlayerInfo {
 struct GamePlayerInfo : public PlayerInfo {
 	vector2 pos{ -930.f ,475.f };
 	short hp = 100;
-	short damage = 10;
+	short damage = 3;
 	EObject_State state = EObject_State::Basic;
 	EObject_Dir dir = EObject_Dir::Right;
 	EJump_State jumpState = EJump_State::Landed;
@@ -118,6 +118,7 @@ struct ArrowInfo
 	vector2 velocity = vector2(400, 10);
 	bool is_alive = false;
 	float timer = 0.f;
+	int damage = 20;
 	Collision box;
 };
 

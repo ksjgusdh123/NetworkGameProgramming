@@ -43,6 +43,7 @@ bool CMainScene::Init()
 	ghost = CreateObject<CGhost>("fdkaj");
 	ghost->SetPos(-100.f, 410.f);
 	ghost->m_originalPosX = ghost->GetPos().x;
+	ghost->CreateHPBar(this);
 
 	riche = CreateObject<CRiche>("riche");
 	riche->SetPos(120.f, 80.f);

@@ -256,11 +256,16 @@ void GameManager::CheckArrowCollision()
 			if (inGameData.monster[i].box.CheckCollision(&arrow.box))
 			{
 				arrow.is_alive = false;
-				if (inGameData.monster[i].direct == EObject_Dir::Right)
-					inGameData.monster[i].state = EObject_State::Die;
-				else
-					inGameData.monster[i].state = EObject_State::Die_L;
-				inGameData.monster[i].timer = 0.f;
+				inGameData.monster[i].hp -= arrow.damage;
+				inGameData.monster[i].hp = std::clamp((int)inGameData.monster[i].hp, 0, 100);
+				if (inGameData.monster[i].hp <= 0)
+				{
+					if (inGameData.monster[i].direct == EObject_Dir::Right)
+						inGameData.monster[i].state = EObject_State::Die;
+					else
+						inGameData.monster[i].state = EObject_State::Die_L;
+					inGameData.monster[i].timer = 0.f;
+				}
 			}
 		}
 
@@ -284,11 +289,17 @@ void GameManager::MonsterCollision()
 			if(inGameData.monster[i].box.CheckCollision(&player.box))
 			{
 				if (player.state == EObject_State::Attack || player.state == EObject_State::Attack_L) { // 플레이어가 공격상태일 경우 
-					if (inGameData.monster[i].direct == EObject_Dir::Right)
-						inGameData.monster[i].state = EObject_State::Die;
-					else
-						inGameData.monster[i].state = EObject_State::Die_L;
-					inGameData.monster[i].timer = 0.f;
+					inGameData.monster[i].hp -= player.damage;
+					inGameData.monster[i].hp = std::clamp((int)inGameData.monster[i].hp, 0, 100);
+					if (inGameData.monster[i].hp <= 0)
+					{
+						inGameData.monster[i].hp = 0;
+						if (inGameData.monster[i].direct == EObject_Dir::Right)
+							inGameData.monster[i].state = EObject_State::Die;
+						else
+							inGameData.monster[i].state = EObject_State::Die_L;
+						inGameData.monster[i].timer = 0.f;
+					}
 				}
 				else
 				{
@@ -448,6 +459,7 @@ void GameManager::CalculateArrow()
 					arrow.pos = player.pos;
 					arrow.is_alive = true;
 					arrow.timer = 0.f;
+					arrow.damage = 20 + player.damage * 5;
 					player.timer = 0.f;
 					if (player.state == EObject_State::Attack)
 					{

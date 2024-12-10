@@ -18,7 +18,6 @@ public:
 	void SetRange(float range) { m_range = range; }
 	void CreateHPBar(class CScene* scene);
 
-	int m_hp;
 	bool m_bIsAlive;
 	float m_range;
 	float m_originalPosX;
