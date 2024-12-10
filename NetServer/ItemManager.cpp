@@ -66,6 +66,8 @@ void ItemManager::CheckItemCollision(GamePlayerInfo& player)
 				}
 				else
 				{
+					//if (player.state == EObject_State::Attack || player.state == EObject_State::Attack_L)
+						//return;
 					player.hp -= effectAmount;
 					player.hp = std::clamp((int)player.hp, 0, 100);
 				}

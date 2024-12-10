@@ -80,12 +80,16 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 		{
 			GameManager::GetInst().UpdateInGameData();
 			InGameData* gameData = GameManager::GetInst().GetInGameData();
-			if (gameData->players[0].bReady && gameData->players[1].bReady)
+			bool p0DeadAndp1Ready = (gameData->players[0].hp <= 0 && gameData->players[1].bReady);
+			bool p0ReadyAndp1Dead = (gameData->players[0].bReady && gameData->players[1].hp <= 0);
+			bool p0ReadyAndp1Ready = (gameData->players[0].bReady && gameData->players[1].bReady);
+			if (p0DeadAndp1Ready || p0ReadyAndp1Dead || p0ReadyAndp1Ready)
 			{
 				gameData->scene = BOSSSCENE;
 				curScene = BOSSSCENE;
 				for (int i = 0; i < 2; ++i)
 				{
+					gameData->players[i].bReady = true;
 					gameData->players[i].hp = 100;
 					gameData->players[i].pos = vector2(-930 + 50 * i, 300);
 					gameData->players[i].state = EObject_State::Basic;
@@ -117,8 +121,7 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 				GameManager::GetInst().CacluateResult(false);
 				GameManager::GetInst().SendResultData();
 			}
-
-			if (gameData->monster[0].hp <= 0 && !gameData->monster[0].is_alive)
+			if (gameData->monster[0].hp <= 0)
 			{
 				gameData->scene = RESULTSCENE;
 				curScene = RESULTSCENE;

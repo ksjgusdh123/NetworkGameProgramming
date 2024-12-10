@@ -97,7 +97,7 @@ struct GamePlayerInfo : public PlayerInfo {
 
 	vector2 GetPlayerSize()
 	{
-		if (state == EObject_State::Attack || state == EObject_State::Attack_L)
+		if (job == EPlayer_Job::Sword && (state == EObject_State::Attack || state == EObject_State::Attack_L))
 			return vector2(120, 60);
 		else
 			return vector2(50, 60);
@@ -208,7 +208,7 @@ struct ItemInfo
 	}
 	short GetEffectAmount() const
 	{
-		const static short amounts[] = { 30,NULL,10,3 };
+		const static short amounts[] = { 30,NULL,2,3 };
 		return amounts[type];
 	}
 };
@@ -244,7 +244,7 @@ struct InGameData :public GameData
 
 struct ResultData : public GameData
 {
-	float playTime = -1;
+	int playTime = -1;
 	bool bWin = false;
 };
 

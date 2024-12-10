@@ -104,9 +104,6 @@ void CMainScene::Update(float elapsedTime)
 
 
 	GameStateCheck(elapsedTime);
-	bool isPortalEntry = m_inGameData.players[0].bReady && m_inGameData.players[1].bReady;
-	if (isPortalEntry)
-		CSceneManager::GetInst()->CreateScene<CBossScene>();
 }
 
 void CMainScene::Render(HDC hDC, float elapsedTime)
@@ -274,10 +271,10 @@ void CMainScene::GameStateCheck(float elapsedTime)
 		}
 	}
 
-	if (m_bEnd)
-	{
+	if (m_inGameData.players[0].bReady && m_inGameData.players[1].bReady)
+		CSceneManager::GetInst()->CreateScene<CBossScene>();
+	else if (m_inGameData.players[0].hp <= 0 && m_inGameData.players[1].hp <= 0)
 		CSceneManager::GetInst()->CreateScene<CResultScene>();
-	}
 }
 
 void CMainScene::RenderPlayTime(HDC hDC)

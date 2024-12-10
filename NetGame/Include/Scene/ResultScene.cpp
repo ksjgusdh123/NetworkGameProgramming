@@ -20,13 +20,9 @@ bool CResultScene::Init()
 	m_myid = PacketManager::GetInst().GetMyID();
 	m_resultData = PacketManager::GetInst().m_resultData;
 
- 	CSceneManager* manager = CSceneManager::GetInst();
-	m_resultData.bWin = manager->m_bWin;
-	m_resultData.playTime = manager->m_playTime;
-
 	HWND hwnd = CEngine::GetInst()->GetWindowHandle();
 	HINSTANCE hInst = CEngine::GetInst()->GetWindowInstance();
-	m_hButton = CreateWindow(L"button", L"종료", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 720, 450, 150, 100, hwnd, (HMENU)IDC_BUTTON, hInst, NULL);
+	m_hButton = CreateWindow(L"button", L"Finish", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 720, 450, 150, 100, hwnd, (HMENU)IDC_BUTTON, hInst, NULL);
 	SendMessage(m_hButton, WM_SETFONT, (WPARAM)m_hFont, TRUE);
 	return true;
 }
