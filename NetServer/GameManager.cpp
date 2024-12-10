@@ -46,6 +46,22 @@ void GameManager::UpdatePlayer()
 {
 	for (int i = 0; i < 2; ++i)
 	{
+		if (inGameData.players[i].hp <= 0)
+		{
+			if (inGameData.players[i].state != EObject_State::Die && inGameData.players[i].state != EObject_State::Die_L)
+			{
+				if (inGameData.players[i].dir == EObject_Dir::Right)
+				{
+					inGameData.players[i].state = EObject_State::Die;
+				}
+				else
+				{
+					inGameData.players[i].state = EObject_State::Die_L;
+				}
+			}
+			//continue;
+		}
+
 		inGameData.players[i].pos.y += 100 * elapsed;
 		switch (inGameData.players[i].state)
 		{
@@ -63,9 +79,6 @@ void GameManager::UpdatePlayer()
 			inGameData.players[i].pos.x -= 150.f * elapsed * 2;
 			break;
 		}
-		case EObject_State::Die:
-		case EObject_State::Die_L:
-			return;
 		case EObject_State::Attack:
 		case EObject_State::Attack_L:
 			inGameData.players[i].nowFrame += elapsed;
@@ -90,6 +103,8 @@ void GameManager::UpdatePlayer()
 		case EJump_State::Landed:
 		case EJump_State::JumpDown:
 			inGameData.players[i].jumpTime = 0.f;
+			if (inGameData.players[i].pos.y >= 600)
+				inGameData.players[i].hp = 0;
 			break;
 		case EJump_State::Jumping:
 		{
@@ -105,6 +120,7 @@ void GameManager::UpdatePlayer()
 			break;
 		}
 	}
+
 
 }
 
@@ -267,11 +283,6 @@ void GameManager::CheckArrowCollision()
 					inGameData.monster[i].timer = 0.f;
 				}
 			}
-		}
-
-		if (ItemManager::GetInst().CheckArrowItemCollision(arrow))
-		{
-			arrow.is_alive = false;
 		}
 	}
 }

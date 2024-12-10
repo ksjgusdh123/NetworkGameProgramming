@@ -97,10 +97,11 @@ bool CMainScene::Init()
 
 void CMainScene::Update(float elapsedTime)
 {
+	UpdateGameData();
+
 	CScene::Update(elapsedTime);
 	m_timer += elapsedTime;
 
-	UpdateGameData();
 
 	GameStateCheck(elapsedTime);
 	bool isPortalEntry = m_inGameData.players[0].bReady && m_inGameData.players[1].bReady;
@@ -263,7 +264,7 @@ void CMainScene::ClientGameData()
 
 void CMainScene::GameStateCheck(float elapsedTime)
 {
-	if (((CPlayer*)m_myPlayer)->m_hp <= 0)
+	if (((CPlayer*)players[m_myid])->m_hp <= 0)
 	{
 		m_deathTime += elapsedTime;
 		if (!m_bDieCheck && m_deathTime >= 1)

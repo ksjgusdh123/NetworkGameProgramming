@@ -25,18 +25,6 @@ bool CPlayer::Init()
 void CPlayer::Update(float elapsedTime)
 {
 	CGameObject::Update(elapsedTime);
-
-	if (m_hp <= 0 || m_pos.y >= 600)
-	{
-		m_hp = 0;
-		DieEvent();
-	}
-
-	if (m_jumpState == EJump_State::Jumping)
-	{
-		//CalculateJump(elapsedTime);
-	}
-
 }
 
 void CPlayer::PostUpdate(float elapsedTime)
@@ -49,9 +37,9 @@ void CPlayer::Render(HDC hDC, float elapsedTime)
 	if (!m_bRender)
 		return;
 
-//#ifdef DEBUG
-//	m_collisionBox->Render(hDC, elapsedTime);
-//#endif
+#ifdef DEBUG
+	m_collisionBox->Render(hDC, elapsedTime);
+#endif
 
 	if (m_prevObjectState != m_objectState) 
 	{
@@ -90,22 +78,25 @@ void CPlayer::Render(HDC hDC, float elapsedTime)
 			return;
 
 
-		int stateIdx = 0;
-		if (m_jumpState == EJump_State::Landed)
-			stateIdx = (int)m_objectState;
-		else if (m_jumpState == EJump_State::Jumping)
+		int stateIdx = (int)m_objectState;
+		if (m_objectState != EObject_State::Die && m_objectState != EObject_State::Die_L)
 		{
-			if (m_objectDir == EObject_Dir::Right)
-				stateIdx = (int)EObject_State::Jump;
-			else
-				stateIdx = (int)EObject_State::Jump_L;
-		}
-		else if (m_jumpState == EJump_State::JumpDown)
-		{
-			if (m_objectDir == EObject_Dir::Right)
-				stateIdx = (int)EObject_State::Jump_Down;
-			else
-				stateIdx = (int)EObject_State::Jump_Down_L;
+			if (m_jumpState == EJump_State::Landed)
+				stateIdx = (int)m_objectState;
+			else if (m_jumpState == EJump_State::Jumping)
+			{
+				if (m_objectDir == EObject_Dir::Right)
+					stateIdx = (int)EObject_State::Jump;
+				else
+					stateIdx = (int)EObject_State::Jump_L;
+			}
+			else if (m_jumpState == EJump_State::JumpDown)
+			{
+				if (m_objectDir == EObject_Dir::Right)
+					stateIdx = (int)EObject_State::Jump_Down;
+				else
+					stateIdx = (int)EObject_State::Jump_Down_L;
+			}
 		}
 
 		if (m_objectState != EObject_State::Die && m_objectState != EObject_State::Die_L)

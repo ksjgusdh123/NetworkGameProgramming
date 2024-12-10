@@ -208,7 +208,7 @@ struct ItemInfo
 	}
 	short GetEffectAmount() const
 	{
-		const static short amounts[] = { 30,NULL,10,15 };
+		const static short amounts[] = { 30,NULL,10,3 };
 		return amounts[type];
 	}
 };

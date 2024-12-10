@@ -61,13 +61,14 @@ void ItemManager::CheckItemCollision(GamePlayerInfo& player)
 				if (player.job == EPlayer_Job::Sword &&
 					(player.state == EObject_State::Attack || player.state == EObject_State::Attack_L))
 				{
+					inGameData->item[item.id + STAR1].type = ItemType::STAR;
 					item.type = -1;
-					return;
 				}
-				player.hp -= effectAmount;
-				player.hp = std::clamp((int)player.hp, 0, 100);
-				inGameData->item[item.id + STAR1].type = ItemType::STAR;
-				item.type = -1;
+				else
+				{
+					player.hp -= effectAmount;
+					player.hp = std::clamp((int)player.hp, 0, 100);
+				}
 				break;
 			default:
 				break;

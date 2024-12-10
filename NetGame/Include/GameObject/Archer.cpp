@@ -20,7 +20,8 @@ bool CArcher::Init()
 	SetAnimation(Jump_down_L, 2, EObject_State::Jump_Down_L);
 	SetAnimation(ATTACK_A_R, 12, EObject_State::Attack);
 	SetAnimation(ATTACK_A_L, 12, EObject_State::Attack_L);
-
+	SetAnimation(DIE_Arrow, 5, EObject_State::Die);
+	SetAnimation(DIE_Arrow_L, 5, EObject_State::Die_L);
 	return true;
 }
 
