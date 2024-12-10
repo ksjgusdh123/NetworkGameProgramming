@@ -47,7 +47,6 @@ bool CSceneManager::ChangeScene()
 
 		m_scene.swap(m_nextScene);
 		m_nextScene.reset();
-
 		return true;
 	}
 

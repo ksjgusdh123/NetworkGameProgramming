@@ -27,10 +27,6 @@ public:
 		ChangeScene();
 		return true;
 	}
-	int m_tileNum{};
-	std::vector<int> m_tileType;
-	std::vector<float> m_tilePosX;
-	std::vector<float> m_tilePosY;
 	bool m_bWin = false;
 	float m_playTime = 0;
 	std::array<EPlayer_Job, 2> m_playerJob;

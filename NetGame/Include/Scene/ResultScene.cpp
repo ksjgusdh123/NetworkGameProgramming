@@ -8,6 +8,7 @@
 bool CResultScene::Init()
 {
 	CScene::Init();
+	m_myid = PacketManager::GetInst().GetMyID();
 
 	CGameObject* back = CreateObject<CGameObject>("RoomBackground");
 	back->CreateTexture(1);
@@ -25,7 +26,7 @@ bool CResultScene::Init()
 
 	HWND hwnd = CEngine::GetInst()->GetWindowHandle();
 	HINSTANCE hInst = CEngine::GetInst()->GetWindowInstance();
-	m_hButton = CreateWindow(L"button", L"Á¾·á", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 720, 450, 150, 100, hwnd, (HMENU)IDC_BUTTON, hInst, NULL);
+	m_hButton = CreateWindow(L"button", L"ï¿½ï¿½ï¿½ï¿½", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 720, 450, 150, 100, hwnd, (HMENU)IDC_BUTTON, hInst, NULL);
 	SendMessage(m_hButton, WM_SETFONT, (WPARAM)m_hFont, TRUE);
 	return true;
 }
@@ -33,6 +34,7 @@ bool CResultScene::Init()
 void CResultScene::Update(float elapsedTime)
 {
 	CScene::Update(elapsedTime);
+	UpdateGameData();
 }
 
 void CResultScene::Render(HDC hDC, float elapsedTime)
@@ -41,7 +43,7 @@ void CResultScene::Render(HDC hDC, float elapsedTime)
 
 	HFONT hFont = CreateFontWithSize(m_hFont, 80);
 	Vector2 ResultPos = Vector2(480, 250);
-	if (m_resultData->bWin)
+	if (m_resultData.bWin)
 	{
 		wchar_t win[] = L"WIN!!";
 		DrawCenteredText(hDC, win, ResultPos, hFont, RGB(100, 100, 255));
@@ -55,7 +57,7 @@ void CResultScene::Render(HDC hDC, float elapsedTime)
 	hFont = CreateFontWithSize(m_hFont, 50);
 	Vector2 timePos = Vector2(480, 320);
 
-	int totalSeconds = m_resultData->playTime;
+	int totalSeconds = m_resultData.playTime;
 	int hours = totalSeconds / 3600;
 	int minutes = (totalSeconds % 3600) / 60;
 	int seconds = totalSeconds % 60;
@@ -77,4 +79,9 @@ void CResultScene::KeyEvent(HWND hWnd, WPARAM wParam, LPARAM lParam)
 		break;
 	}
 	}
+}
+
+void CResultScene::UpdateGameData()
+{
+	m_resultData = PacketManager::GetInst().m_resultData;
 }

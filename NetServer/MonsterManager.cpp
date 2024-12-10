@@ -78,7 +78,7 @@ void MonsterManager::CreateBossMonster()
 	}
 }
 
-void MonsterManager::UpdateMonster()
+void MonsterManager::UpdateMonster(float elapsed)
 {
 	for (MonsterInfo& m : inGameData->monster)
 	{
@@ -90,7 +90,7 @@ void MonsterManager::UpdateMonster()
 		{
 			if (m.state == EObject_State::Die_L || m.state == EObject_State::Die)
 			{
-				m.timer += 0.05f;
+				m.timer += elapsed;
 				if (m.timer > 1.0f) m.is_alive = false;
 				break;
 			}
@@ -116,7 +116,7 @@ void MonsterManager::UpdateMonster()
 		{
 			if (m.state == EObject_State::Die_L || m.state == EObject_State::Die)
 			{
-				m.timer += 0.05f;
+				m.timer += elapsed;
 				if (m.timer > 1.0f) m.is_alive = false;
 				break;
 			}
@@ -138,7 +138,7 @@ void MonsterManager::UpdateMonster()
 			}
 
 			if (m.state == EObject_State::Attack || m.state == EObject_State::Attack_L) {
-				m.timer += 0.05f;
+				m.timer += elapsed;
 
 				if (m.timer >= 1.f) {
 					if (m.state == EObject_State::Attack)
@@ -297,19 +297,19 @@ void MonsterManager::UpdateMonster()
 		if (!m.is_alive)
 			continue;
 		switch (m.type) {
-		case '0':				// Riche °ø°Ý
+		case '0':				// Riche ï¿½ï¿½ï¿½ï¿½
 		{
 			float dx = m.target.x - m.pos.x;
 			float dy = m.target.y - m.pos.y;
 			float distance = sqrt(dx * dx + dy * dy);
 
-			if (distance > 0.0f) { // °Å¸® °è»ê
-				float velocityFactor = min(distance, m.velocity); // distance¿Í x ¹æÇâ ¼Óµµ Áß ÀÛÀº °ª ¼±ÅÃ
-				m.pos.x += (dx / distance) * velocityFactor; // xÃà ÀÌµ¿
-				m.pos.y += (dy / distance) * velocityFactor; // yÃà ÀÌµ¿
+			if (distance > 0.0f) { // ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½
+				float velocityFactor = min(distance, m.velocity); // distanceï¿½ï¿½ x ï¿½ï¿½ï¿½ï¿½ ï¿½Óµï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+				m.pos.x += (dx / distance) * velocityFactor; // xï¿½ï¿½ ï¿½Ìµï¿½
+				m.pos.y += (dy / distance) * velocityFactor; // yï¿½ï¿½ ï¿½Ìµï¿½
 			}
 
-			m.timer += 0.05;
+			m.timer += elapsed;
 			if (m.timer >= 3.0f)
 				m.is_alive = false;
 
@@ -324,7 +324,7 @@ void MonsterManager::UpdateMonster()
 			else if (m.direct == EObject_Dir::Left)
 				m.pos.x -= m.velocity * 2.5f;
 
-			m.timer += 0.05f;
+			m.timer += elapsed;
 			if (m.timer >= 3.0f)
 				m.is_alive = false;
 		}

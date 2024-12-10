@@ -34,6 +34,7 @@ public:
 	void SendResultData();
 
 	void UpdateInGameData();
+	void UpdatePlayer();
 	void UpdateBossData();
 	void ProcessCollsion();
 	void ProcessBossCollsion();

@@ -21,7 +21,10 @@ public:
 	bool m_bJump = false;
 	bool m_bDoubleJump = false;
 	bool m_bAttack = false;
-
+	bool m_bRender = true;
+	EJump_State m_jumpState = EJump_State::Landed;
+	CHPBar* m_hpBar;
+	float m_jumpTime = 0;
 protected:
 	void PlayerMoveLeft();
 	void PlayerLeftIdle();
@@ -40,12 +43,11 @@ protected:
 	bool m_bFrameCheck = false;
 
 	float m_prevHeight = 0;
-	float m_jumpTime = 0;
 
 	int m_multipleNum = 1;
 
 	Vector2 m_attackSize;
 	Vector2 m_attackPivot;
-	CHPBar* m_hpBar;
+
 };
 

@@ -21,7 +21,7 @@ void ItemManager::CreateItem()
 		if (i< STAR1)
 			type = ItemType::TRAP;
 		else if (i< HEART1)
-			type = ItemType::STAR;
+			type = ItemType::STAR_H;
 		else
 			type = ItemType::HEART;
 
@@ -66,6 +66,8 @@ void ItemManager::CheckItemCollision(GamePlayerInfo& player)
 				}
 				player.hp -= effectAmount;
 				player.hp = std::clamp((int)player.hp, 0, 100);
+				inGameData->item[item.id + STAR1].type = ItemType::STAR;
+				item.type = -1;
 				break;
 			default:
 				break;

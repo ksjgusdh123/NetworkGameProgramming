@@ -126,6 +126,7 @@
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
       <PerUserRedirection>true</PerUserRedirection>
+      <AdditionalLibraryDirectories>$(SolutionDir)/Engine/Bin/</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -143,6 +144,12 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)/Engine/Bin/</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='sd|x64'">
+    <Link>
+      <AdditionalLibraryDirectories>$(SolutionDir)/Engine/Bin/</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

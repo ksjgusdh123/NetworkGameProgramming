@@ -92,37 +92,37 @@ struct C_TileRequestPkt : public Packet
 
 struct S_TilesPkt : public Packet {
 	S_TilesPkt(int tileCount, const std::vector<int>& tileTypes, const std::vector<vector2>& tilePositions) {
-		type = TileResponse; // Å¸ÀÔ ¼³Á¤
+		type = TileResponse; // Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		
-		// µ¥ÀÌÅÍ¸¦ ¹®ÀÚ¿­·Î Á÷·ÄÈ­ÇÏ¿© data¿¡ ÀúÀå
+		// ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­ï¿½Ï¿ï¿½ dataï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		char* write_ptr = data;
 		int offset = 0;
 
-		// 1. Å¸ÀÏ °³¼ö Ãß°¡
+		// 1. Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
 		offset += sprintf_s(write_ptr + offset, sizeof(data) - offset, "%d ", tileCount);
 
-		// 2. °¢ Å¸ÀÏÀÇ Å¸ÀÔ°ú À§Ä¡ Ãß°¡
+		// 2. ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½Ô°ï¿½ ï¿½ï¿½Ä¡ ï¿½ß°ï¿½
 		for (int i = 0; i < tileCount; ++i) {
 			offset += sprintf_s(write_ptr + offset, sizeof(data) - offset, "%d %.2f %.2f ",
 				tileTypes[i], tilePositions[i].x, tilePositions[i].y);
 		}
 		
-		// µ¥ÀÌÅÍ Å©±â ¼³Á¤
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		data_size = strlen(data);
 	}
 
 	void deserialize(int& tileNum, std::vector<int>& tileTypes, std::vector<float>& tilePosX, std::vector<float>& tilePosY) {
-		// µ¥ÀÌÅÍ ÆÄ½Ì ½ÃÀÛ
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ä½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		const char* read_ptr = data;
 
-		// 1. Å¸ÀÏ °³¼ö ÆÄ½Ì
+		// 1. Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ä½ï¿½
 		sscanf_s(read_ptr, "%d ", &tileNum);
 
-		// Å¸ÀÏ °³¼ö Å©±â¸¸Å­ ÀÐ°í Æ÷ÀÎÅÍ ÀÌµ¿
-		while (*read_ptr != ' ') ++read_ptr; // Ã¹ °ø¹é±îÁö ÀÌµ¿
-		++read_ptr; // °ø¹é ³Ñ¾î ÀÌµ¿
+		// Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å©ï¿½â¸¸Å­ ï¿½Ð°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
+		while (*read_ptr != ' ') ++read_ptr; // Ã¹ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
+		++read_ptr; // ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾ï¿½ ï¿½Ìµï¿½
 
-		// 2. °¢ Å¸ÀÏÀÇ Å¸ÀÔ°ú À§Ä¡ ÆÄ½Ì
+		// 2. ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½Ô°ï¿½ ï¿½ï¿½Ä¡ ï¿½Ä½ï¿½
 		tileTypes.clear();
 		tilePosX.clear();
 		tilePosY.clear();
@@ -130,22 +130,22 @@ struct S_TilesPkt : public Packet {
 			int tileType;
 			float posX, posY;
 
-			// Å¸ÀÔ, x, y ¼øÀ¸·Î ÆÄ½Ì
+			// Å¸ï¿½ï¿½, x, y ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ä½ï¿½
 			sscanf_s(read_ptr, "%d %f %f ", &tileType, &posX, &posY);
 
 			tileTypes.push_back(tileType);
 			tilePosX.push_back(posX);
 			tilePosY.push_back(posY);
 
-			// ÀÐÀº µ¥ÀÌÅÍ¸¸Å­ Æ÷ÀÎÅÍ ÀÌµ¿
-			while (*read_ptr != ' ') ++read_ptr; // Ã¹ °ø¹é±îÁö ÀÌµ¿
-			++read_ptr; // °ø¹é ³Ñ¾î ÀÌµ¿
+			// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½Å­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
+			while (*read_ptr != ' ') ++read_ptr; // Ã¹ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
+			++read_ptr; // ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾ï¿½ ï¿½Ìµï¿½
 
-			while (*read_ptr != ' ') ++read_ptr; // µÎ ¹øÂ° °ø¹é±îÁö ÀÌµ¿
-			++read_ptr; // °ø¹é ³Ñ¾î ÀÌµ¿
+			while (*read_ptr != ' ') ++read_ptr; // ï¿½ï¿½ ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
+			++read_ptr; // ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾ï¿½ ï¿½Ìµï¿½
 
-			while (*read_ptr != ' ' && *read_ptr != '\0') ++read_ptr; // ¼¼ ¹øÂ° °ø¹é ¶Ç´Â ³¡±îÁö ÀÌµ¿
-			if (*read_ptr == ' ') ++read_ptr; // ¸¶Áö¸· °ø¹é ³Ñ¾î ÀÌµ¿
+			while (*read_ptr != ' ' && *read_ptr != '\0') ++read_ptr; // ï¿½ï¿½ ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
+			if (*read_ptr == ' ') ++read_ptr; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾ï¿½ ï¿½Ìµï¿½
 		}
 	}
 };
@@ -176,16 +176,12 @@ struct S_GameEndNotificationPacket :public Packet
 	{
 		type = GameEndNotification;
 		data_size = sizeof(resultData_);
-		// ¸í½ÃÀûÀ¸·Î boolÀ» int·Î Ä³½ºÆÃÇÏ¿© ÀúÀå
-		sprintf_s(data, "%f %d", resultData_.playTime, static_cast<int>(resultData_.bWin));
+		memcpy(data, &resultData_, sizeof(resultData_));
+		//sprintf_s(data, "%f %d", resultData_.playTime, resultData_.bWin);
 	}
-	void deserialize(bool& bWin, float& playTime)
+	/*void deserialize(bool& bWin, float& playTime)
 	{
-		int bWinAsInt;
-		// int·Î ÀÐ¾î¿Â ÈÄ bool·Î º¯È¯
-		sscanf_s(data, "%f %d", &playTime, &bWinAsInt);
-		bWin = static_cast<bool>(bWinAsInt);
-	}
-
+		sscanf_s(data, "%f %d", &playTime, &bWin);
+	}*/
 };
 #pragma pack(pop)

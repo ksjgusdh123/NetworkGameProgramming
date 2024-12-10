@@ -7,7 +7,7 @@ public:
 	void Init();
 	void CreateMonster();
 	void CreateBossMonster();
-	void UpdateMonster();
+	void UpdateMonster(float elapsed);
 	int IsPlayerInRicheAttackArea();
 	int bossAttack();
 public:

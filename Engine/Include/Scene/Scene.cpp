@@ -59,7 +59,6 @@ void CScene::Update(float elapsedTime)
             ++iter;
         }
     }
-
     m_camera->Update(elapsedTime);
 }
 

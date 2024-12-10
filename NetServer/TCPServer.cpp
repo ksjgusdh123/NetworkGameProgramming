@@ -68,6 +68,7 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 				for (int i = 0; i < 2; ++i)
 				{
 					gameData->players[i].job = lobbyData->players[i].job;
+					gameData->players[i].pos = vector2(-930 + 50 * i,300);
 				}
 				GameManager::GetInst().InitGameData();
 				TileManager::GetInst().SendTilePacket();
@@ -83,6 +84,13 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 			{
 				gameData->scene = BOSSSCENE;
 				curScene = BOSSSCENE;
+				for (int i = 0; i < 2; ++i)
+				{
+					gameData->players[i].hp = 100;
+					gameData->players[i].pos = vector2(-930 + 50 * i, 300);
+					gameData->players[i].state = EObject_State::Basic;
+					gameData->players[i].jumpState = EJump_State::JumpDown;
+				}
 				GameManager::GetInst().InitBossData();
 				TileManager::GetInst().SendTilePacket();
 			}
@@ -157,7 +165,13 @@ void TCPServer::ProcessRecvPacket(const Packet& packet)
 		C_GameUpdateRequest* RecvPacket = (C_GameUpdateRequest*)&packet;
 		InGameData* gameData = GameManager::GetInst().GetInGameData();
 		const int i = RecvPacket->client_id;
-		memcpy(&gameData->players[i], RecvPacket->data, RecvPacket->data_size);
+		GamePlayerInfo data;
+		memcpy(&data, RecvPacket->data, RecvPacket->data_size);
+
+		gameData->players[i].dir = data.dir;
+		gameData->players[i].state = data.state;
+		gameData->players[i].jumpState = data.jumpState;
+		//memcpy(&gameData->players[i], RecvPacket->data, RecvPacket->data_size);
 		break;
 	}
 	default:

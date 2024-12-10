@@ -60,3 +60,4 @@ struct BoxInfo
 	Vector2	LT;
 	Vector2	RB;
 };
+

@@ -5,6 +5,8 @@
 #include "Resource/Texture/Texture.h"
 #include "..\PlayerAnimation.h"
 #include "..\NetClient\TCPClient.h"
+#include <Scene\Camera.h>
+#include <Collision.h>
 
 bool CPlayer::Init()
 {
@@ -16,7 +18,7 @@ bool CPlayer::Init()
 	SetTexture("Player_L", TEXT("Player/player_L.png"), EObject_Dir::Left, ETexture_Type::CIMAGE);
 	SetTexture("Player", TEXT("Player/player.png"), EObject_Dir::Right, ETexture_Type::CIMAGE);
 	SetSize(50.f, 60.f);
-	m_objectState = EObject_State::Jump_Down;
+	m_objectState = EObject_State::Basic;
 	return true;
 }
 
@@ -30,23 +32,9 @@ void CPlayer::Update(float elapsedTime)
 		DieEvent();
 	}
 
-	if (!m_bIsLanded && (m_objectState != EObject_State::Basic && m_objectState != EObject_State::Basic_L
-		&& m_objectState != EObject_State::Jump && m_objectState != EObject_State::Jump_L))
+	if (m_jumpState == EJump_State::Jumping)
 	{
-		if (m_objectDir == EObject_Dir::Right)
-			m_objectState = EObject_State::Jump_Down;
-		else if (m_objectDir == EObject_Dir::Left)
-			m_objectState = EObject_State::Jump_Down_L;
-		m_pos.y += elapsedTime * (m_velocity.y);
-	}
-
-	if (m_bFrameCheck)
-	{
-		CheckFrame(elapsedTime);
-	}
-	if (m_bJump)
-	{
-		CalculateJump(elapsedTime);
+		//CalculateJump(elapsedTime);
 	}
 
 }
@@ -58,7 +46,88 @@ void CPlayer::PostUpdate(float elapsedTime)
 
 void CPlayer::Render(HDC hDC, float elapsedTime)
 {
-	CGameObject::Render(hDC, elapsedTime);
+	if (!m_bRender)
+		return;
+
+//#ifdef DEBUG
+//	m_collisionBox->Render(hDC, elapsedTime);
+//#endif
+
+	if (m_prevObjectState != m_objectState) 
+	{
+		m_idx = 0;
+		m_time = 0;
+	}
+
+	m_prevObjectState = m_objectState;
+
+	Vector2	pos;
+	Vector2	cameraPos;
+	Vector2	resolution;
+
+	if (m_scene)
+	{
+		cameraPos = m_scene->GetCamera()->GetPos();
+		resolution = m_scene->GetCamera()->GetResolution();
+		pos = m_pos - m_scene->GetCamera()->GetPos();
+	}
+
+	if (m_texture)
+	{
+		Vector2	renderLT = pos - m_pivot * m_size;
+		Vector2	cullPos = m_pos - m_pivot * m_size;
+
+		if (cullPos.x > cameraPos.x + resolution.x)
+			return;
+
+		else if (cullPos.x + m_size.x < cameraPos.x)
+			return;
+
+		else if (cullPos.y > cameraPos.y + resolution.y)
+			return;
+
+		else if (cullPos.y + m_size.y < cameraPos.y)
+			return;
+
+
+		int stateIdx = 0;
+		if (m_jumpState == EJump_State::Landed)
+			stateIdx = (int)m_objectState;
+		else if (m_jumpState == EJump_State::Jumping)
+		{
+			if (m_objectDir == EObject_Dir::Right)
+				stateIdx = (int)EObject_State::Jump;
+			else
+				stateIdx = (int)EObject_State::Jump_L;
+		}
+		else if (m_jumpState == EJump_State::JumpDown)
+		{
+			if (m_objectDir == EObject_Dir::Right)
+				stateIdx = (int)EObject_State::Jump_Down;
+			else
+				stateIdx = (int)EObject_State::Jump_Down_L;
+		}
+
+		if (m_objectState != EObject_State::Die && m_objectState != EObject_State::Die_L)
+		{
+			if (m_texture[(int)m_objectDir]->GetTextureType() == ETexture_Type::CIMAGE)
+			{
+				m_time += elapsedTime;
+				m_idx = (((int)(m_time * m_animationBox[(int)stateIdx].size())) % m_animationBox[(int)stateIdx].size());
+				Vector2 size{ (float)m_animationBox[(int)stateIdx][m_idx].right, (float)m_animationBox[(int)stateIdx][m_idx].bottom };
+				renderLT = pos - m_pivot * size;
+				m_texture[(int)m_objectDir]->GetCImage().Draw(hDC, (int)renderLT.x, (int)renderLT.y, m_animationBox[(int)stateIdx][m_idx].right, m_animationBox[(int)stateIdx][m_idx].bottom, m_animationBox[(int)stateIdx][m_idx].left, m_animationBox[(int)stateIdx][m_idx].top, m_animationBox[(int)stateIdx][m_idx].right, m_animationBox[(int)stateIdx][m_idx].bottom);
+			}
+		}
+		else
+		{
+			m_time += elapsedTime;
+			m_idx = min(((int)(m_time * m_animationBox[(int)stateIdx].size())), 4);
+			Vector2 size{ (float)m_animationBox[(int)stateIdx][m_idx].right, (float)m_animationBox[(int)stateIdx][m_idx].bottom };
+			renderLT = pos - m_pivot * size;
+			m_texture[(int)m_objectDir]->GetCImage().Draw(hDC, (int)renderLT.x, (int)renderLT.y, m_animationBox[(int)stateIdx][m_idx].right, m_animationBox[(int)stateIdx][m_idx].bottom, m_animationBox[(int)stateIdx][m_idx].left, m_animationBox[(int)stateIdx][m_idx].top, m_animationBox[(int)stateIdx][m_idx].right, m_animationBox[(int)stateIdx][m_idx].bottom);
+		}
+	}
 }
 
 void CPlayer::InitInput()
@@ -75,6 +144,7 @@ void CPlayer::PlayerMoveLeft()
 {
 	if (m_hp <= 0)
 		return;
+
 	switch (m_objectState)
 	{
 	case EObject_State::Basic:
@@ -83,19 +153,12 @@ void CPlayer::PlayerMoveLeft()
 	case EObject_State::Walk_L:
 		m_objectState = EObject_State::Walk_L;
 		break;
-	case EObject_State::Jump:
-		m_objectState = EObject_State::Jump_L;
-		break;
-	case EObject_State::Jump_Down:
-		m_objectState = EObject_State::Jump_Down_L;
-		break;
 	case EObject_State::Attack:
 	case EObject_State::Attack_L:
 		return;
 	}
 
 	m_objectDir = EObject_Dir::Left;
-	m_pos.x -= m_velocity.x * 2 * ELAPSED_TIME;
 		
 }
 
@@ -103,8 +166,7 @@ void CPlayer::PlayerLeftIdle()
 {
 	if (m_hp <= 0)
 		return;
-	if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L || m_objectState == EObject_State::Jump ||
-		m_objectState == EObject_State::Jump_L || m_objectState == EObject_State::Jump_Down_L || m_objectState == EObject_State::Jump_Down)
+	if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L)
 		return;
 
 	m_objectState = EObject_State::Basic_L;
@@ -123,27 +185,19 @@ void CPlayer::PlayerMoveRight()
 	case EObject_State::Walk_L:
 		m_objectState = EObject_State::Walk;
 		break;
-	case EObject_State::Jump_L:
-		m_objectState = EObject_State::Jump;
-		break;
-	case EObject_State::Jump_Down_L:
-		m_objectState = EObject_State::Jump_Down;
-		break;
 	case EObject_State::Attack:
 	case EObject_State::Attack_L:
 		return;
 	}
 
 	m_objectDir = EObject_Dir::Right;
-	m_pos.x += m_velocity.x * 2 * ELAPSED_TIME;
 }
 
 void CPlayer::PlayerRightIdle()
 {
 	if (m_hp <= 0)
 		return;
-	if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L || m_objectState == EObject_State::Jump ||
-		m_objectState == EObject_State::Jump_L || m_objectState == EObject_State::Jump_Down || m_objectState == EObject_State::Jump_Down_L)
+	if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L)
 		return;
 
 	m_objectState = EObject_State::Basic;
@@ -154,12 +208,14 @@ void CPlayer::PlayerAttack()
 {
 	if (m_hp <= 0)
 		return;
-	if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L || m_objectState == EObject_State::Jump ||
-		m_objectState == EObject_State::Jump_L || m_objectState == EObject_State::Jump_Down || m_objectState == EObject_State::Jump_Down_L)
+	if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L)
 		return;
 
-	SetSize(m_size.x * m_attackSize.x, m_size.y * m_attackSize.y);
-	SetPivot(m_attackPivot);
+	if (m_jumpState != EJump_State::Landed)
+		return;
+
+	//SetSize(m_size.x * m_attackSize.x, m_size.y * m_attackSize.y);
+	//SetPivot(m_attackPivot);
 	if (m_objectDir == EObject_Dir::Right)
 	{
 		m_objectState = EObject_State::Attack;
@@ -179,107 +235,30 @@ void CPlayer::PlayerJump()
 	if (m_hp <= 0)
 		return;
 
-	if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L ||
-		m_objectState == EObject_State::Jump || m_objectState == EObject_State::Jump_L)
+	if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L)
 		return;
 
-
-	if ((m_objectState == EObject_State::Jump_Down || m_objectState == EObject_State::Jump_Down_L) && m_bJump && !m_bDoubleJump)
-	{
-		m_bDoubleJump = true;
-	}
-	else if (m_objectState == EObject_State::Jump_Down || m_objectState == EObject_State::Jump_Down_L)
-	{
+	if (m_jumpState == EJump_State::Jumping)
 		return;
-	}
-	else
-		m_prevHeight = m_pos.y;
 
-	m_pos.y -= 3.f;
-	m_bIsLanded = false;
-
-	m_multipleNum = 1;
-	m_jumpTime = 0;
-	m_bJump = true;
-
-	if (m_objectDir == EObject_Dir::Right)
+	if (m_jumpState == EJump_State::JumpDown || (m_jumpState == EJump_State::Jumping && m_jumpTime >= 0.4f))
 	{
-		m_objectState = EObject_State::Jump;
+		if (m_bDoubleJump)
+			return;
+		else
+			m_bDoubleJump = true;
 	}
-	else
-	{
-		m_objectState = EObject_State::Jump_L;
-	}
+	
+
+	m_jumpState = EJump_State::Jumping;
 	m_time = 0;
 }
 
 void CPlayer::CheckFrame(float elapsedTime)
 {
-	m_nowFrame += elapsedTime;
-	if (m_nowFrame >= m_frame)
-	{
-		if (m_objectDir == EObject_Dir::Right)
-		{
-			m_objectState = EObject_State::Basic;
-		}
-		else
-		{
-			m_objectState = EObject_State::Basic_L;
-		}
-		SetSize(m_size.x / m_attackSize.x, m_size.y / m_attackSize.y);
-		SetPivot(Vector2(0.5, 0.5f));
-		m_bFrameCheck = false;
-	}
-}
-
-void CPlayer::JumpDown()
-{
-	if (m_objectDir == EObject_Dir::Right)
-	{
-		m_objectState = EObject_State::Jump_Down;
-	}
-	else
-	{
-		m_objectState = EObject_State::Jump_Down_L;
-	}
-	m_jumpTime = 0;
-	m_multipleNum = -1;
-}
-
-void CPlayer::CalculateJump(float elapsedTime)
-{
-	// 임시적 수치와 종료 조건
-	if (m_objectState != EObject_State::Jump_Down && m_objectState != EObject_State::Jump_Down_L &&
-		m_objectState != EObject_State::Jump && m_objectState != EObject_State::Jump_L)
-	{
-		m_bJump = false;
-		return;
-	}
-
-	if (m_jumpTime >= 0.5)
-	{
-		if (m_objectDir == EObject_Dir::Right)
-		{
-			m_objectState = EObject_State::Jump_Down;
-		}
-		else
-		{
-			m_objectState = EObject_State::Jump_Down_L;
-		}
-		return;
-		//m_bJump = false;
-		//m_bDoubleJump = false;
-	}
-
-	m_jumpTime += elapsedTime;
-	m_pos.y -= elapsedTime * m_velocity.y * m_multipleNum;
-
-
-
-	//if (m_pos.y >= m_prevHeight)
+	//m_nowFrame += elapsedTime;
+	//if (m_nowFrame >= m_frame)
 	//{
-	//	m_pos.y = m_prevHeight;
-	//	m_bJump = false;
 	//	if (m_objectDir == EObject_Dir::Right)
 	//	{
 	//		m_objectState = EObject_State::Basic;
@@ -288,8 +267,21 @@ void CPlayer::CalculateJump(float elapsedTime)
 	//	{
 	//		m_objectState = EObject_State::Basic_L;
 	//	}
-	//	m_bDoubleJump = false;
+	//	m_bFrameCheck = false;
 	//}
+}
+
+void CPlayer::CalculateJump(float elapsedTime)
+{
+	// 임시적 수치와 종료 조건
+	if (m_jumpTime >= 0.5)
+	{
+		m_jumpState = EJump_State::JumpDown;
+		m_jumpTime = 0.f;
+		return;
+	}
+
+	m_jumpTime += elapsedTime;
 }
 
 void CPlayer::DieEvent()
