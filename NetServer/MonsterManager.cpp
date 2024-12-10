@@ -161,12 +161,12 @@ void MonsterManager::UpdateMonster(float elapsed)
 		case '2':
 			if (m.state == EObject_State::Die_L || m.state == EObject_State::Die)
 			{
-				m.timer += 0.05f;
+				m.timer += elapsed;
 				if (m.timer > 0.8f) m.is_alive = false;
 				break;
 			}
 
-			m.timer += 0.05f;
+			m.timer += elapsed;
 
 			if (m.timer > 2.0f) {
 				if (m.is_alive) {
