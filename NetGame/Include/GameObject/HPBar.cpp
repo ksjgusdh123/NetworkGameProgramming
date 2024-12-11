@@ -17,6 +17,8 @@ void CHPBar::Update(float elapsedTime)
 
 void CHPBar::Render(HDC hDC, float elapsedTime)
 {
+    if (!m_owner)
+        return;
     static const int maxHP = 100;
 
     Vector2 pos;
