@@ -359,9 +359,8 @@ void GameManager::MonsterCollision()
 void GameManager::BossCollsion()
 {
 	for (auto& player : inGameData.players) {
-		vector2 size = vector2(50, 60);
 		vector2 playerPos = player.pos;
-		vector2 playerSize = size;
+		vector2 playerSize = player.GetPlayerSize();
 		float playerLeft = playerPos.x - playerSize.x / 2;
 		float playerRight = playerPos.x + playerSize.x / 2;
 		float playerTop = playerPos.y - playerSize.y / 2;
@@ -406,7 +405,7 @@ void GameManager::BossCollsion()
 			playerBottom > MonsterLT.y && playerTop < MonsterRB.y) {
 			if (player.state == EObject_State::Attack || player.state == EObject_State::Attack_L) { // 플레이어가 공격상태일 경우 
 				inGameData.monster[0].hp -= 1;
-				inGameData.monster[0].hp = std::clamp((int)inGameData.monster[0].hp, 0, 100);
+				inGameData.monster[0].hp = std::clamp((int)inGameData.monster[0].hp, 0, 300);
 				if (inGameData.monster[0].hp <= 0) {
 					if (inGameData.monster[0].direct == EObject_Dir::Right)
 						inGameData.monster[0].state = EObject_State::Die;
@@ -432,7 +431,7 @@ void GameManager::BossCollsion()
 			if (ArrowRB.x > MonsterLT.x && ArrowLT.x < MonsterRB.x &&
 				ArrowRB.y > MonsterLT.y && ArrowLT.y < MonsterRB.y) {
 				inGameData.monster[0].hp -= 1;
-				inGameData.monster[0].hp = std::clamp((int)inGameData.monster[0].hp, 0, 100);
+				inGameData.monster[0].hp = std::clamp((int)inGameData.monster[0].hp, 0, 300);
 				if (inGameData.monster[0].hp <= 0) {
 					if (inGameData.monster[0].direct == EObject_Dir::Right)
 						inGameData.monster[0].state = EObject_State::Die;

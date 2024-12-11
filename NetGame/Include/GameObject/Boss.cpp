@@ -36,7 +36,7 @@ bool CBoss::Init()
 	SetAnimation(B_TELPO, 17, EObject_State::Telpo_L);
 	SetSize(130.f, 160.f);
 	
-	m_hp = 100;
+	m_hp = 300;
 	m_objectDir = EObject_Dir::Up;
 	m_objectState = EObject_State::Telpo;
 	m_bIsAlive = true;

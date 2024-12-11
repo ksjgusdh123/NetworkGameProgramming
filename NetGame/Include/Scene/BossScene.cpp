@@ -179,6 +179,37 @@ void CBossScene::UpdateGameData()
 		}
 	}
 
+	for (MonsterInfo& m : m_inGameData.monster)
+	{
+		switch (m.type) {
+		case '2':
+			if (!boss) break;
+			if (!boss->m_bIsAlive) {
+				boss->Destroy();
+				break;
+			}
+			boss->SetPos(m.pos.x, m.pos.y);
+			boss->SetState(m.state);
+			boss->SetDir(m.direct);
+			boss->m_bIsAlive = m.is_alive;
+			boss->m_hp = m.hp;
+			boss->m_target = Vector2(m.target.x, m.target.y);
+			break;
+		default:
+			break;
+		}
+	}
+
+	for (int i = 0; i < MONSTER_ATTACK_NUM; ++i)
+	{
+		bossAttack[i]->SetPos(m_inGameData.monsterAttack[i].pos.x, m_inGameData.monsterAttack[i].pos.y);
+		bossAttack[i]->SetState(m_inGameData.monsterAttack[i].state);
+		bossAttack[i]->SetDir(m_inGameData.monsterAttack[i].direct);
+		if (m_inGameData.monsterAttack[i].is_alive)
+			bossAttack[i]->SetEnable(true);
+		else
+			bossAttack[i]->SetEnable(false);
+	}
 }
 
 void CBossScene::ClientGameData()

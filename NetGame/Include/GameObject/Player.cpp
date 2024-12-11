@@ -213,7 +213,7 @@ void CPlayer::PlayerAttack()
 	if (m_jumpState != EJump_State::Landed)
 		return;
 
-	SetSize(m_size.x * m_attackSize.x, m_size.y * m_attackSize.y);
+	//SetSize(m_size.x * m_attackSize.x, m_size.y * m_attackSize.y);
 	SetPivot(m_attackPivot);
 	if (m_objectDir == EObject_Dir::Right)
 	{
