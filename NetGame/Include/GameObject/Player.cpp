@@ -99,6 +99,14 @@ void CPlayer::Render(HDC hDC, float elapsedTime)
 			}
 		}
 
+		if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L)
+		{
+			SetPivot(m_attackPivot);
+		}
+		else
+			SetPivot(Vector2(0.5, 0.5));
+
+
 		if (m_objectState != EObject_State::Die && m_objectState != EObject_State::Die_L)
 		{
 			if (m_texture[(int)m_objectDir]->GetTextureType() == ETexture_Type::CIMAGE)
@@ -205,8 +213,8 @@ void CPlayer::PlayerAttack()
 	if (m_jumpState != EJump_State::Landed)
 		return;
 
-	//SetSize(m_size.x * m_attackSize.x, m_size.y * m_attackSize.y);
-	//SetPivot(m_attackPivot);
+	SetSize(m_size.x * m_attackSize.x, m_size.y * m_attackSize.y);
+	SetPivot(m_attackPivot);
 	if (m_objectDir == EObject_Dir::Right)
 	{
 		m_objectState = EObject_State::Attack;
