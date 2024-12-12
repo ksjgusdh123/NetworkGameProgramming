@@ -25,7 +25,7 @@ DWORD WINAPI SendThread(LPVOID arg)
 	{
 		auto* current_scene = CSceneManager::GetInst()->GetScene();
 		current_scene->SendGameData();
-		Sleep(1000 / 60);
+		Sleep(1000 / 30);
 	}
 	return true;
 }
@@ -54,6 +54,10 @@ void TCPClient::Connect()
 	serveraddr.sin_port = htons(SERVERPORT);
 	int retval = connect(sock, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR) err_quit("connect()");
+
+	DWORD optval = 1;
+	setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (const char*)&optval, sizeof(optval));
+
 
 	hRecvThread = CreateThread(NULL, 0, RecvThread, (LPVOID)sock, 0, NULL);
 	if (hRecvThread == NULL) { closesocket(sock); }

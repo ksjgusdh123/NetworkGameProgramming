@@ -35,7 +35,7 @@ public:
 
 		return obj.get();
 	}
-	~CScene();
+	virtual ~CScene();
 	int m_sceneType = 0;
 
 protected:

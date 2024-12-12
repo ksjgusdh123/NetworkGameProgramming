@@ -104,8 +104,8 @@ void CMainScene::Update(float elapsedTime)
 	m_timer += elapsedTime;
 
 
-	GameStateCheck(elapsedTime);
 	LeaveCriticalSection(&cs);
+	GameStateCheck(elapsedTime);
 }
 
 void CMainScene::Render(HDC hDC, float elapsedTime)

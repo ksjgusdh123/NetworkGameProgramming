@@ -18,11 +18,13 @@ DWORD WINAPI RecvThread(LPVOID arg)
 
 	int client_id = client.player.id;
 	int res = send(client_sock, (char*)&client_id, sizeof(int), 0);
+
 	if (res == SOCKET_ERROR) { err_display("send()"); return -1; }
 
 	while (true)
 	{
 		WaitForSingleObject(hRecvEvent, INFINITE);
+		cout << client_id << "R";
 
 		int type;
 		int data_size;
@@ -55,6 +57,8 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 	{
 		WaitForMultipleObjects(2, hWorkEvent, TRUE, INFINITE);
 		ResetEvent(hRecvEvent);
+		cout << "W";
+
 		switch (curScene)
 		{
 		case LOBBYSCENE:
@@ -133,9 +137,9 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 		}
 		default: break;
 		}
+		//Sleep(1000 / 30);
 
-		ResetEvent(hWorkEvent[0]);
-		ResetEvent(hWorkEvent[1]);
+	
 		SetEvent(hRecvEvent);
 	}
 }
