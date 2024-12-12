@@ -105,8 +105,7 @@ struct GamePlayerInfo : public PlayerInfo {
 
 	GamePlayerInfo() = default;
 
-	GamePlayerInfo(const PlayerInfo& base, vector2 pos, short health, short dmg, EObject_State playerState, EObject_Dir dir)
-		: PlayerInfo(base), pos(pos), hp(health), damage(dmg), state(playerState), dir(dir) {}
+	GamePlayerInfo(const PlayerInfo& base) {}
 };
 
 struct ArrowInfo

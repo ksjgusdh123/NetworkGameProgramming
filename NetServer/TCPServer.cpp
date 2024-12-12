@@ -67,6 +67,7 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 				InGameData* gameData = GameManager::GetInst().GetInGameData();
 				for (int i = 0; i < 2; ++i)
 				{
+					memcpy(gameData->players[i].name, lobbyData->players[i].name, sizeof(lobbyData->players[i].name));
 					gameData->players[i].job = lobbyData->players[i].job;
 					gameData->players[i].pos = vector2(-930 + 50 * i,300);
 				}

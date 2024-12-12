@@ -29,6 +29,7 @@ public:
 	void UpdateGameData();
 	void ClientGameData();
 	void GameStateCheck(float elapsedTime);
+	void RenderPlayerName(HDC hDC);
 
 	bool m_bDieCheck = false;
 private:
