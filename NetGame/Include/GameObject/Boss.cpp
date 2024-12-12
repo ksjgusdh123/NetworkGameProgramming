@@ -47,6 +47,7 @@ bool CBoss::Init()
 void CBoss::Update(float elapsedTime)
 {
 	CGameObject::Update(elapsedTime);
+	m_hpBar->Update(elapsedTime);
 
 	m_timer += elapsedTime;
 
@@ -173,10 +174,11 @@ void CBoss::Render(HDC hDC, float elapsedTime)
 			m_texture[(int)m_objectDir]->GetCImage().Draw(hDC, (int)renderLT.x, (int)renderLT.y, (int)size.x, (int)size.y, m_animationBox[(int)m_objectState][m_idx].left, m_animationBox[(int)m_objectState][m_idx].top, m_animationBox[(int)m_objectState][m_idx].right, m_animationBox[(int)m_objectState][m_idx].bottom);
 		}
 	}
+	m_hpBar->Render(hDC, elapsedTime);
 }
 
 void CBoss::CreateHPBar(CScene* scene)
 {
-	m_hpBar = scene->CreateObject<CHPBar>("hpBar");
+	m_hpBar = std::make_shared<CHPBar>();
 	m_hpBar->SetOwner((CGameObject*)this);
 }

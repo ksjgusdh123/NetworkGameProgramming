@@ -36,6 +36,7 @@ bool CRiche::Init()
 void CRiche::Update(float elapsedTime)
 {
 	CGameObject::Update(elapsedTime);
+	m_hpBar->Update(elapsedTime);
 
 	//if (m_objectState == EObject_State::Attack || m_objectState == EObject_State::Attack_L) {
 	//	m_timer += elapsedTime;
@@ -62,6 +63,7 @@ void CRiche::PostUpdate(float elapsedTime)
 void CRiche::Render(HDC hDC, float elapsedTime)
 {
 	CGameObject::Render(hDC, elapsedTime);
+	m_hpBar->Render(hDC, elapsedTime);
 }
 
 
@@ -81,6 +83,6 @@ void CRiche::Attack(Vector2 target)
 
 void CRiche::CreateHPBar(CScene* scene)
 {
-	m_hpBar = scene->CreateObject<CHPBar>("hpBar");
+	m_hpBar = std::make_shared<CHPBar>();
 	m_hpBar->SetOwner((CGameObject*)this);
 }

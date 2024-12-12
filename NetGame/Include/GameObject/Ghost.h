@@ -21,6 +21,6 @@ public:
 	bool m_bIsAlive;
 	float m_range;
 	float m_originalPosX;
-	CHPBar* m_hpBar;
+	std::shared_ptr<CHPBar> m_hpBar;
 };
 

@@ -21,6 +21,6 @@ public:
 	bool m_bIsAlive;
 	Vector2 m_target;
 	float m_timer;
-	CHPBar* m_hpBar;
+	std::shared_ptr<CHPBar> m_hpBar;
 };
 

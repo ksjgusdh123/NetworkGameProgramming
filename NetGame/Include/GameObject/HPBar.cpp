@@ -11,7 +11,6 @@ bool CHPBar::Init()
 
 void CHPBar::Update(float elapsedTime)
 {
-    CGameObject::Update(elapsedTime);
     SetPos(m_owner->GetPos().x, (m_owner->GetPos().y - m_owner->GetSize().y / 2) - 10);
 }
 
@@ -19,6 +18,7 @@ void CHPBar::Render(HDC hDC, float elapsedTime)
 {
     if (!m_owner)
         return;
+
     static const int maxHP = 100;
 
     Vector2 pos;

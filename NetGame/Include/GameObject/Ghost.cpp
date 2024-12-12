@@ -33,6 +33,7 @@ bool CGhost::Init()
 void CGhost::Update(float elapsedTime)
 {
 	CGameObject::Update(elapsedTime);
+	m_hpBar->Update(elapsedTime);
 	//if (m_objectDir == EObject_Dir::Right && GetPos().x >= m_originalPosX + m_range)
 	//{
 	//	m_objectDir = EObject_Dir::Left;
@@ -57,11 +58,12 @@ void CGhost::PostUpdate(float elapsedTime)
 void CGhost::Render(HDC hDC, float elapsedTime)
 {
 	CGameObject::Render(hDC, elapsedTime);
+	m_hpBar->Render(hDC, elapsedTime);
 }
 
 void CGhost::CreateHPBar(CScene* scene)
 {
-	m_hpBar = scene->CreateObject<CHPBar>("hpBar");
+	m_hpBar = std::make_shared<CHPBar>();
 	m_hpBar->SetOwner((CGameObject*)this);
 }
 
