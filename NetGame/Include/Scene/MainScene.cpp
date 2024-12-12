@@ -113,6 +113,7 @@ void CMainScene::Update(float elapsedTime)
 void CMainScene::Render(HDC hDC, float elapsedTime)
 {
 	CScene::Render(hDC, elapsedTime);
+	RenderPlayerName(hDC);
 	RenderPlayTime(hDC);
 }
 
@@ -284,6 +285,31 @@ void CMainScene::GameStateCheck(float elapsedTime)
 		CSceneManager::GetInst()->CreateScene<CBossScene>();
 	else if (m_inGameData.players[0].hp <= 0 && m_inGameData.players[1].hp <= 0)
 		CSceneManager::GetInst()->CreateScene<CResultScene>();
+}
+
+void CMainScene::RenderPlayerName(HDC hDC)
+{
+	Vector2 pos;
+	Vector2 cameraPos = GetCamera()->GetPos();
+	Vector2 resolution = GetCamera()->GetResolution();
+
+	HFONT hFont = CreateFontWithSize(m_hFont, 20);
+	HFONT hOldFont = (HFONT)SelectObject(hDC, hFont);
+
+	for (int i = 0; i < 2; ++i)
+	{
+
+		SetBkMode(hDC, TRANSPARENT);
+
+		wchar_t nameText[NAME_LEN];
+		Vector2 Namepos = Vector2(m_inGameData.players[i].pos.x, m_inGameData.players[i].pos.y - 55);
+		pos = Namepos - cameraPos;
+		MultiByteToWideChar(CP_ACP, 0, m_inGameData.players[i].name, -1, nameText, NAME_LEN);
+		DrawCenteredText(hDC, nameText, pos, hFont, RGB(255, 255, 255));
+
+	}
+	SelectObject(hDC, hOldFont);
+	DeleteObject(hFont);
 }
 
 void CMainScene::RenderPlayTime(HDC hDC)
