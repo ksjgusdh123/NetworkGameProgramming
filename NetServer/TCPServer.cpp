@@ -24,7 +24,6 @@ DWORD WINAPI RecvThread(LPVOID arg)
 	while (true)
 	{
 		WaitForSingleObject(hRecvEvent, INFINITE);
-		cout << client_id << "R";
 
 		int type;
 		int data_size;
@@ -57,7 +56,6 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 	{
 		WaitForMultipleObjects(2, hWorkEvent, TRUE, INFINITE);
 		ResetEvent(hRecvEvent);
-		cout << "W";
 
 		switch (curScene)
 		{
@@ -137,7 +135,6 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 		}
 		default: break;
 		}
-		//Sleep(1000 / 30);
 
 	
 		SetEvent(hRecvEvent);

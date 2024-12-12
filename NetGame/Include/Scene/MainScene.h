@@ -35,9 +35,12 @@ public:
 	}
 	~CMainScene()
 	{
+		if(csFlag)
+			LeaveCriticalSection(&cs);
 		DeleteCriticalSection(&cs);
 	}
 	bool m_bDieCheck = false;
+	bool csFlag = false;
 private:
 	InGameData m_inGameData;
 	class CPlayer* m_inputPlayer;

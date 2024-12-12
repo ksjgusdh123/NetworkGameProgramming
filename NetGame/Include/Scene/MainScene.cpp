@@ -98,6 +98,7 @@ bool CMainScene::Init()
 void CMainScene::Update(float elapsedTime)
 {
 	EnterCriticalSection(&cs);
+	csFlag = true;
 	UpdateGameData();
 
 	CScene::Update(elapsedTime);
@@ -105,6 +106,7 @@ void CMainScene::Update(float elapsedTime)
 
 
 	LeaveCriticalSection(&cs);
+	csFlag = false;
 	GameStateCheck(elapsedTime);
 }
 
@@ -117,9 +119,11 @@ void CMainScene::Render(HDC hDC, float elapsedTime)
 bool CMainScene::SendGameData()
 {
 	EnterCriticalSection(&cs);
+	csFlag = true;
 	ClientGameData();
 	C_GameUpdateRequest sendPacket(m_inGameData.players[m_myid]);
 	LeaveCriticalSection(&cs);
+	csFlag = false;
 
 	return PacketManager::GetInst().SendPacket(sendPacket);
 }

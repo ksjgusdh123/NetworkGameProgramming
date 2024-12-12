@@ -36,7 +36,6 @@ void GameManager::UpdateInGameData()
 {
 	inGameData.playtime = (int)gameTimer.GetElapsedTime();
 	elapsed = gameTimer.Update();
-	cout << elapsed << '\n';
 	UpdatePlayer();		
 	MonsterManager::GetInst().UpdateMonster(elapsed);
 	CalculateArrow();

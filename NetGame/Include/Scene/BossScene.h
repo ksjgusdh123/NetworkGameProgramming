@@ -29,8 +29,18 @@ public:
 	void UpdateGameData();
 	void ClientGameData();
 	void GameStateCheck(float elapsedTime);
-
+	CBossScene()
+	{
+		InitializeCriticalSection(&cs);
+	}
+	~CBossScene()
+	{
+		if (csFlag)
+			LeaveCriticalSection(&cs);
+		DeleteCriticalSection(&cs);
+	}
 	bool m_bDieCheck = false;
+	bool csFlag = false;
 private:
 	InGameData m_inGameData;
 	class CPlayer* m_inputPlayer;
@@ -43,5 +53,6 @@ private:
 	float m_timer = 0.f;
 	float m_deathTime = 0.f;
 	bool m_bEnd = false;
+	CRITICAL_SECTION cs;
 };
 
