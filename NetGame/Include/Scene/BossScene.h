@@ -55,6 +55,7 @@ private:
 	float m_timer = 0.f;
 	float m_deathTime = 0.f;
 	bool m_bEnd = false;
+	float m_Etimer = 0.f;
 	CRITICAL_SECTION cs;
 };
 

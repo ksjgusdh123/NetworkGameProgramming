@@ -124,7 +124,7 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 				GameManager::GetInst().CacluateResult(false);
 				GameManager::GetInst().SendResultData();
 			}
-			if (gameData->monster[0].hp <= 0)
+			if (!gameData->monster[0].is_alive)
 			{
 				gameData->scene = RESULTSCENE;
 				curScene = RESULTSCENE;

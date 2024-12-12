@@ -242,7 +242,13 @@ void CBossScene::GameStateCheck(float elapsedTime)
 		}
 	}
 
-	if ((m_inGameData.players[0].hp <= 0 && m_inGameData.players[1].hp <= 0) || m_inGameData.monster[0].hp <= 0)
+	if (!m_inGameData.monster[0].is_alive) {
+		m_Etimer += elapsedTime;
+		if (m_Etimer > 2.f)
+			CSceneManager::GetInst()->CreateScene<CResultScene>();
+	}
+
+	if ((m_inGameData.players[0].hp <= 0 && m_inGameData.players[1].hp <= 0))
 	{
 		CSceneManager::GetInst()->CreateScene<CResultScene>();
 	}
