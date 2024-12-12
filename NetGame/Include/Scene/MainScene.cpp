@@ -97,6 +97,7 @@ bool CMainScene::Init()
 
 void CMainScene::Update(float elapsedTime)
 {
+	EnterCriticalSection(&cs);
 	UpdateGameData();
 
 	CScene::Update(elapsedTime);
@@ -104,6 +105,7 @@ void CMainScene::Update(float elapsedTime)
 
 
 	GameStateCheck(elapsedTime);
+	LeaveCriticalSection(&cs);
 }
 
 void CMainScene::Render(HDC hDC, float elapsedTime)
@@ -114,8 +116,11 @@ void CMainScene::Render(HDC hDC, float elapsedTime)
 
 bool CMainScene::SendGameData()
 {
+	EnterCriticalSection(&cs);
 	ClientGameData();
 	C_GameUpdateRequest sendPacket(m_inGameData.players[m_myid]);
+	LeaveCriticalSection(&cs);
+
 	return PacketManager::GetInst().SendPacket(sendPacket);
 }
 

@@ -29,7 +29,14 @@ public:
 	void UpdateGameData();
 	void ClientGameData();
 	void GameStateCheck(float elapsedTime);
-
+	CMainScene()
+	{
+		InitializeCriticalSection(&cs);
+	}
+	~CMainScene()
+	{
+		DeleteCriticalSection(&cs);
+	}
 	bool m_bDieCheck = false;
 private:
 	InGameData m_inGameData;
@@ -44,5 +51,7 @@ private:
 	float m_timer = 0.f;
 	float m_deathTime = 0.f;
 	bool m_bEnd = false;
+
+	CRITICAL_SECTION cs;
 };
 
